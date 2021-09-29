@@ -1,0 +1,70 @@
+{% extends 'templates/base.html' %}
+{% load static %}
+{% block title %}Toàn bộ giảng viên{% endblock title %}
+{% block headcontent %}
+
+
+  <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+  <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+  <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+
+  <style media="screen">
+    a:link {
+      text-decoration: none;
+    }
+    h6{
+      text-align:center;
+    }
+    .row{
+      margin:100px;
+    }
+  </style>
+
+{% endblock headcontent %}
+
+
+
+{% block content %}
+
+<div class="container">
+
+    	<div class="row" >
+
+				<div class="panel panel-primary">
+					<div class="panel-heading">
+						<h6 class="panel-title">Teachers</h6>
+
+					</div>
+
+					<table class="table table-hover" id="dev-table">
+            <thead>
+
+                <tr>
+                    <th>Họ tên</th>
+                    <th>MSCB</th>
+                    <th>Ngày tạo</th>
+                    <th>Ngày cập nhật</th>
+                    <th>Tài khoản</th>
+                    <th>Delete</th>
+                </tr>
+            </thead>
+            {% for t in giangviens %}
+              <tr>
+                  <td> {{t.perm.first_name}} {{ t.perm.last_name}}</td>
+                  <td>{{t.mscb}}</td>
+                  <td>{{t.ngay_tao}}</td>
+                  <td>{{t.perm.date_updated}}</td>
+                  <td>{{t.perm.username}}</td>
+
+              </tr>
+
+            {% endfor %}
+					</table>
+				</div>
+
+
+				</div>
+			</div>
+{% endblock content %}
+
+

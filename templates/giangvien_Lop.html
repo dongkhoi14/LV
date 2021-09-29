@@ -1,0 +1,66 @@
+{% extends 'templates/giangvien_base.html' %}
+{% block title %}Lớp Học phân của giảng viên{% endblock title %}
+
+{% block headcontent %}
+ <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+  <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+  <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+
+  <style media="screen">
+    a:link {
+      text-decoration: none;
+    }
+    h6{
+      text-align:center;
+    }
+    .row{
+      margin:100px;
+    }
+  </style>
+{% endblock headcontent %}
+
+{% block content %}
+
+<div class="container">
+
+    	<div class="row" >
+
+				<div class="panel panel-primary">
+					<div class="panel-heading">
+						<h6 class="panel-title">Giảng viên</h6>
+
+					</div>
+
+					<table class="table table-hover" id="dev-table">
+            <thead>
+
+                <tr>
+                    <th>Tên lớp</th>
+                    <th>Ngày tạo</th>
+                    <th>Ngày cập nhật</th>
+                    <th>Số lượng sinh viên</th>
+                    <th>Delete</th>
+                </tr>
+            </thead>
+              <tr>
+                    
+                  <td>
+                  <select>
+                  {% for hocphan in hocphans %}
+                  <option value='{{ hocphan.id }}'>{{ hocphan.ten_hoc_phan }} </option>
+                  {% endfor %}
+                  </select>
+                  </td>
+                  <td>{{ hocphan.ngay_tao }}</td>
+                  <td>{{t.ngay_tao}}</td>
+                  <td>{{t.perm.date_updated}}</td>
+                  <td>{{t.perm.username}}</td>
+
+              </tr>
+
+					</table>
+				</div>
+
+
+				</div>
+			</div>{% endblock content %}

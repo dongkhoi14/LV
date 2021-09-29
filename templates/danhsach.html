@@ -1,0 +1,63 @@
+{% extends 'templates/giangvien_base.html' %}
+{% block title %}Danh sách{% endblock title %}
+{% block headcontent %}
+<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+  <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+  <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+
+  <style media="screen">
+    a:link {
+      text-decoration: none;
+    }
+    h6{
+      text-align:center;
+    }
+    .row{
+      margin:100px;
+    }
+  </style>
+{% endblock headcontent %}
+
+{% block content %}
+   <div class="container">
+
+    	<div class="row" >
+
+				<div class="panel panel-primary">
+					<div class="panel-heading">
+						<h6 class="panel-title">Giảng viên</h6>
+
+					</div>
+
+					<table class="table table-hover" id="dev-table">
+            <thead>
+
+                <tr>
+                    <th>MSSV</th>
+                    <th>Họ tên</th>
+                    <th>Lớp </th>
+                    <th>Trạng thái</th>
+                </tr>
+            </thead>
+                    {% for sinhvien in sinhviens %}
+                    <tr>
+
+                    <td>{{sinhvien.mssv}} </td>
+                    <td>{{sinhvien.id_lop.ten_lop}}</td>
+                    <td>{{sinhvien.perm.first_name}} {{ sinhvien.perm.last_name}}</td>
+                    <td></td>
+
+                    </tr>
+
+                    {% endfor %}
+
+
+
+					</table>
+				</div>
+
+
+				</div>
+			</div>
+
+{% endblock content %}
