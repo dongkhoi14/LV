@@ -9,6 +9,9 @@ from system.adminViews import themGiangvien, themhocphan, themlop, themsinhvien
 from system.giangvienViews import  *
 from system.sinhvienViews import sinhvienViews
 from rest_framework.routers import DefaultRouter
+from django.conf.urls import include
+from django.urls import path
+
 
 router  = DefaultRouter()
 router.register('system',danhsachsinhvien )
@@ -42,7 +45,8 @@ urlpatterns = [
     path('historyAtt', historyAtt, name='historyAtt'),
     path('deleteAtt',deleteAtt,name="deleteAtt"),
     path('createAtt',createAtt,name='createAtt'),
-
+    path('createQR',createQR, name='createQR'),
+    
     #path('danhsach', danhsach, name='danhsach'),
     #Đăng nhập
     path('loginAdmin', views.loginAdmin),

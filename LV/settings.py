@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'system',
     'widget_tweaks',
     'rest_framework',
+    'qr_code',
 ]
 
 MIDDLEWARE = [
@@ -142,4 +143,16 @@ AUTHENTICATION_BACKENDS=['system.UserBackend.UserBackend']
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'PAGE_SIZE': 2
+}
+QR_CODE_CACHE_ALIAS = 'qr-code'
+SERVE_QR_CODE_IMAGE_PATH = 'qr-code-image/'
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    },
+    'qr-code': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'qr-code-cache',
+        'TIMEOUT': 3600
+    }
 }

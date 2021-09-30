@@ -1,5 +1,5 @@
 {% extends 'templates/giangvien_base.html' %}
-
+{% load qr_code %}
 {% block title %}Điểm danh{% endblock title %}
 
 {% block headcontent %}
@@ -55,9 +55,9 @@
                 <div class="card-footer">
                   <button type="button" class="btn btn-primary btn-block" id="danhsach">Danh sách sinh viên</button>
                 </div>
-                <div id="student_data" class="card-footer">
-
+                <div id="student_data" >
                 </div>
+                <div id="att_datas"></div>
             </div>            
   
 </div>
@@ -81,6 +81,25 @@
   </div>
 </div>
 
+<div class="modal fade" id="QRCodeModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="QRCodeModalTitle">Quét mã QR để điểm danh</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
          
   <script>
   $(document).ready(function () {
@@ -128,10 +147,10 @@
                     var div = "<span>Không có dữ liệu điểm danh</span>";
 
                 } else {
-                    var div = "<table class='table table-hover' id='dev-table'><thead><tr><th>Tên lớp</th><th>Ngày điểm danh</th><th></th><tr></thead>";
+                    var div = "<table class='table table-hover' id='dev-table'><thead><tr><th>Tên lớp</th><th>Ngày điểm danh</th><th></th><th></th><tr></thead>";
 
                     for (key in json_data_att) {
-                        div += "<div><tr><div><td>" + json_data_att[key]['ten_lop'] + "</td><td>" + json_data_att[key]['ngay_diem_danh'] + "</td><td><div><button type='button' value='" + json_data_att[key]['id'] + "'class='btn btn-primary btn-block' id='deleteAtt'>Xóa</button></div></td></div><tr></div>";
+                        div += "<div><tr><div><td>" + json_data_att[key]['ten_lop'] + "</td><td>" + json_data_att[key]['ngay_diem_danh'] + "</td><td><div><button type='button' value='" + json_data_att[key]['id'] + "'class='btn btn-primary btn-block' id='deleteAtt'>Xóa</button></div></td><div><td><button class='btn btn-primary btn-block'>Điểm danh</button></td></div></div><tr></div>";
                     }
                     div += "</table>  "
                     var div_btn = "<div class='modal-footer'> ";
@@ -181,18 +200,42 @@
             data : {ngay_diem_danh:ngay_diem_danh,id_hocphan:id_hocphan},
           })
           .done(function(response){
-            var json_data = JSON.parse(response);
-                console.log(json_data)
-          }).fail(function(){
-             console.log("Thêm không thành công")
+            var json_data_att = JSON.parse(response);
+            console.log(json_data_att);
+            var div = "";
+
+            div += "<table class='table table-hover' id='dev-table'><thead><tr><th>ID</th><th>Ngày điểm danh</th><th>Lớp</th><tr></thead>";
+            for (key in json_data_att) {
+              div += "<tr><div><td>" + json_data_att[key]['id'] + "</td><td>" + json_data_att[key]['ngay_diem_danh'] + "</td><td>" + json_data_att[key]['tenlop'] + "</td><td><button id='createQR'  class='btn btn-primary' value='"+ json_data_att[key]['id'] +"' data-toggle='modal' data-target='#QRCodeModal' >Tạo QR</button></td></div><tr>";
+            }
+              div += "</table>"
+
+              $("#att_datas").html(div);
           })
+          $(document).on("click","#createQR", function(){
+            id_diemdanh = $(this).val()
+            console.log(id_diemdanh)
+            $.ajax({
+              url : "{% url 'createQR' %}",
+              type: 'POST',
+              data : {id_diemdanh : id_diemdanh}
+            }).done(function(response){
+              if (response == "OK") {
+                      console.log("Thêm thành công")
+                    } else {
+                      console.log("Thêm không thành công")
+                    }
+
+            })
+            
+          })
+          
           
           }
 
         })
-        $(document).on("#doAtt","click", function(){
-          
-        })
+        
+        
 
 
 

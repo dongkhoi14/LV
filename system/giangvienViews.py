@@ -6,8 +6,9 @@ from .models import lop, giangvien, hocphan, sinhvien,diemdanh
 from rest_framework import viewsets
 from system.serializer import ListStudent
 from django.http import request
-import qrcode
+from qr_code.qrcode.utils import QRCodeOptions
 from django.core.serializers.json import DjangoJSONEncoder
+import qrcode
 class danhsachsinhvien(viewsets.ModelViewSet):
     def get(request):
         pass
@@ -24,8 +25,6 @@ def giangvien_Lop(request):
     sinhviens = sinhvien.objects.all()
     return render(request,'templates/giangvien_Lop.html',{'lops':lops,'hocphans':hocphans})
 
-def info_lop(request):
-    pass
 
 def giangvien_diemdanh(request):
     lops= lop.objects.all()
@@ -78,12 +77,23 @@ def createAtt(request):
         c  = diemdanh.objects.create(id_hocphan_id=id_hocphan,ngay_diem_danh=ngay_diem_danh)
         c.save()
         currentAtt = diemdanh.objects.filter(id_hocphan=id_hocphan,ngay_diem_danh=ngay_diem_danh).latest('ngay_tao')
-        data = {"id":currentAtt.id,"ngay_diem_danh":currentAtt.ngay_diem_danh}
+        data = {"id":currentAtt.id,"ngay_diem_danh":currentAtt.ngay_diem_danh,"tenlop":currentAtt.id_hocphan.ten_hoc_phan}
         list_data.append(data)
         print(list_data)
+        
         return JsonResponse(json.dumps(list_data,cls=DjangoJSONEncoder),content_type="application/json",safe=False)
     except:
         return HttpResponse("ERR")
+
+@csrf_exempt
+def createQR(request):
+    id_diemdanh = request.POST.get("id_diemdanh")
+    img = qrcode.make("QR Code")
+    
+
+
+
+
 
 
     
