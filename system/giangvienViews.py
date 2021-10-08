@@ -8,7 +8,6 @@ from system.serializer import ListStudent
 from django.http import request
 from qr_code.qrcode.utils import QRCodeOptions
 from django.core.serializers.json import DjangoJSONEncoder
-import qrcode
 class danhsachsinhvien(viewsets.ModelViewSet):
     def get(request):
         pass

@@ -42,7 +42,9 @@ INSTALLED_APPS = [
     'system',
     'widget_tweaks',
     'rest_framework',
+    'knox',
     'qr_code',
+
 ]
 
 MIDDLEWARE = [
