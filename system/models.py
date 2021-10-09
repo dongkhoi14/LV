@@ -3,7 +3,6 @@ from django.contrib.auth.models import AbstractUser
 from django.db.models.deletion import CASCADE, DO_NOTHING
 from django.db.models.signals import *
 from django.dispatch import receiver
-
 from django.db.models.fields import related
 
 class phanquyen(AbstractUser):
@@ -69,6 +68,7 @@ class diemdanh(models.Model):
     ngay_cap_nhat = models.DateTimeField(auto_now=True)
 
 
+
 class attendance(models.Model):
     id = models.AutoField(primary_key=True)
     id_sinhvien = models.ForeignKey(sinhvien, on_delete=DO_NOTHING)
@@ -102,3 +102,4 @@ def them_nguoi_dung(sender,instance,**kwargs):
         instance.giangvien.save()
     if instance.user_type==3:
         instance.sinhvien.save()
+

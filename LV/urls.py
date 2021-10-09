@@ -11,8 +11,8 @@ from system.sinhvienViews import sinhvienViews
 from rest_framework.routers import DefaultRouter
 from django.conf.urls import include
 from django.urls import path
-
-
+from system.api import loginAPI
+from knox import views as knox_views
 router  = DefaultRouter()
 router.register('system',danhsachsinhvien )
 urlpatterns = [
@@ -51,5 +51,7 @@ urlpatterns = [
     #Đăng nhập
     path('loginAdmin', views.loginAdmin),
     path('logout', views.logOut),
-
+    #api
+    path("api/auth", include('knox.urls')),
+    path('api/auth/login',loginAPI.as_view())
 ]

@@ -1,4 +1,5 @@
 import json
+from django.http import response
 from django.http.response import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
@@ -6,8 +7,9 @@ from .models import lop, giangvien, hocphan, sinhvien,diemdanh
 from rest_framework import viewsets
 from system.serializer import ListStudent
 from django.http import request
-from qr_code.qrcode.utils import QRCodeOptions
 from django.core.serializers.json import DjangoJSONEncoder
+import qrcode
+from django.http import FileResponse
 class danhsachsinhvien(viewsets.ModelViewSet):
     def get(request):
         pass
@@ -87,7 +89,22 @@ def createAtt(request):
 @csrf_exempt
 def createQR(request):
     id_diemdanh = request.POST.get("id_diemdanh")
-    img = qrcode.make("QR Code")
+    ngay_diem_danh = request.POST.get("ngay_diem_danh")
+    filename="static/images/qrcodes/"+id_diemdanh+ngay_diem_danh+".png"
+    url = "/static/images/qrcodes/"+id_diemdanh+ngay_diem_danh+".png"
+    context = {
+        "id":id_diemdanh,
+        "ngay_diem_danh":ngay_diem_danh
+    }
+    response_data = {
+        'url':url
+    }
+    try:
+        img = qrcode.make(context)
+        img.save(filename)
+        return HttpResponse(json.dumps(response_data))
+    except:
+        return HttpResponse("deo' OK")
     
 
 
