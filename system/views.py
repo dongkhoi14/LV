@@ -6,7 +6,6 @@ from django.http import request
 from .UserBackend import UserBackend
 from django.contrib.auth.decorators import login_required
 from rest_framework import status, viewsets
-from system.serializer import ListStudent
 
 
 def adminLogin(request):

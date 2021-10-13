@@ -11,10 +11,10 @@ from system.sinhvienViews import sinhvienViews
 from rest_framework.routers import DefaultRouter
 from django.conf.urls import include
 from django.urls import path
-from system.api import loginAPI
+from system.api import getSubjectAPI, loginAPI,getStudnetIDAPI
 from knox import views as knox_views
-router  = DefaultRouter()
-router.register('system',danhsachsinhvien )
+
+
 urlpatterns = [
     path('', views.adminLogin),
     path('admin/', admin.site.urls),
@@ -40,7 +40,6 @@ urlpatterns = [
     path('sinhvien/',sinhvienViews),
     #Điểm danh
     path('giangvien_Diemdanh', giangvien_diemdanh),
-    path('danhsachsinhvien', include(router.urls)),
     path('danhsach_sinhvien',danhsach_sinhvien, name='danhsach_sinhvien'),
     path('historyAtt', historyAtt, name='historyAtt'),
     path('deleteAtt',deleteAtt,name="deleteAtt"),
@@ -53,5 +52,9 @@ urlpatterns = [
     path('logout', views.logOut),
     #api
     path("api/auth", include('knox.urls')),
-    path('api/auth/login',loginAPI.as_view())
+    path('api/auth/login',loginAPI.as_view()),
+    path('api/auth/mssv',getStudnetIDAPI.as_view()),
+    path('api/auth/subject',getSubjectAPI.as_view()),
+
+    
 ]

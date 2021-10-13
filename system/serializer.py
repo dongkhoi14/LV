@@ -2,37 +2,23 @@ from rest_framework import fields, serializers
 from .models import *
 from django.contrib.auth import authenticate
 from .UserBackend import UserBackend
-class StudentInfo(serializers.ModelSerializer):
-    class Meta:
-        model = phanquyen
-        fields =['__all__']
 
-class ListStudent(serializers.ModelSerializer):
-    info = StudentInfo(many =True, read_only = True)
+class StudentID(serializers.ModelSerializer):
     class Meta:
         model = sinhvien
-        fields = ['mssv','info']
-
+        fields = '__all__'
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = phanquyen
-        fields = ('id','username','email','user_type')
+        fields = ('id','username','first_name','last_name','email','user_type','st')
 
-
-
-class GetClasses(serializers.ModelSerializer):
+class GetSubjectSerializer(serializers.ModelSerializer):    
+    subject = serializers.StringRelatedField(many=True, read_only=True)
     class Meta:
         model = lop
-        fields = "__all__"
-class GetSubject(serializers.ModelSerializer):
-    class Meta:
-        model = hocphan
-        fields = "__all__"
+        fields = ['id','ten_lop','subject']
+ 
 
-class GetStudent(serializers.ModelSerializer):
-    class Meta:
-        model = sinhvien
-        fields=['mssv','perm_id','id_lop_id']
         
 
 
@@ -46,5 +32,21 @@ class LoginSerializer(serializers.Serializer):
             return user 
         raise serializers.ValidationError("Error")
 
+#Base on perm_id = phanquyen.id
+class StudentIDSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
 
-        
+    def validate(self,data):
+        user = UserBackend.authenticate_student(self,**data)
+        if user  :
+            return user
+        raise serializers.ValidationError("Loi")
+    
+class SubjectSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+
+    def validate(self,data):
+        l = UserBackend.authenticate_subject(self,**data)
+        if l:
+            return l
+        raise serializers.ValidationError("Error")

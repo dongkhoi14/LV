@@ -41,10 +41,13 @@ class lop(models.Model):
 class hocphan(models.Model):
     id = models.AutoField(primary_key=True)
     ten_hoc_phan =models.CharField(max_length=255)
-    id_lop = models.ForeignKey(lop, on_delete=models.CASCADE, default="")
+    id_lop = models.ForeignKey(lop, on_delete=models.CASCADE, default="", related_name='subject')
     id_giangvien = models.ForeignKey(giangvien, on_delete=models.CASCADE)
     ngay_tao = models.DateTimeField(auto_now_add=True)
     ngay_cap_nhat = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return '%d : %s ' % (self.id,self.ten_hoc_phan)
 
 
 class sinhvien(models.Model):

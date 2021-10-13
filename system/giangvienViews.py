@@ -5,16 +5,11 @@ from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from .models import lop, giangvien, hocphan, sinhvien,diemdanh
 from rest_framework import viewsets
-from system.serializer import ListStudent
 from django.http import request
 from django.core.serializers.json import DjangoJSONEncoder
 import qrcode
 from django.http import FileResponse
-class danhsachsinhvien(viewsets.ModelViewSet):
-    def get(request):
-        pass
-    queryset = sinhvien.objects.all()
-    serializer_class = ListStudent
+
 
 def giangvienViews(request):
     giangviens = giangvien.objects.all()
