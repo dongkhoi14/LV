@@ -10,7 +10,7 @@ class StudentID(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = phanquyen
-        fields = ('id','username','first_name','last_name','email','user_type','st')
+        fields = ('id','username','first_name','last_name','email','user_type')
 
 class GetSubjectSerializer(serializers.ModelSerializer):    
     subject = serializers.StringRelatedField(many=True, read_only=True)
