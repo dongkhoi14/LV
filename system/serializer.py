@@ -11,13 +11,29 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = phanquyen
         fields = ('id','username','first_name','last_name','email','user_type')
-
+class GetSubjectsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = hocphan
+        fields = ['id','ten_hoc_phan']
 class GetSubjectSerializer(serializers.ModelSerializer):    
-    subject = serializers.StringRelatedField(many=True, read_only=True)
+    subject = GetSubjectsSerializer(many=True, read_only=True)
     class Meta:
         model = lop
         fields = ['id','ten_lop','subject']
- 
+
+
+
+class getAtt(serializers.ModelSerializer):
+    class Meta:
+        model = diemdanh
+        fields = ['id','ngay_diem_danh']
+
+class getSubject(serializers.ModelSerializer):
+    att = getAtt(many=True, read_only=True)
+    class Meta:
+        model = hocphan
+        fields = ['id','ten_hoc_phan','att']
+
 
         
 
@@ -49,4 +65,13 @@ class SubjectSerializer(serializers.Serializer):
         l = UserBackend.authenticate_subject(self,**data)
         if l:
             return l
+        raise serializers.ValidationError("Error")
+
+
+class AttSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    def validate(self,data):
+        h = UserBackend.authenticate_att(self,**data)
+        if h:
+            return h
         raise serializers.ValidationError("Error")

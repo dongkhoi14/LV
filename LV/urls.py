@@ -11,7 +11,7 @@ from system.sinhvienViews import sinhvienViews
 from rest_framework.routers import DefaultRouter
 from django.conf.urls import include
 from django.urls import path
-from system.api import getSubjectAPI, loginAPI,getStudnetIDAPI
+from system.api import getSubjectAPI, loginAPI,getStudnetIDAPI,getAttAPI
 from knox import views as knox_views
 
 
@@ -55,6 +55,8 @@ urlpatterns = [
     path('api/auth/login',loginAPI.as_view()),
     path('api/auth/mssv',getStudnetIDAPI.as_view()),
     path('api/auth/subject',getSubjectAPI.as_view()),
+    path('api/auth/att',getAttAPI.as_view()),
+
 
     
 ]

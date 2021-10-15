@@ -33,5 +33,14 @@ class UserBackend(ModelBackend):
         else:
             
             return c
-
+    def authenticate_att(self,id=None,**kwargs):
+        
+        try :
+            h = hocphan.objects.get(pk=id)
+            
+        except  hocphan.DoesNotExist :
+            return None
+        else:
+            
+            return h
         

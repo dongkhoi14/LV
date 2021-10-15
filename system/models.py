@@ -65,7 +65,7 @@ class sinhvien(models.Model):
 
 class diemdanh(models.Model):
     id = models.AutoField(primary_key=True)
-    id_hocphan = models.ForeignKey(hocphan, on_delete=CASCADE)
+    id_hocphan = models.ForeignKey(hocphan, on_delete=CASCADE,related_name="att")
     ngay_diem_danh =  models.DateField()
     ngay_tao = models.DateTimeField(auto_now_add=True)
     ngay_cap_nhat = models.DateTimeField(auto_now=True)

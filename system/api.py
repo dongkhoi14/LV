@@ -43,4 +43,15 @@ class getSubjectAPI(generics.GenericAPIView):
 
 
         return Response(GetSubjectSerializer(subject,context=self.get_serializer_context()).data)
-        
+
+class getAttAPI(generics.GenericAPIView):
+
+    serializer_class = AttSerializer
+
+    def post(self, request,*args,**kwargs) :
+
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        subject = serializer.validated_data
+
+        return Response(getSubject(subject,context=self.get_serializer_context()).data)
