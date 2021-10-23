@@ -1,0 +1,130 @@
+{% extends 'templates/Giangvien_base.html' %}
+{% load qr_code %}
+{% block title %}Thong bao{% endblock title %}
+{% load static %}
+{% block headcontent %}
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+<style media="screen">
+    a:link {
+        text-decoration: none;
+    }
+
+    a:link {
+        text-decoration: none;
+    }
+
+    h6 {
+        text-align: center;
+    }
+
+    .row {
+        margin: 10px;
+    }
+    .card{
+        margin : 18px;
+    }
+    
+</style>
+{% endblock headcontent %}
+
+{% block content %}
+<div class="container register-form">
+    <div class="form">
+        <div class="note">
+        </div>
+
+        <div class="form-content">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <h3 class="card-title">Thong bao</h3>
+                        </div>
+                        <!-- /.card-header -->
+                        <!-- form start -->
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label>Môn học </label>
+                            <select id="id_hocphan" name="id_hocphan">
+                                {% for hocphan in hocphans %}
+                                <option value="{{ hocphan.id }}"> {{hocphan.ten_hoc_phan}} ----
+                                    {{hocphan.id_lop.ten_lop}}</option>
+                                {% endfor %}
+
+                            </select>
+                        </div>
+
+                    </div >
+                    <div class="card-footer">
+                        <button type="button" class="btn btn-primary btn-block" id="thongbao">Danh sách cach thong
+                            bao</button>
+                    </div>
+                    <div id="noti_data">
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $('#thongbao').click(function () {
+            var id_hocphan = $('#id_hocphan').val();
+            console.log(id_hocphan);
+            $.ajax({
+                url: "{% url 'allnoti' %}",
+                type: 'POST',
+                data: { id_hocphan: id_hocphan },
+
+            }).done(function (response) {
+                var json_data = JSON.parse(response);
+                console.log(json_data);
+                var div = "";
+                if(json_data !=""){
+                    for (var i = json_data.length - 1; i >= 0; i--) {
+                    div += "<div class='card'  id=" + json_data[i]['id'] + ">";
+                    div += "<div class='card-header' style='background-color:DodgerBlue'>Ngay tao: " + json_data[i]['ngay_tao'].substr(0, 10) + " " + json_data[i]['ngay_tao'].substr(11, 18) + "</div>";
+                    div += "<div class='card-body'>";
+                    div += " <h5 class='card-title'> " + json_data[i]['noti_title'] + "</h5>";
+                    div += "<p class='card-tex'>" + json_data[i]['noti_content'] + "</p>";
+                    div += "<button type='button' class = 'btn btn-primary' id='deleteNoti' value='" + json_data[i]['id'] + "'>Xóa</button>";
+                    div += "</div></div>";
+                }
+                }else{
+                    
+                    div += "<div style='text-align:center'><p class='h2'><strong>Khong co thong bao nao</strong></p></div>"
+                }
+                $('#noti_data').html(div);
+
+
+            })
+
+        })
+
+        $(document).on('click', "#deleteNoti", function () {
+            var id = $(this).val();
+            console.log(id);
+            $.ajax({
+                url: "{% url 'deleteNoti' %}",
+                type: 'POST',
+                data: { id: id },
+            }).done(function (response) {
+                if (response == "OK") {
+                   document.getElementById(id).style.display = "none";
+
+                }
+                if (response == "Error") {
+                    alert("Loi");
+                }
+            })
+        })
+    })
+
+</script>
+{% endblock content %}

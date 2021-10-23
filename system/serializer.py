@@ -33,6 +33,23 @@ class getSubject(serializers.ModelSerializer):
     class Meta:
         model = hocphan
         fields = ['id','ten_hoc_phan','att']
+        
+class getAttData(serializers.ModelSerializer):
+    
+    class Meta:
+        model =attendance
+        fields = ['id','id_diemdanh','id_sinhvien','diemdanh']
+
+class getAttDataDetail(serializers.ModelSerializer):
+    class Meta:
+        model=attendance
+        fields = ['id']
+
+class getNotification(serializers.ModelSerializer):
+    class Meta:
+        model = notifications
+        fields = ['id_giangvien','noti_title','noti_content','ngay_tao','id_hocphan'] 
+
 
 
         
@@ -74,4 +91,13 @@ class AttSerializer(serializers.Serializer):
         h = UserBackend.authenticate_att(self,**data)
         if h:
             return h
+        raise serializers.ValidationError("Error")
+
+class AttDetailSerializer(serializers.Serializer):
+    mssv = serializers.IntegerField()
+    id_diemdanh =serializers.IntegerField()
+    def validate(self,data):
+        a = UserBackend.authenticate_att_data(self,**data)
+        if a:
+            return a
         raise serializers.ValidationError("Error")

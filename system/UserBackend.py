@@ -43,4 +43,11 @@ class UserBackend(ModelBackend):
         else:
             
             return h
+    def authenticate_att_data(self,mssv=None,id_diemdanh=None,**kwargs):
+        try:
+            a = attendance.objects.get(id_sinhvien_id=mssv,id_diemdanh_id=id_diemdanh)
+        except  attendance.DoesNotExist :
+            return None
+        else:
+            return a
         

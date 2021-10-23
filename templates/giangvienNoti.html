@@ -1,0 +1,97 @@
+{% extends 'templates/Giangvien_base.html' %}
+{% load qr_code %}
+{% block title %}Thong bao{% endblock title %}
+{% load static %}
+{% block headcontent %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+  <style type="text/css">
+    a:link {
+      text-decoration: none;
+    }
+
+    h6 {
+      color: white;
+    }
+
+    .order-card {
+      color: #fff;
+    }
+
+    .bg-c-blue {
+      background: linear-gradient(45deg, #4099ff, #73b4ff);
+    }
+
+    .bg-c-green {
+      background: linear-gradient(45deg, #2ed8b6, #59e0c5);
+    }
+
+
+    
+
+
+    .card {
+      border-radius: 5px;
+      -webkit-box-shadow: 0 1px 2.94px 0.06px rgba(4, 26, 55, 0.16);
+      box-shadow: 0 1px 2.94px 0.06px rgba(4, 26, 55, 0.16);
+      border: none;
+      margin-bottom: 30px;
+      -webkit-transition: all 0.3s ease-in-out;
+      transition: all 0.3s ease-in-out;
+    }
+
+    .card .card-block {
+      padding: 25px;
+    }
+
+    .order-card i {
+      font-size: 26px;
+    }
+
+    .f-left {
+      float: left;
+    }
+
+    .f-right {
+      float: right;
+    }
+  </style>
+
+{% endblock headcontent %}
+{% block content %}
+
+<body>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-4 col-xl-3">
+          <div class="card bg-c-blue order-card">
+            <div class="card-block">
+              <a href="/addNoti">
+                <h6 class="m-b-20">Them thong bao</h6>
+              </a>
+              <br>
+              <h2 class="text-right"><i class="fas fa-eye f-left"></i></h2>
+  
+            </div>
+          </div>
+        </div>
+  
+        <div class="col-md-4 col-xl-3">
+          <div class="card bg-c-green order-card">
+            <div class="card-block">
+              <a href="/noti">
+                <h6 class="m-b-20">Cac thong bao</h6>
+              </a>
+              <br>
+              <h2 class="text-right"><i class="fas fa-plus-circle f-left"></i></h2>
+            </div>
+          </div>
+        </div>
+  
+      <br><br><br><br><br><br><br><br>
+    </div>
+   
+  </body>
+  
+{% endblock content %}

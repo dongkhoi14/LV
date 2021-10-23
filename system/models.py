@@ -82,8 +82,14 @@ class attendance(models.Model):
 
 
 
-
-
+class notifications(models.Model):
+    id = models.AutoField(primary_key=True)
+    id_giangvien = models.ForeignKey(giangvien,on_delete=models.CASCADE)
+    noti_content = models.TextField()
+    noti_title = models.CharField(max_length=255,blank=True)
+    id_hocphan = models.ForeignKey(hocphan, on_delete=models.CASCADE,default="1")
+    ngay_tao = models.DateTimeField(auto_now_add=True)
+    ngay_cap_nhat = models.DateTimeField(auto_now=True)
 
 
 
@@ -106,3 +112,5 @@ def them_nguoi_dung(sender,instance,**kwargs):
     if instance.user_type==3:
         instance.sinhvien.save()
 
+
+        

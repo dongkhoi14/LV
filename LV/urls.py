@@ -11,7 +11,7 @@ from system.sinhvienViews import sinhvienViews
 from rest_framework.routers import DefaultRouter
 from django.conf.urls import include
 from django.urls import path
-from system.api import getSubjectAPI, loginAPI,getStudnetIDAPI,getAttAPI
+from system.api import getSubjectAPI, loginAPI,getStudnetIDAPI,getAttAPI,UpdateAttDataAPI,getAttDetailAPI
 from knox import views as knox_views
 
 
@@ -25,7 +25,12 @@ urlpatterns = [
     path('themgiangvien', themGiangvien),
     path('giangvien/',giangvienViews),
     path('giangvien_Lop',giangvien_Lop ),
-
+    path('thongbao',giangvienNoti ),
+    path('addNoti',addNoti),
+    path('addNotifications',addNotifications),
+    path('noti',noti),
+    path('allnoti',allnoti, name='allnoti'),
+    path('deleteNoti',deleteNoti,name="deleteNoti"),
     # Lớp
     path('adminLop/', views.adminLop),
     path('adminThemlop', views.adminThemlop),
@@ -56,6 +61,8 @@ urlpatterns = [
     path('api/auth/mssv',getStudnetIDAPI.as_view()),
     path('api/auth/subject',getSubjectAPI.as_view()),
     path('api/auth/att',getAttAPI.as_view()),
+    path('api/auth/update/<int:pk>',UpdateAttDataAPI.as_view()),
+    path('api/auth/attdetails',getAttDetailAPI.as_view()),
 
 
     

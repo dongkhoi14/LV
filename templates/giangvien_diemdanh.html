@@ -20,7 +20,7 @@
   }
 
   .row {
-    margin: 100px;
+    margin: 20px;
   }
 </style>
 {% endblock headcontent %}
@@ -152,7 +152,7 @@
                     var div = "<table class='table table-hover' id='dev-table'><thead><tr><th>Tên lớp</th><th>Ngày điểm danh</th><th></th><th></th><tr></thead>";
 
                     for (key in json_data_att) {
-                      div += "<div><tr><div><td>" + json_data_att[key]['ten_lop'] + "</td><td>" + json_data_att[key]['ngay_diem_danh'] + "</td><td><div><button type='button' value='" + json_data_att[key]['id'] + "'class='btn btn-primary btn-block' id='deleteAtt'>Xóa</button></div></td><div><td><button class='btn btn-primary btn-block'>Điểm danh</button></td></div></div><tr></div>";
+                      div += "<div ><tr id="+json_data_att[key]["id"]+"><div><td>" + json_data_att[key]['ten_lop'] + "</td><td>" + json_data_att[key]['ngay_diem_danh'] + "</td><td><div><button type='button' value='" + json_data_att[key]['id'] + "'class='btn btn-primary btn-block' id='deleteAtt'>Xóa</button></div></td><div><td><button class='btn btn-primary btn-block'>Điểm danh</button></td></div></div><tr></div>";
                     }
                     div += "</table>  "
                     var div_btn = "<div class='modal-footer'> ";
@@ -175,6 +175,7 @@
                   }).done(function (response) {
                     if (response == "OK") {
                       console.log("Xóa thành công")
+                      document.getElementById(id_diemdanh).style.display = "none";
                     } else {
                       console.log("Xóa không thành công")
                     }
