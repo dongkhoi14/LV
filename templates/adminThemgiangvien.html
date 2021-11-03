@@ -36,7 +36,6 @@
   </style>
 
   <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-  <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 {% endblock headcontent %}
 
@@ -44,16 +43,13 @@
 {% block content %}
 <div class="container register-form">
     <div class="form">
-      <div class="note">
-        <p>Thêm giảng viên</p>
-      </div>
+      
 
-      <div class="form-content">
         <div class="row">
           <div class="col-md-12">
             <div class="card card-primary">
-              <div class="card-header">
-                <h3 class="card-title">Thêm giảng viên</h3>
+              <div class="card-header" style="text-align:center">
+                <h3 class="card-title" >Thêm giảng viên</h3>
               </div>
               <!-- /.card-header -->
               <!-- form start -->
@@ -61,7 +57,7 @@
                   {% csrf_token %}
                 <div class="card-body">
 
-                   <div class="form-group">
+                  <div class="form-group">
                     <label>Họ</label>
                     <input type="text" class="form-control" placeholder="First Name" name="first_name">
                   </div>
@@ -73,18 +69,31 @@
                     <label>Tên người dùng</label>
                     <input type="text" class="form-control" placeholder="Username" name="username">
                   </div>
+                  <div class="form-group">
+                    <label>Dia chi</label>
+                    <input type="text" class="form-control" placeholder="Dia chi" name="diachi">
+                  </div>
+                  <div class="form-group">
+                    <label>So dien thoai</label>
+                    <input type="text" class="form-control" placeholder="So dien thoai" name="sodienthoai">
+                  </div>
                     <div class="form-group">
                     <label>Địa chỉ email</label>
                     <input type="email" class="form-control" name="email" placeholder="Enter email">
                   </div>
+
                   <div class="form-group">
                     <label>Mật khẩu</label>
                     <input type="password" class="form-control" placeholder="Password" name="password">
                   </div>
-                  <div class="form-group">
-                    <label>Địa chỉ</label>
-                    <input type="text" class="form-control" placeholder="Address" name="address">
-                  </div>
+                 <!-- <div class="form-group">
+                    <label>Trình độ</label>
+                    <select class="hocvan" name="hocvan">
+                      <option value="1" selected>Đại học</option>
+                      <option value="2">Thạc sĩ</option>
+                      <option value="3">Tiến sĩ</option>
+                      <option value="4" >Giáo sư</option>
+                    </select> -->
                      
 
                 </div>
@@ -99,8 +108,6 @@
 
 
           </div>
-        </div>
-        <button type="submit" class="btnSubmit">Hire</button>
       </div>
     </div>
   </div>

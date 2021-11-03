@@ -21,8 +21,15 @@ class GetSubjectSerializer(serializers.ModelSerializer):
         model = lop
         fields = ['id','ten_lop','subject']
 
-
-
+class getTeacher(serializers.ModelSerializer):
+    class Meta:
+        model = giangvien
+        fields = ["mscb","dia_chi","so_dien_thoai","hocvan"]
+class getTeacherAll(serializers.ModelSerializer):
+    teacher = getTeacher(many=False, read_only=True)
+    class Meta:
+        model = phanquyen
+        fields = ["id","first_name","last_name","email","teacher"]
 class getAtt(serializers.ModelSerializer):
     class Meta:
         model = diemdanh
@@ -33,13 +40,18 @@ class getSubject(serializers.ModelSerializer):
     class Meta:
         model = hocphan
         fields = ['id','ten_hoc_phan','att']
-        
+
+     
 class getAttData(serializers.ModelSerializer):
     
     class Meta:
         model =attendance
         fields = ['id','id_diemdanh','id_sinhvien','diemdanh']
-
+class getAttDataStudent(serializers.ModelSerializer):
+    attdata= getAttData(many=True, read_only=True)
+    class Meta:
+        model = sinhvien
+        fields = ['attdata']
 class getAttDataDetail(serializers.ModelSerializer):
     class Meta:
         model=attendance

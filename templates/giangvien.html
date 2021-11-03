@@ -40,14 +40,13 @@
                     <th>Ngày tạo</th>
                     <th>Ngày cập nhật</th>
                     <th>Tài khoản</th>
-                    <th>Delete</th>
                 </tr>
             </thead>
               <tr>     
                   <td> {{request.user.first_name}} {{ request.user.last_name}}</td>
-                  <td>{{request.user.giangvien.mscb}}</td>
-                  <td>{{request.user.giangvien.ngay_tao}}</td>
-                  <td>{{request.user..date_updated}}</td>
+                  <td>{{giangvien.mscb}}</td>
+                  <td>{{giangvien.ngay_tao}}</td>
+                  <td>{{request.user.date_updated}}</td>
                   <td>{{request.user.username}}</td>
               </tr>
 

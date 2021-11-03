@@ -72,7 +72,7 @@ class getAttDetailAPI(generics.GenericAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         attDetail = serializer.validated_data
-        return Response(getAttDataDetail(attDetail,context=self.get_serializer_context()).data)
+        return Response(getAttData(attDetail,context=self.get_serializer_context()).data)
     
 
   

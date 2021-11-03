@@ -6,6 +6,7 @@
 {% block headcontent %}
 <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
 <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+
 <style media="screen">
   a:link {
     text-decoration: none;
@@ -26,225 +27,274 @@
 {% endblock headcontent %}
 
 {% block content %}
-<div class="container register-form">
-  <div class="form">
-    <div class="note">
-    </div>
+<div class="container">
 
-    <div class="form-content">
-      <div class="row">
-        <div class="col-md-12">
-          <div class="card card-primary">
-            <div class="card-header">
-              <h3 class="card-title">Điểm danh</h3>
-            </div>
-            <!-- /.card-header -->
-            <!-- form start -->
-          </div>
-          <div class="card-body">
-            <div class="form-group">
-              <label>Môn học </label>
-              <select id="id_hocphan" name="id_hocphan">
-                {% for hocphan in hocphans %}
-                <option value="{{ hocphan.id }}"> {{hocphan.ten_hoc_phan}} ---- {{hocphan.id_lop.ten_lop}}</option>
-                {% endfor %}
 
-              </select>
-            </div>
+  <div class="form-content">
+    <div class="row">
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          <h6 class="panel-title">Giảng viên</h6>
 
-          </div>
-          <div class="card-footer">
-            <button type="button" class="btn btn-primary btn-block" id="danhsach">Danh sách sinh viên</button>
-          </div>
-          <div id="student_data">
-          </div>
-          <div id="att_datas"></div>
         </div>
+        <div class="form-group">
+          <label>Môn học </label>
+          <select id="id_hocphan" name="id_hocphan">
+            {% for hocphan in hocphans %}
+            <option value="{{ hocphan.id }}"> {{hocphan.ten_hoc_phan}} ---- {{hocphan.id_lop.ten_lop}}</option>
+            {% endfor %}
 
+          </select>
+
+        </div>
+        <div class="card-footer">
+          <button type="button" class="btn btn-primary btn-block" id="danhsach">Danh sách sinh viên</button>
+        </div>
+        <div id="student_data">
+        </div>
+        <div id="att_datas"></div>
+        <div id="attStudentList">
+
+        </div>
       </div>
-      <div class="form-group">
-        <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
-          aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-          <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle"></h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-              <div class="modal-body" id='att_data'>
 
-              </div>
-              <div class="modal-footer" id='btn-delete'>
-                <button type='button' class='btn btn-secondary' data-dismiss='modal'>Đóng</button>
-              </div>
+    </div>
+    <div class="form-group">
+      <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
+        aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLongTitle"></h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body" id='att_data'>
+
+            </div>
+            <div class="modal-footer" id='btn-delete'>
+              <button type='button' class='btn btn-secondary' data-dismiss='modal'>Đóng</button>
             </div>
           </div>
         </div>
+      </div>
 
-        <div class="modal fade" id="QRCodeModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
-          aria-hidden="true">
-          <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="QRCodeModalTitle">Quét mã QR để điểm danh</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-              <div class="QRCodeModalBody" id="qrImage">
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
-              </div>
+      <div class="modal fade" id="QRCodeModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="QRCodeModalTitle">Quét mã QR để điểm danh</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="QRCodeModalBody" id="qrImage">
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
           </div>
         </div>
+      </div>
 
-        <script>
-          $(document).ready(function () {
-            $('#danhsach').click(function () {
-              var id_hocphan = $('#id_hocphan').val()
+      <script>
+        $(document).ready(function () {
+          $('#danhsach').click(function () {
+            var id_hocphan = $('#id_hocphan').val()
 
-              $.ajax({
-                url: "{% url 'danhsach_sinhvien' %}",
-                type: 'POST',
-                data: { id_hocphan: id_hocphan },
+            $.ajax({
+              url: "{% url 'danhsach_sinhvien' %}",
+              type: 'POST',
+              data: { id_hocphan: id_hocphan },
+            })
+              .done(function (response) {
+                var json_data = JSON.parse(response);
+                console.log(json_data)
+                var div = "";
+
+                div += "<table class='table table-hover' id='dev-table'><thead><tr><th>MSSV</th><th>Ho tên</th><th>Lớp</th><tr></thead>";
+                for (key in json_data) {
+                  div += "<tr><td>" + json_data[key]['id'] + "</td><td>" + json_data[key]['name'] + "</td><td>" + json_data[key]['lop'] + "</td><td></td><tr>";
+                }
+                div += "</table>"
+
+                div += "<button type='button' class='btn btn-primary' data-toggle='modal' data-target='#exampleModalCenter' id='historyAtt'>Lịch sử</button>";
+                div += "<button class='btn btn-primary' class='btn btn-primary'  id= 'createAtt'>Điểm danh</button>"
+                $("#student_data").html(div);
               })
-                .done(function (response) {
-                  var json_data = JSON.parse(response);
-                  console.log(json_data)
-                  var div = "";
+              .fail(function () {
+                alert("Lỗi")
+              })
 
-                  div += "<table class='table table-hover' id='dev-table'><thead><tr><th>MSSV</th><th>Ho tên</th><th>Lớp</th><tr></thead>";
+            $(document).on("click", "#historyAtt", function () {
+              var today = new Date();
+              var dd = String(today.getDate()).padStart(2, '0');
+              var mm = String(today.getMonth() + 1).padStart(2, '0');
+              var yyyy = today.getFullYear();
+              ngay_diem_danh = yyyy + "-" + mm + "-" + dd;
+              $.ajax({
+                url: "{% url 'historyAtt' %}",
+                type: 'POST',
+                data: { id_hocphan: id_hocphan, ngay_diem_danh: ngay_diem_danh },
+              }).done(function (response) {
+                var json_data_att = JSON.parse(response);
+                console.log(json_data_att)
+                if (json_data_att == "") {
+                  var div = "<span>Không có dữ liệu điểm danh</span>";
+
+                } else {
+                  var div = "<table class='table table-hover' id='dev-table'><thead><tr><th>ID</th><th>Tên lớp</th><th>Ngày điểm danh</th><th></th><th></th><tr></thead>";
+
+                  for (key in json_data_att) {
+                    div += "<div ><tr id=" + json_data_att[key]["id"] + "><div><td>" + json_data_att[key]["id"] + "</td><td>" + json_data_att[key]['ten_lop'] + "</td><td>" + json_data_att[key]['ngay_diem_danh'] + "</td><td><div><button type='button' value='" + json_data_att[key]['id'] + "'class='btn btn-primary btn-block' id='deleteAtt'>Xóa</button></div></td><div><td><button class='btn btn-primary btn-block' value='" + json_data_att[key]["id"] + "' id='historyAttData' data-dismiss='modal'>Xem</button></td></div></div><tr></div>";
+                  }
+                  div += "</table>  "
+                  var div_btn = "<div class='modal-footer'> ";
+                  div_btn += "<button type='button' class='btn btn-secondary' data-dismiss='modal'>Đóng</button>";
+                  div_btn += "</div>";
+                }
+                $("#btn-delete").html(div_btn)
+                $("#att_data").html(div)
+                $("#exampleModalLongTitle").html("<h5>Lịch sử</h5>")
+
+              })
+              $(document).on("click", "#historyAttData", function () {
+                id_diemdanh = $(this).val()
+                console.log(id_diemdanh)
+                $.ajax({
+                  url: "{% url 'historyAttData'%}",
+                  type: 'POST',
+                  data: { id_diemdanh: id_diemdanh },
+                }).done(function (response) {
+                  json_data = JSON.parse(response)
+                  console.log(json_data)
+                  div = ""
+                  div += "<table class='table table-hover' id='dev-table'><thead><tr><th>MSSV</th><th>Ho tên</th><th>Trạng thái</th><th>Điểm danh</th><tr></thead>";
+
                   for (key in json_data) {
-                    div += "<tr><div><td>" + json_data[key]['id'] + "</td><td>" + json_data[key]['name'] + "</td><td>" + json_data[key]['lop'] + "</td><td></td></div><tr>";
+                    var trangthai = ""
+                    if (json_data[key]['trangthai'] == true) {
+                      trangthai = "Đã điểm danh"
+                      div += "<tr ><div><td>" + json_data[key]['mssv'] + "</td><td>" + json_data[key]['ho'] + " " + json_data[key]['ten'] + "</td><td style='background-color:green;'>" + trangthai + "</td></div><tr>";
+
+
+                    } else {
+                      trangthai = "Chưa điểm danh"
+                      div += "<tr ><div><td>" + json_data[key]['mssv'] + "</td><td>" + json_data[key]['ho'] + " " + json_data[key]['ten'] + "</td><td style='background-color:red;'>" + trangthai + "</td></div><tr>";
+
+                    }
                   }
                   div += "</table>"
 
-                  div += "<button type='button' class='btn btn-primary' data-toggle='modal' data-target='#exampleModalCenter' id='historyAtt'>Lịch sử</button>";
-                  div += "<button class='btn btn-primary' class='btn btn-primary'  id= 'createAtt'>Điểm danh</button>"
-                  $("#student_data").html(div);
+                  $('#student_data').html(div)
                 })
-                .fail(function () {
-                  alert("Lỗi")
-                })
-
-              $(document).on("click", "#historyAtt", function () {
-                var today = new Date();
-                var dd = String(today.getDate()).padStart(2, '0');
-                var mm = String(today.getMonth() + 1).padStart(2, '0');
-                var yyyy = today.getFullYear();
-                ngay_diem_danh = yyyy + "-" + mm + "-" + dd;
+              })
+              $(document).on("click", "#deleteAtt", function () {
+                id_diemdanh = $(this).val()
+                console.log($(this).val());
                 $.ajax({
-                  url: "{% url 'historyAtt' %}",
+                  url: "{% url 'deleteAtt' %}",
                   type: 'POST',
-                  data: { id_hocphan: id_hocphan, ngay_diem_danh: ngay_diem_danh },
+                  data: { id_diemdanh: id_diemdanh },
+                  cache: false,
                 }).done(function (response) {
-                  var json_data_att = JSON.parse(response);
-                  console.log(json_data_att)
-                  if (json_data_att == "") {
-                    var div = "<span>Không có dữ liệu điểm danh</span>";
-
+                  if (response == "OK") {
+                    console.log("Xóa thành công")
+                    document.getElementById(id_diemdanh).style.display = "none";
                   } else {
-                    var div = "<table class='table table-hover' id='dev-table'><thead><tr><th>Tên lớp</th><th>Ngày điểm danh</th><th></th><th></th><tr></thead>";
-
-                    for (key in json_data_att) {
-                      div += "<div ><tr id="+json_data_att[key]["id"]+"><div><td>" + json_data_att[key]['ten_lop'] + "</td><td>" + json_data_att[key]['ngay_diem_danh'] + "</td><td><div><button type='button' value='" + json_data_att[key]['id'] + "'class='btn btn-primary btn-block' id='deleteAtt'>Xóa</button></div></td><div><td><button class='btn btn-primary btn-block'>Điểm danh</button></td></div></div><tr></div>";
-                    }
-                    div += "</table>  "
-                    var div_btn = "<div class='modal-footer'> ";
-                    div_btn += "<button type='button' class='btn btn-secondary' data-dismiss='modal'>Đóng</button>";
-                    div_btn += "</div>";
+                    console.log("Xóa không thành công")
                   }
-                  $("#btn-delete").html(div_btn)
-                  $("#att_data").html(div)
-                  $("#exampleModalLongTitle").html("<h5>Lịch sử</h5>")
 
-                })
-                $(document).on("click", "#deleteAtt", function () {
-                  id_diemdanh = $(this).val()
-                  console.log($(this).val());
-                  $.ajax({
-                    url: "{% url 'deleteAtt' %}",
-                    type: 'POST',
-                    data: { id_diemdanh: id_diemdanh },
-                    cache: false,
-                  }).done(function (response) {
-                    if (response == "OK") {
-                      console.log("Xóa thành công")
-                      document.getElementById(id_diemdanh).style.display = "none";
-                    } else {
-                      console.log("Xóa không thành công")
-                    }
-
-                  }).fail(function () {
-                    console.log("Lỗi xóa không thành công")
-                  })
-
-
+                }).fail(function () {
+                  console.log("Lỗi xóa không thành công")
                 })
 
-              })
-              $(document).on("click", "#createAtt", function () {
-                var today = new Date();
-                var dd = String(today.getDate()).padStart(2, '0');
-                var mm = String(today.getMonth() + 1).padStart(2, '0');
-                var yyyy = today.getFullYear();
-                ngay_diem_danh = yyyy + "-" + mm + "-" + dd;
-                var id_hocphan = $('#id_hocphan').val();
-                var cf = confirm("Tạo điểm danh");
-                if (cf == true) {
-                  $.ajax({
-                    url: "{% url 'createAtt' %}",
-                    type: 'POST',
-                    data: { ngay_diem_danh: ngay_diem_danh, id_hocphan: id_hocphan },
-                  })
-                    .done(function (response) {
-                      var json_data_att = JSON.parse(response);
-                      console.log(json_data_att);
-                      var div = "";
-
-                      div += "<table class='table table-hover' id='dev-table'><thead><tr><th>ID</th><th>Ngày điểm danh</th><th>Lớp</th><tr></thead>";
-                      for (key in json_data_att) {
-                        div += "<tr><div><td>" + json_data_att[key]['id'] + "</td><td>" + json_data_att[key]['ngay_diem_danh'] + "</td><td>" + json_data_att[key]['tenlop'] + "</td><td><button id='createQR'  class='btn btn-primary' value='" + json_data_att[key]['id'] + "' data-toggle='modal' data-target='#QRCodeModal' >Tạo QR</button></td></div><tr>";
-                      }
-                      div += "</table>"
-
-                      $("#att_datas").html(div);
-                    })
-                  $(document).on("click", "#createQR", function () {
-                    id_diemdanh = $(this).val()
-                    console.log(id_diemdanh)
-                    $.ajax({
-                      url: "{% url 'createQR' %}",
-                      type: 'POST',
-                      data: { id_diemdanh: id_diemdanh, ngay_diem_danh: ngay_diem_danh }
-                    }).done(function (response) {
-                      var json_data_img = JSON.parse(response);
-                      console.log(json_data_img)
-                      
-                      $('#qrImage').html('<img src="'+json_data_img.url+ '"  />');
-
-
-
-                    })
-
-                  })
-
-
-                }
 
               })
-
-
-
-
 
             })
-          })
-        </script>
+            $(document).on("click", "#createAtt", function () {
+              var today = new Date();
+              var dd = String(today.getDate()).padStart(2, '0');
+              var mm = String(today.getMonth() + 1).padStart(2, '0');
+              var yyyy = today.getFullYear();
+              ngay_diem_danh = yyyy + "-" + mm + "-" + dd;
+              var id_hocphan = $('#id_hocphan').val();
+              var cf = confirm("Tạo điểm danh");
+              if (cf == true) {
+                $.ajax({
+                  url: "{% url 'createAtt' %}",
+                  type: 'POST',
+                  data: { ngay_diem_danh: ngay_diem_danh, id_hocphan: id_hocphan },
+                })
+                  .done(function (response) {
+                    var json_data_att = JSON.parse(response);
+                    console.log(json_data_att);
+                    var div = "";
 
-        {% endblock content %}
+                    div += "<table class='table table-hover' id='dev-table'><thead><tr><th>ID</th><th>Ngày điểm danh</th><th>Lớp</th><tr></thead>";
+                    for (key in json_data_att) {
+                      div += "<tr><div><td>" + json_data_att[key]['id'] + "</td><td>" + json_data_att[key]['ngay_diem_danh'] + "</td><td>" + json_data_att[key]['tenlop'] + "</td><td style='width: 50px;'><button id='createQR'  class='btn btn-primary' value='" + json_data_att[key]['id'] + "' data-toggle='modal' data-target='#QRCodeModal' >Tạo QR</button></td><td style='width: 50px;'><button  class='btn btn-primary' value='" + json_data_att[key]['id'] + "' id='historyAttData' >Danh sách</button></td></div><tr>";
+                    }
+                    div += "</table>"
+
+                    $("#att_datas").html(div);
+                  })
+                $(document).on("click", "#createQR", function () {
+                  id_diemdanh = $(this).val()
+                  console.log(id_diemdanh)
+                  $.ajax({
+                    url: "{% url 'createQR' %}",
+                    type: 'POST',
+                    data: { id_diemdanh: id_diemdanh, ngay_diem_danh: ngay_diem_danh }
+                  }).done(function (response) {
+                    var json_data_img = JSON.parse(response);
+                    console.log(json_data_img)
+
+                    $('#qrImage').html('<img src="' + json_data_img.url + '" style="display: block;margin-left: auto;margin-right: auto;" />');
+
+                  })
+                })
+              }
+              $(document).on("click", "#historyAttData", function () {
+                id_diemdanh = $(this).val()
+                console.log(id_diemdanh)
+                $.ajax({
+                  url: "{% url 'historyAttData'%}",
+                  type: 'POST',
+                  data: { id_diemdanh: id_diemdanh },
+                }).done(function (response) {
+                  json_data = JSON.parse(response)
+                  console.log(json_data)
+                  div = ""
+                  div += "<table class='table table-hover' id='dev-table'><thead><tr><th>MSSV</th><th>Ho tên</th><th>Trạng thái</th><th>Điểm danh</th><tr></thead>";
+
+                  for (key in json_data) {
+                    var trangthai = ""
+                    if (json_data[key]['trangthai'] == true) {
+                      trangthai = "Đã điểm danh"
+                      div += "<tr ><div><td>" + json_data[key]['mssv'] + "</td><td>" + json_data[key]['ho'] + " " + json_data[key]['ten'] + "</td><td style='background-color:green;'>" + trangthai + "</td><td><button class='btn btn-primary'>Điểm danh</button></td></div><tr>";
+
+
+                    } else {
+                      trangthai = "Chưa điểm danh"
+                      div += "<tr ><div><td>" + json_data[key]['mssv'] + "</td><td>" + json_data[key]['ho'] + " " + json_data[key]['ten'] + "</td><td style='background-color:red;'>" + trangthai + "</td><td><button class='btn btn-primary'>Điểm danh</button ></td></div><tr>";
+
+                    }
+                  }
+                  div += "</table>"
+
+                  $('#student_data').html(div)
+                })
+              })
+            })
+          })
+        })
+      </script>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}

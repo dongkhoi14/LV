@@ -1,70 +1,125 @@
 {% extends 'templates/base.html' %}
-{% load static %}
-{% block title %}Toàn bộ giảng viên{% endblock title %}
+
+{% block title %}Trang Quản trị Giảng viên{% endblock title %}
 {% block headcontent %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+  <link href="http://netdna.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" rel="stylesheet">
 
-
-  <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-  <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
-  <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
-
-  <style media="screen">
+  <style type="text/css">
     a:link {
       text-decoration: none;
     }
-    h6{
-      text-align:center;
+
+    h6 {
+      color: white;
     }
-    .row{
-      margin:100px;
+
+    .order-card {
+      color: #fff;
+    }
+
+    .bg-c-blue {
+      background: #0a3558;
+    }
+
+    .bg-c-green {
+      background: linear-gradient(45deg, #2ed8b6, #59e0c5);
+    }
+
+    .bg-c-yellow {
+      background: linear-gradient(45deg, #FFB64D, #ffcb80);
+    }
+
+    .bg-c-pink {
+      background: linear-gradient(45deg, #FF5370, #ff869a);
+    }
+
+
+    .card {
+      border-radius: 5px;
+      -webkit-box-shadow: 0 1px 2.94px 0.06px rgba(4, 26, 55, 0.16);
+      box-shadow: 0 1px 2.94px 0.06px rgba(4, 26, 55, 0.16);
+      border: none;
+      margin-bottom: 20px;
+      -webkit-transition: all 0.3s ease-in-out;
+      transition: all 0.3s ease-in-out;
+    }
+
+    .card .card-block {
+      padding: 25px;
+    }
+
+    .order-card i {
+      font-size: 26px;
+    }
+
+    .f-left {
+      float: left;
+    }
+
+    .f-right {
+      float: right;
     }
   </style>
-
 {% endblock headcontent %}
-
-
-
 {% block content %}
 
-<div class="container">
 
-    	<div class="row" >
+<body>
+    
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+  <div class="container">
+    <div class="row">
+      
+        {% for gianvien in giangviens %}
+        <div class="col-md-4 col-xxl-3">
+            <div class="card bg-c-blue order-card">
+              <div class="card-block">
+                <a href=""> 
+                  <h6 class="m-b-20">MSCB: {{gianvien.mscb}}</h6>
+                  <h6 class="m-b-20">Tên: {{gianvien.perm.first_name}} {{gianvien.perm.last_name}}</h6>
+                  <h6 class="m-b-20">Đia chỉ: {{gianvien.dia_chi}}</h6>
+                  <h6 class="m-b-20">Địa chi email: {{gianvien.perm.email}}</h6>
+                  <h6 class="m-b-20">Học vấn: 
+                  {% if gianvien.hocvan == "1" %}
+                    Đại Học
+                  {% elif gianvien.hocvan == "2"%}
+                  Thạc Sĩ
+                  {% elif gianvien.hocvan == "3"%}
+                    Tiến Sĩ
+                  {% elif gianvien.hocvan == "4"%}
+                    Giáo sư
+                    
+                  {% endif %} </h6>
+                  <h6 class="m-b-20">Số điện thoại:    {% if gianvien.so_dien_thoai != None %}
+                    0{{gianvien.so_dien_thoai}}
+                  {% endif %}</h6>
+                </a>
+                <br>
+                <h2 class="text-right"><i class="fas fa-eye f-left"></i></h2>
+    
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+          
+      
+    </div>
+    
+    <br><br><br><br><br><br><br><br>
+  </div>
 
-				<div class="panel panel-primary">
-					<div class="panel-heading">
-						<h6 class="panel-title">Teachers</h6>
-
-					</div>
-
-					<table class="table table-hover" id="dev-table">
-            <thead>
-
-                <tr>
-                    <th>Họ tên</th>
-                    <th>MSCB</th>
-                    <th>Ngày tạo</th>
-                    <th>Ngày cập nhật</th>
-                    <th>Tài khoản</th>
-                    <th>Delete</th>
-                </tr>
-            </thead>
-            {% for t in giangviens %}
-              <tr>
-                  <td> {{t.perm.first_name}} {{ t.perm.last_name}}</td>
-                  <td>{{t.mscb}}</td>
-                  <td>{{t.ngay_tao}}</td>
-                  <td>{{t.perm.date_updated}}</td>
-                  <td>{{t.perm.username}}</td>
-
-              </tr>
-
-            {% endfor %}
-					</table>
-				</div>
 
 
-				</div>
-			</div>
+
+
+
+
+
+
+  <script src="http://netdna.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js"></script>
+  <script type="text/javascript">
+
+  </script>
+</body>
 {% endblock content %}
-
-

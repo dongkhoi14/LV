@@ -5,9 +5,9 @@ from django.contrib import admin
 from django.urls import path
 from django.urls.conf import include
 from system import views, adminViews
-from system.adminViews import themGiangvien, themhocphan, themlop, themsinhvien
+from system.adminViews import *
 from system.giangvienViews import  *
-from system.sinhvienViews import sinhvienViews
+from system.sinhvienViews import *
 from rest_framework.routers import DefaultRouter
 from django.conf.urls import include
 from django.urls import path
@@ -21,8 +21,9 @@ urlpatterns = [
     # Giảng viên
     path('adminGiangvien/',views.adminGiangvien),
     path('adminThemgiangvien',views.adminThemgiangvien),
+    path('change-teacher',change_teacher_info),
     path('toanbogiangvien', adminViews.toanbogiangvien),
-    path('themgiangvien', themGiangvien),
+    path('themgiangvien', themGiangvien,name="themgiangvien"),
     path('giangvien/',giangvienViews),
     path('giangvien_Lop',giangvien_Lop ),
     path('thongbao',giangvienNoti ),
@@ -31,6 +32,12 @@ urlpatterns = [
     path('noti',noti),
     path('allnoti',allnoti, name='allnoti'),
     path('deleteNoti',deleteNoti,name="deleteNoti"),
+    path('deleteTeacher',deleteTeacher,name="deleteTeacher"),
+    path('getupdateTeacher',getupdateTeacher,name="getupdateTeacher"),
+    path('updateTeacher',updateTeacher,name="updateTeacher"),
+    path('toanbosinhvien',toanbosinhvien,name="toanbosinhvien"),
+    path('change_student',change_student,name="change_student"),
+    path('historyAttData',historyAttData,name="historyAttData"),
     # Lớp
     path('adminLop/', views.adminLop),
     path('adminThemlop', views.adminThemlop),
@@ -43,6 +50,12 @@ urlpatterns = [
     path('adminThemsinhvien', views.adminThemsinhvien),
     path('themsinhvien', themsinhvien),
     path('sinhvien/',sinhvienViews),
+    path('student_att',student_att,name="student_att"),
+    path('danhsach_diemdanh',danhsach_diemdanh,name="danhsach_diemdanh"),
+    path('deleteStudent',deleteStudent,name="deleteStudent"),
+    path('getupdateStudent',getupdateStudent,name="getupdateStudent"),
+    path('updateStudent',updateStudent,name="updateStudent"),
+    path('toanbosinhvien',toanbosinhvien,name="toanbosinhvien"),
     #Điểm danh
     path('giangvien_Diemdanh', giangvien_diemdanh),
     path('danhsach_sinhvien',danhsach_sinhvien, name='danhsach_sinhvien'),

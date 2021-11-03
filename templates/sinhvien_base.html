@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8">
   <title>{% block title %}{% endblock title %}</title>
-
+ 
   <style media="screen">
     a:link {
       text-decoration: none;
@@ -15,6 +15,10 @@
       margin: 0;
       padding: 0;
       font-family: "Roboto", sans-serif;
+      background-image: linear-gradient(rgb(104, 145, 162), rgb(12, 97, 33));
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-attachment: fixed;
     }
 
     header {
@@ -50,7 +54,7 @@
       font-weight: 600;
       color: #fff;
       transition: 0.5s;
-      transition-property: background;
+    
     }
 
     .logout_btn:hover {
@@ -91,7 +95,7 @@
       padding-left: 40px;
       box-sizing: border-box;
       transition: 0.5s;
-      transition-property: background;
+
     }
 
     .sidebar a:hover {
@@ -134,7 +138,6 @@
 
     .content {
       margin-left: 250px;
-      background: url(background.png) no-repeat;
       background-position: center;
       background-size: cover;
       height: 100vh;
@@ -149,17 +152,15 @@
       display: none;
     }
   </style>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
 
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css">
-
-
+{% block headcontent %}{% endblock headcontent %}
 </head>
 
 <body>
 
   <input type="checkbox" id="check">
-  <!--header area start-->
   <header>
     <label for="check">
       <i class="fas fa-bars" id="sidebar_btn"></i>
@@ -171,8 +172,6 @@
       <a href="/logout" class="logout_btn">Logout</a>
     </div>
   </header>
-  <!--header area end-->
-  <!--sidebar start-->
   <div class="sidebar">
     <center>
 
@@ -182,23 +181,20 @@
     </center>
 
     <a href="/student-dashboard"><i class="fas fa-desktop"></i><span>Quản lý</span></a>
-    <a href="/student-attendance"><i class="fas fa-address-card"></i><span>Điểm danh</span></a>
+    <a href="/student_att"><i class="fas fa-address-card"></i><span>Điểm danh</span></a>
 
   </div>
-  <!--sidebar end-->
 
 
-  <!--content start-->
   <div class="content">
     <br><br><br><br><br>
     {% block content %}
 
     {% endblock content %}
 
-
     <br><br><br>
   </div>
-  <!--content end-->
+
 
 </body>
 

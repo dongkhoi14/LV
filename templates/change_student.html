@@ -1,0 +1,275 @@
+{% extends 'templates/base.html' %}
+{% load qr_code %}
+{% block title %}Sinh viên{% endblock title %}
+{% load static %}
+
+{% block headcontent %}
+<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+
+<style media="screen">
+  a:link {
+    text-decoration: none;
+  }
+
+  a:link {
+    text-decoration: none;
+  }
+
+  h6 {
+    text-align: center;
+  }
+
+  .row {
+    margin: 20px;
+  }
+</style>
+{% endblock headcontent %}
+
+{% block content %}
+
+<div class="container">
+
+  <div class="row">
+
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <h6 class="panel-title">Teachers</h6>
+
+      </div>
+
+      <table class="table table-hover" id="dev-table">
+        <thead>
+
+          <tr>
+            <th>Họ tên</th>
+            <th>MSSV</th>
+            <th>Ngày tạo</th>
+            <th>Ngày cập nhật</th>
+            <th>Tài khoản</th>
+            <th>Cập nhật</th>
+            <th>Delete</th>
+          </tr>
+        </thead>
+        {% for sinhvien in sinhviens %}
+        <tr id="{{ t.mscb}}">
+          <td> {{sinhvien.perm.first_name}} {{ sinhvien.perm.last_name}}</td>
+          <td>{{sinhvien.mssv}}</td>
+          <td>{{sinhvien.ngay_tao}}</td>
+          <td>{{sinhvien.ngay_cap_nhat}}</td>
+          <td>{{sinhvien.perm.username}}</td>
+          <td><button class="btn btn-primary btn-block" id='deleteStudent' value="{{t.mssv}}" data-toggle="modal"
+              data-target="#myModal">Cập nhật</button></td>
+          <td><button class="btn btn-primary btn-block" id="getupdateStudent" value="{{t.mssv}}">Xóa</button></td>
+
+        </tr>
+
+        {% endfor %}
+      </table>
+    </div>
+
+
+  </div>
+
+</div>
+<div class="form-group">
+
+
+  <!-- Modal -->
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+      <form role="form" action="/updateTeacher" method="post">
+        <div class="modal-content">
+          <div class="modal-header" style="background-color:#428BCA;">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel" style=" text-align: center">Thay đổi Thông tin giảng viên</h4>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+              <label>Họ</label>
+              <input type="text" class="form-control" placeholder="First Name" name="first_name" id="first_name">
+            </div>
+            <div class="form-group">
+              <label>Tên</label>
+              <input type="text" class="form-control" placeholder="Last Name" name="last_name" id="last_name">
+            </div>
+            <div class="form-group">
+              <label>Trình độ</label>
+              <select class="hocvan" id="hocvan">
+                <option value="1">Đại học</option>
+                <option value="2" selected>Thạc sĩ</option>
+                <option value="3">Tiến sĩ</option>
+                <option value="4">Giáo sư</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Địa chỉ hiện tại</label>
+              <p id="present_address"></p>
+              <label>Địa chỉ</label>
+              <select name="ls_province" id="tinh"></select>
+              <select name="ls_district" id="huyen"></select>
+              <select name="ls_ward" id="xa"></select>
+            </div>
+            <div class="form-group">
+              <label>Số điện thoại</label>
+              <input type="text" class="form-control" name="sodienthoai" id="sodienthoai" placeholder="Số điện thoại"
+                data-format="0ddddddddd">
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" id="apply_change">Lưu</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>
+<script src="{% static 'dist/js/vietnamlocalselector.js' %}"></script>
+<script>
+  var localpicker = new LocalPicker({
+    province: "ls_province",
+    district: "ls_district",
+    ward: "ls_ward"
+  });
+
+  var options = {
+    /*
+        HTML Selector. You can pass value of name, id or class. 
+        It will automatically detect exist elements for you.
+        Example: 'myIdOrClass','#myId', '.myClass', 'myName'
+        */
+    province: 'ls_province',
+    district: 'ls_district',
+    ward: 'ls_ward',
+
+    /*
+    Define value for option tag. Valid option: id|name           
+    */
+    getValueBy: 'name',
+
+    //Placeholder text
+    provinceText: 'Chọn tỉnh / thành phố',
+    districtText: 'Chọn quận / huyện',
+    districtNoText: 'Địa phương này không có quận / huyện',
+    wardText: 'Chọn phường / xã',
+    wardNoText: 'Địa phương này không có phường / xã',
+
+    // Default value if no location exist
+    emptyValue: " ",
+
+    // Hide option where no local exist
+    hideEmptyValueOption: true,
+
+    // Hide place-holder option (first option)
+    hidePlaceHolderOption: true,
+
+    /*
+    Include local level on option text as prefix
+    Example: true = Quận Bình Thạnh | false = Bình Thạnh
+    */
+    provincePrefix: false,
+    districtPrefix: true,
+    wardPrefix: true,
+
+    /*
+    Include local level in option tag's attribute
+    */
+    levelAsAttribute: true,
+    levelAttributeName: "data-level",
+  };
+</script>
+<script>
+  $(document).ready(function () {
+    $(document).on("click", "#deleteStudent", function () {
+      var teacherID = $(this).val();
+      console.log(teacherID)
+      $.ajax({
+        url: "{% url 'deleteStudent' %}",
+        type: "POST",
+        data: { teacherID: teacherID }
+      }).done(function (response) {
+        if (response == "OK") {
+          console.log("OKK")
+          document.getElementById(teacherID).style.display = "none";
+          alert("Xóa giảng viên thành công")
+        }
+        if (response == "Error") {
+          console.log("Not ok");
+        }
+      })
+    })
+  })
+  $(document).on("click", "#getupdateStudent", function () {
+    var teacherID = $(this).val();
+    console.log(teacherID)
+    $.ajax({
+      url: "{% url 'getupdateStudent' %}",
+      type: "POST",
+      data: { teacherID: teacherID }
+    }).done(function (response) {
+      var json_data = JSON.parse(response)
+      console.log(json_data)
+
+      $("#first_name").val("" + json_data["ho"])
+      $("#last_name").val("" + json_data["ten"])
+      if (json_data["diachi"] == null) {
+        document.getElementById('present_address').innerHTML = "Không có địa chỉ"
+      } else {
+        document.getElementById('present_address').innerHTML = json_data["diachi"]
+      }
+      document.getElementById('hocvan').value = json_data["hocvan"];
+      if (json_data["diachi"] == null) {
+        $("#so_dien_thoai").val(json_data["so_dien_thoai"])
+      } else {
+      }
+    }).fail(function () {
+      alert("Lỗi, vui lòng thử lại");
+    })
+    $(document).on("click", "#apply_change", function () {
+      var first_name = $("#first_name").val()
+      var last_name = $("#last_name").val()
+      if ($("#tinh").val() != null && $("#huyen").val() != null && $("#xa").val() != null) {
+        var tinh = $("#tinh option:selected").text()
+        var huyen = $("#huyen option:selected").text()
+        var xa = $("#xa option:selected").text()
+        var diachi = xa + ", " + huyen + ", " + tinh
+
+      } else {
+        diachi = ""
+      }
+      var sodienthoai = $("#sodienthoai").val()
+      var hocvan = $("#hocvan").val()
+      var t = $("#tinh option:selected").val()
+      console.log(t)
+      $.ajax({
+        url: "{% url 'updateTeacher' %}",
+        type: "POST",
+        data: {
+          teacherID: teacherID,
+          first_name: first_name,
+          last_name: last_name,
+          diachi: diachi,
+          sodienthoai: sodienthoai,
+          hocvan: hocvan
+        }
+      }).done(function (response) {
+        console.log(teacherID)
+        $.removeData(teacherID)
+        location.reload();
+
+      })
+
+
+
+    })
+    $('[data-dismiss=modal]').on('click', function (e) {
+      location.reload();
+    })
+
+  })
+</script>
+{% endblock content %}

@@ -1,0 +1,79 @@
+{% extends 'templates/base.html' %}
+{% load static %}
+{% block title %}Toàn bộ giảng viên{% endblock title %}
+{% block headcontent %}
+
+
+<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+
+
+<style media="screen">
+  a:link {
+    text-decoration: none;
+  }
+
+  h6 {
+    text-align: center;
+  }
+
+  .row {
+    margin: 20px;
+  }
+</style>
+
+{% endblock headcontent %}
+
+
+
+{% block content %}
+
+<div class="container">
+
+  <div class="row">
+    
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <h6 class="panel-title">Teachers</h6>
+
+      </div>
+
+      <table class="table table-hover" id="dev-table">
+        <thead>
+
+          <tr>
+            <th>Họ tên</th>
+            <th>MSCB</th>
+            <th>Ngày tạo</th>
+            <th>Ngày cập nhật</th>
+            <th>Tài khoản</th>
+            <th>Cập nhật</th>
+            <th>Delete</th>
+          </tr>
+        </thead>
+        {% for t in giangviens %}
+        <tr id="{{ t.mscb}}">
+          <td > {{t.perm.first_name}} {{ t.perm.last_name}}</td>
+          <td>{{t.mscb}}</td>
+          <td>{{t.ngay_tao}}</td>
+          <td>{{t.perm.date_updated}}</td>
+          <td>{{t.perm.username}}</td>
+          <td><button class="btn btn-primary btn-block" id='updateTeacher'>Cập nhật</button></td>
+          <td><button class="btn btn-primary btn-block" id="deleteTeacher" value="{{t.mscb}}">Xóa</button></td>
+
+        </tr>
+
+        {% endfor %}
+      </table>
+    </div>
+
+
+  </div>
+  
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>
+
+
+
+
+{% endblock content %}

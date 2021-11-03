@@ -48,13 +48,10 @@
         <p></p>
       </div>
 
-      <div class="form-content">
         <div class="row">
           <div class="col-md-12">
             <div class="card card-primary">
-              <div class="card-header">
-                <h3 class="card-title">Them sinh viên</h3>
-              </div>
+              
               <!-- /.card-header -->
               <!-- form start -->
               <form role="form" action="/themsinhvien" method="post">
@@ -73,10 +70,19 @@
                     <label>Tên người dùng</label>
                     <input type="text" class="form-control" placeholder="Username" name="username">
                   </div>
+                  <div class="form-group">
+                    <label>Dia chi</label>
+                    <input type="text" class="form-control" placeholder="Dia chi" name="diachi">
+                  </div>
+                  <div class="form-group">
+                    <label>So dien thoai</label>
+                    <input type="text" class="form-control" placeholder="So dien thoai" name="sodienthoai">
+                  </div>
                     <div class="form-group">
                     <label>Địa chỉ email</label>
                     <input type="email" class="form-control" name="email" placeholder="Enter email">
                   </div>
+
                   <div class="form-group">
                     <label>Mật khẩu</label>
                     <input type="password" class="form-control" placeholder="Password" name="password">
@@ -107,7 +113,6 @@
 
           </div>
         </div>
-        <button type="submit" class="btnSubmit">Hire</button>
       </div>
     </div>
   </div>

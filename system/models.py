@@ -20,10 +20,14 @@ class quantri(models.Model):
 
         
 class giangvien(models.Model):
+    hocvan_choice = ((1,"Dai Hoc"),(2,"Thac Si"),(3,"Tien Si"),(4,"Giao Su"))
     mscb = models.AutoField(primary_key=True)
     ngay_tao = models.DateTimeField(auto_now_add=True)
     ngay_cap_nhat = models.DateTimeField(auto_now=True)
-    perm = models.OneToOneField(phanquyen, on_delete=models.CASCADE)
+    perm = models.OneToOneField(phanquyen, on_delete=models.CASCADE,related_name="teacher")
+    dia_chi = models.CharField(max_length=255,blank=True,null=True)
+    so_dien_thoai = models.IntegerField(null=True)
+    hocvan = models.CharField(max_length=255)
     objects=models.Manager()
 
 
@@ -57,6 +61,8 @@ class sinhvien(models.Model):
     ngay_cap_nhat = models.DateTimeField(auto_now=True)
     perm = models.OneToOneField(phanquyen,  on_delete=models.CASCADE)
     id_lop = models.ForeignKey(lop, on_delete=models.DO_NOTHING)
+    diachi = models.CharField(max_length=255,null=True,blank=True)
+    so_dien_thoai = models.IntegerField(null=True)
     objects=models.Manager()
     def __str__(self):
         return "MSSV : " +str(self.mssv) + ", Tên : " + self.perm.first_name + " " + self.perm.last_name 
@@ -74,7 +80,7 @@ class diemdanh(models.Model):
 
 class attendance(models.Model):
     id = models.AutoField(primary_key=True)
-    id_sinhvien = models.ForeignKey(sinhvien, on_delete=DO_NOTHING)
+    id_sinhvien = models.ForeignKey(sinhvien, on_delete=DO_NOTHING,related_name='attdata')
     id_diemdanh = models.ForeignKey(diemdanh, on_delete=CASCADE)
     ngay_tao = models.DateTimeField(auto_now_add=True)
     ngay_cap_nhat = models.DateTimeField(auto_now=True)
@@ -99,7 +105,7 @@ def tao_nguoi_dung(sender,instance,created,**kwargs):
         if instance.user_type==1:
             quantri.objects.create(perm=instance)
         if instance.user_type==2:
-            giangvien.objects.create(perm=instance)
+            giangvien.objects.create(perm=instance,hocvan="1")
         if instance.user_type==3:
             sinhvien.objects.create(perm=instance, id_lop=lop.objects.get(id=2))
 
