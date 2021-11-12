@@ -19,19 +19,43 @@ def themGiangvien(request):
         email = request.POST.get('email')
         diachi = request.POST.get('diachi')
         sodienthoai = request.POST.get('sodienthoai')
-        print(sodienthoai)
         try:
             user = phanquyen.objects.create_user(
                 username=username, first_name=first_name, last_name=last_name, password=password, email=email, user_type=2)
             print("Toi day")
+
             user.giangvien.so_dien_thoai = sodienthoai
             user.giangvien.dia_chi=diachi
+            user.giangvien.owner=request.user.username
             user.save()
             return HttpResponseRedirect('adminGiangvien')
         except:
             return HttpResponseRedirect("adminThemgiangvien")
 
-
+def themsinhvien(request):
+    if request.method != 'POST':
+        return HttpResponse("<h2>Lỗi</h2>")
+    else:
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        email = request.POST.get('email')
+        id_lop = request.POST.get('id')
+        diachi = request.POST.get('diachi')
+        sodienthoai = request.POST.get('sodienthoai')
+        try:
+            print("ok")
+            user = phanquyen.objects.create_user(
+                username=username, first_name=first_name, last_name=last_name, password=password, email=email, user_type=3)
+            user.sinhvien.id_lop_id = id_lop
+            user.sinhvien.diachi = diachi
+            user.sinhvien.so_dien_thoai = sodienthoai
+            user.sinhvien.owner = request.user.username
+            user.save()
+            return HttpResponseRedirect("adminSinhvien")
+        except:
+            return HttpResponseRedirect("/")
 def toanbogiangvien(request):
     giangviens = giangvien.objects.all()
     return render(request, 'templates/toanbogiangvien.html', {'giangviens': giangviens})
@@ -128,25 +152,4 @@ def themhocphan(request):
             return HttpResponseRedirect("/")
 
 
-def themsinhvien(request):
-    if request.method != 'POST':
-        return HttpResponse("<h2>Lỗi</h2>")
-    else:
-        first_name = request.POST.get('first_name')
-        last_name = request.POST.get('last_name')
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        email = request.POST.get('email')
-        id_lop = request.POST.get('id')
-        diachi = request.POST.get('diachi')
-        sodienthoai = request.POST.get('sodienthoai')
-        try:
-            user = phanquyen.objects.create_user(
-                username=username, first_name=first_name, last_name=last_name, password=password, email=email, user_type=3)
-            user.sinhvien.id_lop_id = id_lop
-            user.sinhvien.diachi = diachi
-            user.sinhvien.so_dien_thoai = sodienthoai
-            user.save()
-            return HttpResponseRedirect("adminSinhvien")
-        except:
-            return HttpResponseRedirect("/")
+

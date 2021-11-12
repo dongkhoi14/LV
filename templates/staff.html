@@ -1,0 +1,151 @@
+{% extends "templates/base_Enterprise.html" %}
+{% block title %}
+Quản lý nhân viên
+{% endblock title %}
+{% block headcontent %}
+
+<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<style type="text/css">
+    a:link {
+        text-decoration: none;
+    }
+
+    h6 {
+        color: white;
+    }
+
+    .order-card {
+        color: #fff;
+    }
+
+    .bg-c-blue {
+        background: linear-gradient(45deg, #4099ff, #73b4ff);
+    }
+
+    .bg-c-green {
+        background: linear-gradient(45deg, #2ed8b6, #59e0c5);
+    }
+
+    .bg-c-yellow {
+        background: linear-gradient(45deg, #FFB64D, #ffcb80);
+    }
+
+    .bg-c-pink {
+        background: linear-gradient(45deg, #FF5370, #ff869a);
+    }
+
+
+    .card {
+        border-radius: 5px;
+        -webkit-box-shadow: 0 1px 2.94px 0.06px rgba(4, 26, 55, 0.16);
+        box-shadow: 0 1px 2.94px 0.06px rgba(4, 26, 55, 0.16);
+        border: none;
+        margin-bottom: 30px;
+        -webkit-transition: all 0.3s ease-in-out;
+        transition: all 0.3s ease-in-out;
+    }
+
+    .card .card-block {
+        padding: 25px;
+    }
+
+    .order-card i {
+        font-size: 26px;
+    }
+
+    .f-left {
+        float: left;
+    }
+
+    .f-right {
+        float: right;
+    }
+
+    .row {
+        margin-top: 40px;
+        padding: 0 10px;
+    }
+
+    .clickable {
+        cursor: pointer;
+    }
+
+    .panel-heading span {
+        margin-top: -20px;
+        font-size: 15px;
+    }
+
+    .table>thead>tr>th {
+        border-right: 1px solid #ddd;
+        border-bottom: 0;
+    }
+
+    .table>tbody>tr>td {
+        border-right: 1px solid #ddd;
+    }
+
+    .table>thead>tr>th:last-of-type {
+        border-right: 0px;
+    }
+
+    .table>tbody>tr>td:last-of-type {
+        border-right: 0px;
+    }
+
+    .panel-body {
+        padding: 0;
+    }
+
+    .panel-body>.table {
+        margin-bottom: 0px;
+    }
+</style>
+{% endblock headcontent %}
+
+{% block content %}
+<div class="container">
+    <div class="panel panel-info">
+        <div class="panel-heading" style="font-size:20px;text-align: center;">
+            Quản lý nhân viên
+        </div>
+        <div class="panel-body">
+            
+            <span>
+                <table class="table table-bordered table-hover " id="dev-table">
+                    <thead>
+
+                        <tr>
+                            <th>Họ tên</th>
+                            <th>ID</th>
+                            <th>Ngày tạo</th>
+                            <th>Bộ phận</th>
+                            <th>Tài khoản</th>
+                            <th>Cập nhật</th>
+                            <th>Delete</th>
+                        </tr>
+                    </thead>
+                    {% for staff in staffs %}
+                    <tr id="{{ t.mscb}}">
+                        <td> {{staff.perm.first_name}} {{ staff.perm.last_name}}</td>
+                        <td>{{staff.mssv}}</td>
+                        <td>{{staff.ngay_tao}}</td>
+                        <td>{{staff.id_lop.ten_lop}}</td>
+                        <td>{{staff.perm.username}}</td>
+                        <td><button class="btn btn-primary btn-block" id='deleteStudent' value="{{t.mssv}}"
+                                data-toggle="modal" data-target="#myModal">Cập nhật</button></td>
+                        <td><button class="btn btn-primary btn-block" id="getupdateStudent"
+                                value="{{t.mssv}}">Xóa</button>
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+                </table>
+            </span>
+        </div>
+    </div>
+</div>
+
+
+</div>
+{% endblock content %}

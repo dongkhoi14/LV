@@ -1,3 +1,3 @@
-from django.test import TestCase
-
-# Create your tests here.
+from system.models import *
+a = staff_att.objects.all()
+a.delete()

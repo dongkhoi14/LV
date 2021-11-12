@@ -1,0 +1,183 @@
+{% extends "templates/base_Enterprise.html" %}
+{% block title %}
+Quản lý nhân viên
+{% endblock title %}
+{% block headcontent %}
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+
+<style type="text/css">
+    a:link {
+        text-decoration: none;
+    }
+
+    h6 {
+        color: white;
+    }
+
+    .order-card {
+        color: #fff;
+    }
+
+    .bg-c-blue {
+        background: linear-gradient(45deg, #4099ff, #73b4ff);
+    }
+
+    .bg-c-green {
+        background: linear-gradient(45deg, #2ed8b6, #59e0c5);
+    }
+
+    .bg-c-yellow {
+        background: linear-gradient(45deg, #FFB64D, #ffcb80);
+    }
+
+    .bg-c-pink {
+        background: linear-gradient(45deg, #FF5370, #ff869a);
+    }
+
+
+    .card {
+        border-radius: 5px;
+        -webkit-box-shadow: 0 1px 2.94px 0.06px rgba(4, 26, 55, 0.16);
+        box-shadow: 0 1px 2.94px 0.06px rgba(4, 26, 55, 0.16);
+        border: none;
+        margin-bottom: 30px;
+        -webkit-transition: all 0.3s ease-in-out;
+        transition: all 0.3s ease-in-out;
+    }
+
+    .card .card-block {
+        padding: 25px;
+    }
+
+    .order-card i {
+        font-size: 26px;
+    }
+
+    .f-left {
+        float: left;
+    }
+
+    .f-right {
+        float: right;
+    }
+
+    .row {
+        margin-top: 40px;
+        padding: 0 10px;
+    }
+
+    .clickable {
+        cursor: pointer;
+    }
+
+    .panel-heading span {
+        margin-top: -20px;
+        font-size: 15px;
+    }
+
+    .table>thead>tr>th {
+        border-right: 1px solid #ddd;
+        border-bottom: 0;
+    }
+
+    .table>tbody>tr>td {
+        border-right: 1px solid #ddd;
+    }
+
+    .table>thead>tr>th:last-of-type {
+        border-right: 0px;
+    }
+
+    .table>tbody>tr>td:last-of-type {
+        border-right: 0px;
+    }
+
+    .panel-body {
+        padding: 0;
+    }
+
+    .panel-body>.table {
+        margin-bottom: 0px;
+    }
+</style>
+{% endblock headcontent %}
+
+{% block content %}
+<div class="container">
+    <div class="panel panel-info">
+        <div class="panel-heading" style="font-size:20px;text-align: center;">
+            Phòng ban
+        </div>
+        <div class="panel-body">
+
+            <span>
+                <table class="table table-bordered table-hover " id="dev-table">
+                    <thead>
+
+                        <tr>
+                            <th>Tên</th>
+                            <th>Số lượng nhân viên</th>
+                            <th>Cập nhật</th>
+                            <th>Xóa</th>
+
+                        </tr>
+                    </thead>
+                   <thead id="rowdata"></thead>
+
+                </table>
+            </span>
+        </div>
+        <div class="panel-footer">
+            <div><button class="btn btn-primary btn-block" id="addDepartment">Thêm phòng ban</button></div>
+            <div id="add"></div>
+        </div>
+    </div>
+</div>
+<script src="http://netdna.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $.ajax({
+            url: "getListDepartment",
+            type: 'POST',
+            data: {}
+        }).done(function (res) {
+
+            json_data = JSON.parse(res)
+            console.log(json_data)
+            var div = ""
+            for (key in json_data) {
+                div += "<tr><td>" + json_data[key]["ten_bophan"] + "</td><td>" + json_data[key]["soluongnhanvien"] + "</td><td><button  class='btn btn-primary btn-block'>Cập nhât</button></td><td><button class='btn btn-primary btn-block'>Xóa</button></td></tr>"
+            }
+
+            $("#rowdata").html(div)
+        })
+        $(document).on("click", "#addDepartment", function () {
+
+            var div = "<div class='form-group'><label for='exampleInputEmail1'>Tên phòng ban</label><input type='text' class='form-control' id='departmentName' aria-describedby='emailHelp' placeholder='Nhập tên phòng ban'></div>"
+            div += "<button class='btn btn-primary' id='addButton' >Lưu</button>"
+            $("#add").html(div)
+        })
+        $(document).on("click", "#addButton", function () {
+            var departmentName = $("#departmentName").val()
+
+            $.ajax({
+                url: "addDepartment",
+                type: 'POST',
+                data: { departmentName: departmentName },
+            }).done(function (res) {
+                if (res=="OK"){
+                    alert("Thêm thành công")
+                    location.reload()
+                }else{
+                    alert("Thêm không thành công")
+                }
+            })
+
+        })
+    })
+
+</script>
+
+{% endblock content %}

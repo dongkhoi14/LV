@@ -9,7 +9,7 @@
             province = 'ls_province',
             district = 'ls_district',
             ward = 'ls_ward',
-            getValueBy = 'id',
+            getValueBy = 'name',
             provinceText = 'Chọn tỉnh / thành phố',
             districtText = 'Chọn quận / huyện',
             wardText = 'Chọn phường / xã',
@@ -17,7 +17,7 @@
             emptyValue = " ",
             hideEmptyValueOption = true,
             hidePlaceHolderOption = true,
-            provincePrefix = false,
+            provincePrefix = true,
             districtPrefix = true,
             levelAsAttribute = true,
             levelAttributeName = "data-level"
@@ -32,7 +32,7 @@
                     s = 'n';
                     break;
                 default:
-                    s = 'i';
+                    s = 'n';
             }
             try{
                 let es = param => param.replace(/^#|\.+/i, ''),

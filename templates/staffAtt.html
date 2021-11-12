@@ -1,0 +1,260 @@
+{% extends "templates/base_Enterprise.html" %}
+{% block title %}
+Quản lý nhân viên
+{% endblock title %}
+{% block headcontent %}
+<script src="http://netdna.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<style type="text/css">
+    a:link {
+        text-decoration: none;
+    }
+
+    h6 {
+        color: white;
+    }
+
+    .order-card {
+        color: #fff;
+    }
+
+    .bg-c-blue {
+        background: linear-gradient(45deg, #4099ff, #73b4ff);
+    }
+
+    .bg-c-green {
+        background: linear-gradient(45deg, #2ed8b6, #59e0c5);
+    }
+
+    .bg-c-yellow {
+        background: linear-gradient(45deg, #FFB64D, #ffcb80);
+    }
+
+    .bg-c-pink {
+        background: linear-gradient(45deg, #FF5370, #ff869a);
+    }
+
+
+    .card {
+        border-radius: 5px;
+        -webkit-box-shadow: 0 1px 2.94px 0.06px rgba(4, 26, 55, 0.16);
+        box-shadow: 0 1px 2.94px 0.06px rgba(4, 26, 55, 0.16);
+        border: none;
+        margin-bottom: 30px;
+        -webkit-transition: all 0.3s ease-in-out;
+        transition: all 0.3s ease-in-out;
+
+    }
+
+    .card .card-block {
+        padding: 25px;
+    }
+
+    .order-card i {
+        font-size: 26px;
+    }
+
+    .f-left {
+        float: left;
+    }
+
+    .f-right {
+        float: right;
+    }
+
+    .row {
+        margin-top: 40px;
+        padding: 0 10px;
+    }
+
+    .clickable {
+        cursor: pointer;
+    }
+
+    .panel-heading span {
+        margin-top: -20px;
+        font-size: 15px;
+    }
+
+    .table>thead>tr>th {
+        border-right: 1px solid #ddd;
+        border-bottom: 0;
+    }
+
+    .table>tbody>tr>td {
+        border-right: 1px solid #ddd;
+    }
+
+    .table>thead>tr>th:last-of-type {
+        border-right: 0px;
+    }
+
+    .table>tbody>tr>td:last-of-type {
+        border-right: 0px;
+    }
+
+    .panel-body {
+        padding: 0;
+    }
+
+    .panel-body>.table {
+        margin-bottom: 0px;
+    }
+</style>
+{% endblock headcontent %}
+
+{% block content %}
+
+<div class="container">
+    <div class="form-content">
+
+        <div class="modal fade" id="myModal" role="dialog">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title" style="text-align:center">Chi tiết</h4>
+                    </div>
+                    <div class="modal-body" id="details">
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="QR" role="dialog">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title" style="text-align:center">Quét QR để chấm công</h4>
+                    </div>
+                    <div class="modal-body" id="QRimage">
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-info">
+        <div class="panel-heading" style="font-size:20px;text-align: center;">
+            Chấm công
+        </div>
+        <div class="panel-body">
+
+            <div id="tableAtt"></div>
+            <div class='panel-footer'><button class='btn btn-primary btn-block' id='doAttStaff'> Thực hiện chấm
+                    công</button></div>
+            <div style="text-align:center"><button class="btn btn-primary  " role="group" id="QRcheckin"  data-toggle='modal' data-target='#QR'>QR
+                    Checkin</button><button class="btn btn-primary  " role="group" id="QRcheckout" data-toggle='modal' data-target='#QR'>QR Checkout</button>
+            </div>
+            <div class='panel-footer'><button class='btn btn-primary btn-block' id='historyStaffAtt'> Lịch
+                    sử</button>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        console.log("K")
+
+
+        $(document).on("click", "#doAttStaff", function () {
+            alert("Vui lòng đợi")
+            $.ajax({
+                url: 'createStaffAtt',
+                type: 'POST',
+                data: {}
+            }).done(function (res) {
+                console.log(res)
+                if (res == "Day ValueError") {
+                    alert("Đã tạo chấm công cho hôm nay!")
+                }
+                if (res == "OK") {
+                    alert("Đã tọa chấm công thành công!")
+                }
+            })
+        })
+        $(document).on("click", "#historyStaffAtt", function () {
+            $.ajax({
+                url: "historyStaffAtt",
+                type: "POST",
+                data: {}
+            }).done(function (res) {
+                console.log(res)
+                json_data = JSON.parse(res)
+                console.log(json_data)
+                var div = " </div><table class='table table-hover'><thead><tr><th>Phòng ban</th><th>Thời gian</th><th>Số lượng nhân viên</th><th>Có mặt</th><th></th></tr></thead>"
+                for (key in json_data) {
+                    div += "<tr><td id='" + json_data[key]['id_department'] + "' >" + json_data[key]['bophan'] + "</td><td>" + json_data[key]['ngay_tao'] + "</td><td>" + json_data[key]['soluongnhanvien'] + "</td><td>" + json_data[key]['soluongdiemdanh'] + "</td><td><button class='btn btn-primary' value='" + json_data[key]['id_diemdanh'] + "_" + json_data[key]['id_department'] + "' id='detailsbtn' data-toggle='modal' data-target='#myModal'>Chi tiết</button></td></tr><tr id='" + json_data[key]['id_diemdanh'] + "'></tr>"
+
+                }
+                div += "</table>"
+                $("#tableAtt").html(div)
+            })
+
+        })
+        $(document).on("click", "#detailsbtn", function () {
+            info = $(this).val()
+            console.log(info)
+            $.ajax({
+                url: 'detailsatt',
+                type: "POST",
+                data: { info: info }
+            }).done(function (res) {
+                json_data = JSON.parse(res)
+                var div = " <table class='table table-hover'><thead><tr><th>Tên</th><th>Check in</th><th>Check out</th><th>Số giờ làm việc</th><th></thead>"
+                for (key in json_data) {
+                    // div += "<tr><td>" + json_data[key]['hoten'] + "</td><td>" + json_data[key]['ngay_tao'] + "</td><td>" + json_data[key]['soluongnhanvien'] + "</td><td>" + json_data[key]['soluongdiemdanh'] + "</td><td></td></tr><tr id='" + json_data[key]['id_diemdanh'] + "'></tr>"
+                    if (json_data[key]['checkin'] == false && json_data[key]['checkout'] == false) {
+                        div += "<tr><td>" + json_data[key]['hoten'] + "</td><td>Chưa có</td><td>Chưa có</td><td>0</td></tr>"
+
+                    }
+                    if (json_data[key]['checkin'] == true && json_data[key]['checkout'] == false) {
+                        div += "<tr><td>" + json_data[key]['hoten'] + "</td><td>" + json_data[key]['thoigiancheckin'] + "</td><td>Chưa có</td><td>Chưa có</td></tr>"
+
+                    }
+                    if (json_data[key]['checkin'] == true && json_data[key]['checkout'] == true) {
+                        div += "<tr><td>" + json_data[key]['hoten'] + "</td><td>" + json_data[key]['thoigiancheckin'] + "</td><td>" + json_data[key]['thoigiancheckin'] + "</td><td>Chưa có</td></tr>"
+
+                    }
+
+                }
+                div += "</table>"
+                $("#details").html(div)
+            })
+        })
+        $(document).on("click", "#QRcheckin", function () {
+            $.ajax({
+                url: "QRcheckin",
+                type: "POST",
+                data: {},
+            }).done(function (res) {
+                json_data_img = JSON.parse(res)
+                $('#QRimage').html('<img src="' + json_data_img.url + '" style="display: block;margin-left: auto;margin-right: auto;" />');
+            })
+        })
+        $(document).on("click", "#QRcheckout", function () {
+            $.ajax({
+                url: "QRcheckout",
+                type: "POST",
+                data: {},
+            }).done(function (res) {
+                json_data_img = JSON.parse(res)
+                $('#QRimage').html('<img src="' + json_data_img.url + '" style="display: block;margin-left: auto;margin-right: auto;" />');
+            })
+        })
+    })
+</script>
+{% endblock content %}

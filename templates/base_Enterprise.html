@@ -1,11 +1,15 @@
 <!DOCTYPE html>
 {% load static %}
-<html lang="en" dir="ltr">
+
+<html lang="en">
 
 <head>
+
   <meta charset="utf-8">
-  <title>{% block title %}{% endblock title %}</title>
- 
+  
+  <title>{% block title %} {% endblock title %}</title>
+  
+  {% block headcontent %}{% endblock headcontent %}
   <style media="screen">
     a:link {
       text-decoration: none;
@@ -19,6 +23,9 @@
       background-repeat: no-repeat;
       background-size: cover;
       background-attachment: fixed;
+
+
+
     }
 
     header {
@@ -31,6 +38,14 @@
     }
 
     .left_area h3 {
+      color: #fff;
+      margin: 0px;
+      text-transform: uppercase;
+      font-size: 22px;
+      font-weight: 900;
+    }
+
+    .left_area a {
       color: #fff;
       margin: 0px;
       text-transform: uppercase;
@@ -54,7 +69,7 @@
       font-weight: 600;
       color: #fff;
       transition: 0.5s;
-    
+
     }
 
     .logout_btn:hover {
@@ -67,7 +82,7 @@
       padding-top: 30px;
       position: fixed;
       left: 0;
-      width: 250px;
+      width: 200px;
       height: 100%;
       transition: 0.5s;
       transition-property: left;
@@ -137,7 +152,7 @@
     }
 
     .content {
-      margin-left: 250px;
+      margin-left: 200px;
       background-position: center;
       background-size: cover;
       height: 100vh;
@@ -152,21 +167,17 @@
       display: none;
     }
   </style>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css">
 
-{% block headcontent %}{% endblock headcontent %}
-</head>
-
-<body>
-
-  <input type="checkbox" id="check">
   <header>
     <label for="check">
-      <i class="fas fa-bars" id="sidebar_btn"></i>
+      <i ></i>
     </label>
     <div class="left_area">
-      <h3>Giảng viên</h3>
+      <h3>Quản trị</h3>
     </div>
     <div class="right_area">
       <a href="/logout" class="logout_btn">Đăng xuất</a>
@@ -175,15 +186,15 @@
   <div class="sidebar">
     <center>
 
-      <img src="{% static 'images/teacher.png' %}" class="profile_image" alt="">
-      <h4>{{request.user.first_name}} {{request.user.last_name}}</h4>
+      <img src="{% static  'images/admin.png' %}" class="profile_image" alt="">
+      <h4>{{request.user.first_name}}</h4>
 
     </center>
+    <a href="/adminEnterprise"><i class="fa fa-home"></i><span>Trang chủ</span></a>
 
-    <a href="/giangvien_Lop"><i class="fas fa-desktop"></i><span>Lớp</span></a>
-    <a href="/giangvien_Diemdanh"><i class="fas fa-address-card"></i><span>Điểm danh</span></a>
-    <a href="/thongbao"><i class="fas fa-bullhorn"></i><span>Thông báo</span></a>
-    <a href="/thongke"><i class="fas fa-bullhorn"></i><span>Thông kê</span></a>
+    <a href="/adminEnterpriseManager"><i class="fas fa-chalkboard-teacher"></i><span>Quản lý</span></a>
+    <a href="/staffAtt"><i class="far fa-calendar-check"></i><span>Chấm công</span></a>
+
 
 
   </div>
@@ -191,14 +202,13 @@
 
   <div class="content">
     <br><br><br><br><br>
+   
     {% block content %}
 
     {% endblock content %}
-
     <br><br><br>
+
   </div>
-
-
 </body>
 
 </html>

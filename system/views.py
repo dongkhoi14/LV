@@ -1,4 +1,4 @@
-from system.models import giangvien, hocphan , lop, sinhvien
+from system.models import giangvien, hocphan , lop, sinhvien,quantri
 from django.http.response import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.contrib.auth import authenticate, login, logout
@@ -6,7 +6,8 @@ from django.http import request
 from .UserBackend import UserBackend
 from django.contrib.auth.decorators import login_required
 from rest_framework import status, viewsets
-
+from django.views.decorators.csrf import csrf_exempt
+import datetime
 
 def adminLogin(request):
     return render(request, 'templates/loginadmin.html')
@@ -53,7 +54,7 @@ def adminThemsinhvien(request):
     lops = lop.objects.all()
     return render(request, 'templates/adminThemsinhvien.html', {'lops':lops})
 
-
+@csrf_exempt
 def loginAdmin(request):
     username = request.POST.get('username')
     password = request.POST.get('password')
@@ -61,7 +62,11 @@ def loginAdmin(request):
     if user is not None :
         login(request,user)
         if user.user_type == '1':
-            return HttpResponseRedirect('/adminGiangvien')
+            a= quantri.objects.get(perm = user.id)
+            if   a.type == "1":
+                return HttpResponseRedirect('/adminGiangvien')
+            elif a.type  == "2":
+                return HttpResponseRedirect('/adminEnterprise')
         if user.user_type == '2':
             return HttpResponseRedirect('/giangvien')
         if user.user_type == '3':
@@ -73,3 +78,7 @@ def logOut(request):
     logout(request)
     return HttpResponseRedirect('/')
 
+def adminEnterprise(request):
+    staffs = sinhvien.objects.filter(owner = request.user.username).count()
+    departments = lop.objects.filter(create_by = request.user.username).count()
+    return render(request,"templates/adminEnterprise.html",{"staff":staffs,"departments":departments})

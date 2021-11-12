@@ -8,6 +8,7 @@ from system import views, adminViews
 from system.adminViews import *
 from system.giangvienViews import  *
 from system.sinhvienViews import *
+from system.enterpriseViews import *
 from rest_framework.routers import DefaultRouter
 from django.conf.urls import include
 from django.urls import path
@@ -63,7 +64,10 @@ urlpatterns = [
     path('deleteAtt',deleteAtt,name="deleteAtt"),
     path('createAtt',createAtt,name='createAtt'),
     path('createQR',createQR, name='createQR'),
-    
+    path('reAtt',reAtt,name='reAtt'),
+    path('thongke',thongke,name='thongke'),
+    path('onload_thongke',onload_thongke,name='onload_thongke'),
+    path('details_thongke',details_thongke,name='details_thongke'),
     #path('danhsach', danhsach, name='danhsach'),
     #Đăng nhập
     path('loginAdmin', views.loginAdmin),
@@ -77,6 +81,19 @@ urlpatterns = [
     path('api/auth/update/<int:pk>',UpdateAttDataAPI.as_view()),
     path('api/auth/attdetails',getAttDetailAPI.as_view()),
 
-
-    
+    #Enterprise
+    path('adminEnterprise',views.adminEnterprise,name='adminEnterprise'),
+    path('adminEnterpriseManager',adminEnterpriseManager,name="adminEnterpriseManager"),
+    path('staff',staff,name='staff'),
+    path('department',department,name='department'),
+    path('getListDepartment',getListDepartment,name="getListDepartment"),
+    path('addDepartment',addDepartment,name="addDepartment"),
+    path('staffAtt',staffAtt,name='staffAtt'),
+    path('createStaffAtt',createStaffAtt,name='createStaffAtt'),
+    path('historyStaffAtt',historyStaffAtt,name='historyStaffAtt'),
+    path('detailsatt',detailsatt,name='detailsatt'),
+    path('addStaff',addStaff,name='addStaff'),
+    path('createStaff',createStaff,name='createStaff'),
+    path('QRcheckin',QRcheckin,name='QRcheckin'),
+    path('QRcheckout',QRcheckout,name='QRcheckout'),
 ]

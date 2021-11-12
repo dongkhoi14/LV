@@ -9,7 +9,7 @@
             province = 'ls_province',
             district = 'ls_district',
             ward = 'ls_ward',
-            getValueBy = 'id',
+            getValueBy = 'name',
             provinceText = 'Chọn tỉnh / thành phố',
             districtText = 'Chọn quận / huyện',
             wardText = 'Chọn phường / xã',
