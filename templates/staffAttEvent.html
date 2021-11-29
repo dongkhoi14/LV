@@ -1,0 +1,435 @@
+{% extends "templates/base_Enterprise.html" %}
+{% block title %}
+Sự kiện{% endblock title %}
+{% load static %}
+{% block headcontent %}
+<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+<script
+    src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+
+<style type="text/css">
+    a:link {
+        text-decoration: none;
+    }
+
+    #staffEvent {
+        background-color: blue;
+    }
+
+    h6 {
+        color: white;
+    }
+
+    .order-card {
+        color: #fff;
+    }
+
+    .bg-c-blue {
+        background: linear-gradient(45deg, #4099ff, #73b4ff);
+    }
+
+    .bg-c-green {
+        background: linear-gradient(45deg, #2ed8b6, #59e0c5);
+    }
+
+    .bg-c-yellow {
+        background: linear-gradient(45deg, #FFB64D, #ffcb80);
+    }
+
+    .bg-c-light {
+        background: linear-gradient(45deg, #fff, #ffcb80);
+    }
+
+    .bg-c-pink {
+        background: linear-gradient(45deg, #FF5370, #ff869a);
+    }
+
+    .bg-c-light {
+        background: #D9EDF7;
+    }
+
+
+    .card {
+        border-radius: 5px;
+        -webkit-box-shadow: 0 1px 2.94px 0.06px rgba(4, 26, 55, 0.16);
+        box-shadow: 0 1px 2.94px 0.06px rgba(4, 26, 55, 0.16);
+        border: none;
+        margin-bottom: 30px;
+        -webkit-transition: all 0.3s ease-in-out;
+        transition: all 0.3s ease-in-out;
+    }
+
+    .card .card-block {
+        padding: 25px;
+    }
+
+    .order-card i {
+        font-size: 26px;
+    }
+
+    .f-left {
+        float: left;
+    }
+
+    .f-right {
+        float: right;
+    }
+
+    .row {
+        margin-top: 40px;
+        padding: 0 10px;
+    }
+
+    .clickable {
+        cursor: pointer;
+    }
+
+    .panel-heading span {
+        margin-top: -20px;
+        font-size: 15px;
+    }
+
+    .table>thead>tr>th {
+        border-right: 1px solid #ddd;
+        border-bottom: 0;
+    }
+
+    .table>tbody>tr>td {
+        border-right: 1px solid #ddd;
+    }
+
+    .table>thead>tr>th:last-of-type {
+        border-right: 0px;
+    }
+
+    .table>tbody>tr>td:last-of-type {
+        border-right: 0px;
+    }
+
+    .panel-body {
+        padding: 0;
+    }
+
+    .panel-body>.table {
+        margin-bottom: 0px;
+    }
+
+    .loader {
+        border: 16px solid #f3f3f3;
+        border-top: 16px solid #428BCA;
+        border-bottom: 16px solid #428BCA;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        -webkit-animation: spin 2s linear infinite;
+        animation: spin 2s linear infinite;
+        top: 50%;
+        left: 50%;
+        position: relative;
+
+    }
+
+    /* Safari */
+    /* @-webkit-keyframes spin {
+        0% {
+            -webkit-transform: rotate(0deg);
+        }
+
+        100% {
+            -webkit-transform: rotate(360deg);
+        }
+    } */
+
+    @keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+
+    .glyphicon.spinning {
+        animation: spin 1s infinite linear;
+        -webkit-animation: spin2 1s infinite linear;
+    }
+
+    @-webkit-keyframes spin2 {
+        from {
+            -webkit-transform: rotate(0deg);
+        }
+
+        to {
+            -webkit-transform: rotate(360deg);
+        }
+    }
+
+    @keyframes spin {
+        from {
+            transform: scale(1) rotate(0deg);
+        }
+
+        to {
+            transform: scale(1) rotate(360deg);
+        }
+    }
+</style>
+
+{% endblock headcontent %}
+
+{% block content %}
+
+
+
+<div class="container">
+
+    <div class="panel panel-info">
+        <div class="panel-heading" style="font-size:20px;text-align: center;">
+            Sự kiện
+        </div>
+        <div class="panel-body">
+
+            <span>
+                <table class="table table-bordered table-hover " id="dev-table">
+                    <thead>
+
+                        <tr>
+                            <th>Tên sự kiện</th>
+                            <th>Thời gian bắt đầu</th>
+                            <th>Thời gian kết thúc</th>
+                            <th>Bộ phận</th>
+                        </tr>
+                    </thead>
+                    <tr>
+                        <td>
+                            <div class="form-group">
+                                <input type="text" class="form-control" placeholder="Tên sự kiện" name="event_name"
+                                    id="event_name">
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group">
+                                <div class='input-group date' id='datetimepicker1'>
+                                    <input type='text' class="form-control" id="in" />
+                                    <span class="input-group-addon">
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                                    </span>
+                                </div>
+                            </div>
+
+                        </td>
+                        <td>
+                            <div class="form-group">
+                                <div class='input-group date' id='datetimepicker2'>
+                                    <input type='text' class="form-control" id="out" />
+                                    <span class="input-group-addon">
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                                    </span>
+                                </div>
+                            </div>
+
+                        </td>
+                        <td>
+                            <div class="form-group">
+                                <select class="form-select" id="department_id">
+                                    <option value="0">Toàn bộ</option>
+                                    {% for department in departments %}
+
+                                    <option value="{{department.id}}">{{department.ten_lop}} </option>
+
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+
+
+                        <td colspan=4> <button class="btn btn-primary btn-block" id="addEvent">Thêm</button></td>
+                    </tr>
+                </table>
+            </span>
+            <div class="form-content">
+
+
+                <div class="modal fade" id="QR" role="dialog">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h4 class="modal-title" style="text-align:center" id="title">Quét QR để chấm công</h4>
+                            </div>
+                            <div class="modal-body" id="QRimage">
+
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {% if messages %}
+            {% for message in messages %}
+            {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+            <div class="alert alert-success" role="alert" style="text-align: center">
+                {{message}}
+            </div>
+            {% endif %}
+            {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+            <div class="alert alert-danger" role="alert" style="text-align: center">
+                {{message}}
+            </div>
+            {% endif %}
+            {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="panel panel-info">
+        <div class="panel-heading" style="font-size:20px;text-align: center;">Lịch sử</div>
+        <div class="panel-body">
+            <table class="table table-bordered table-hover " id="dev-table">
+                <thead>
+                    <tr>
+                        <th>Tên sự kiện</th>
+                        <th>Ngày tạo</th>
+                        <th>Thời gian bắt đầu</th>
+                        <th>Thời gian kết thúc</th>
+                        <th>Chấm công</th>
+                        <th>Chấm công</th>
+
+                        <th>Chi tiết</th>
+
+                        <th>Xóa</th>
+
+                    </tr>
+                </thead>
+                <thead id="historystaffattevent"></thead>
+
+            </table>
+        </div>
+    </div>
+    <script type="text/javascript">
+        $(function () {
+            $('#datetimepicker1').datetimepicker({
+                format: 'DD/MM/YYYY HH:mm'
+            });
+            $('#datetimepicker2').datetimepicker({
+                format: 'DD/MM/YYYY HH:mm'
+            });
+        });
+        $(document).ready(function () {
+            $(".modal").on("hidden.bs.modal", function () {
+                $(".modal-body").html("");
+            });
+            jsonObj = []
+            $.ajax({
+                url: "historystaffattevent",
+                type: 'POST',
+                data: {}
+            }).done(function (res) {
+                json_data = JSON.parse(res)
+                var div = ""
+                var id = 0
+                for (key in json_data) {
+                    if (json_data[key]['is_disabled'] == false) {
+                        id += 1
+                        value_button = json_data[key]['name'] + "_" + id + "_" + json_data[key]['time_create']
+                        div += "<tr id=" + id + "><td>" + json_data[key]['name'] + "</td><td>" + json_data[key]['time_create'] + "</td><td>" + json_data[key]['time_start'] + "</td><td>" + json_data[key]['time_end'] + "</td><td><button class='btn btn-primary btn-block' id='eventStaffCheckin' data-toggle='modal' data-target='#QR' value=" + id + ">Checkin</button></td><td><button class='btn btn-primary btn-block' id='eventStaffCheckout' data-toggle='modal' data-target='#QR' value=" + id + ">Checkout</button></td><td><button class='btn btn-primary btn-block' value='" + value_button + " id='detailstaffevent'>Chi tiết</button></td></td><td><button class='btn btn-primary btn-block' id='deleteEvent' value='" + value_button + "''>Xóa</button></td></tr>"
+
+                        var urlcheckin = json_data[key]['url_checkin']
+                        var urlcheckout = json_data[key]['url_checkout']
+                        console.log(urlcheckout)
+                        item = {}
+                        item['id'] = id
+                        item['urlcheckin'] = urlcheckin
+                        item['urlcheckout'] = urlcheckout
+                        jsonObj.push(item)
+                    } else {
+                        id += 1
+                        value_button = json_data[key]['name'] + "_" + id + "_" + json_data[key]['time_create']
+                        div += "<tr id=" + id + "><td >" + json_data[key]['name'] + "</td><td>" + json_data[key]['time_create'] + "</td><td>" + json_data[key]['time_start'] + "</td><td>" + json_data[key]['time_end'] + "</td><td><button class='btn btn-primary btn-block' id='eventStaffCheckin' disabled >Checkin</button></td><td><button class='btn btn-primary btn-block' id='eventStaffCheckout' disabled>Checkout</button></td><td><button class='btn btn-primary btn-block' value='" + value_button + " id='detailstaffevent'>Chi tiết</button></td></td><td><button class='btn btn-primary btn-block' id='deleteEvent' value='" + value_button + "''>Xóa</button></td></tr>"
+                        item = {}
+                        item['id'] = id
+                        item['urlcheckin'] = urlcheckin
+                        item['urlcheckout'] = urlcheckout
+                        jsonObj.push(item)
+                        console.log(jsonObj)
+                    }
+                }
+                $("#historystaffattevent").html(div)
+            })
+            $(document).on("click","#detailstaffevent",function(){
+                console.log($(this).val())
+            })
+            $(document).on("click", '#eventStaffCheckin', function () {
+                id = $(this).val()
+                console.log(id)
+                $('#QRimage').html('<img src="' + jsonObj[id - 1]['urlcheckin'] + '" style="display: block;margin-left: auto;margin-right: auto;" />');
+
+            })
+            $(document).on("click", '#eventStaffCheckout', function () {
+                id = $(this).val()
+                console.log("ok")
+                $('#QRimage').html('<img src="' + jsonObj[id - 1]['urlcheckout'] + '" style="display: block;margin-left: auto;margin-right: auto;" />');
+
+            })
+            $(document).on("click", '#deleteEvent', function () {
+                $(this).html("<span class='glyphicon glyphicon-refresh spinning'></span>")
+                console.log($(this).val())
+                $.ajax({
+                    url: 'deleteEvent',
+                    type: 'POST',
+                    data: { name: $(this).val() }
+                }).done(function (res) {
+                    json_data = JSON.parse(res)
+                    id = json_data[0]['id']
+                    $("#" + id + "").hide()
+
+
+                })
+            })
+
+            $(document).on("click", "#addEvent", function () {
+                var checkintime = $("#in").val()
+                var checkouttime = $("#out").val()
+                var event_name = $("#event_name").val()
+                if (checkintime < checkouttime && checkouttime != "" && checkouttime != "") {
+                    $(this).html("<span class='glyphicon glyphicon-refresh spinning'></span>")
+                    var department_id = $("#department_id").val()
+                    $.ajax({
+                        url: "staffEventAtt",
+                        type: "POST",
+                        data: {
+                            event_name: event_name,
+                            checkintime: checkintime,
+                            checkouttime: checkouttime,
+                            department_id: department_id
+                        }
+                    }).done(function (res) {
+                        $("#loader").hide()
+                        location.reload();
+                    })
+                } else {
+                    alert("Lỗi")
+                }
+
+            })
+
+        })
+    </script>
+
+
+</div>
+
+
+{% endblock content %}

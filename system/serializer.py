@@ -30,10 +30,16 @@ class getTeacherAll(serializers.ModelSerializer):
     class Meta:
         model = phanquyen
         fields = ["id","first_name","last_name","email","teacher"]
+class getAttData(serializers.ModelSerializer):
+    
+    class Meta:
+        model =attendance
+        fields = ['id','id_diemdanh','id_sinhvien','diemdanh']
 class getAtt(serializers.ModelSerializer):
+    attdetails = getAttData(many=True, read_only=True)
     class Meta:
         model = diemdanh
-        fields = ['id','ngay_diem_danh']
+        fields = ['id','ngay_diem_danh','attdetails']
 
 class getSubject(serializers.ModelSerializer):
     att = getAtt(many=True, read_only=True)
@@ -42,11 +48,7 @@ class getSubject(serializers.ModelSerializer):
         fields = ['id','ten_hoc_phan','att']
 
      
-class getAttData(serializers.ModelSerializer):
-    
-    class Meta:
-        model =attendance
-        fields = ['id','id_diemdanh','id_sinhvien','diemdanh']
+
 class getAttDataStudent(serializers.ModelSerializer):
     attdata= getAttData(many=True, read_only=True)
     class Meta:
@@ -57,15 +59,25 @@ class getAttDataDetail(serializers.ModelSerializer):
         model=attendance
         fields = ['id']
 
-class getNotification(serializers.ModelSerializer):
+
+
+class getAttStaff(serializers.ModelSerializer):
     class Meta:
-        model = notifications
-        fields = ['id_giangvien','noti_title','noti_content','ngay_tao','id_hocphan'] 
+        model  = staff_att
+        fields = ['id']
 
-
-
-        
-
+class getAttStaffDetailIn(serializers.ModelSerializer):
+    class Meta :
+        model = staffDo_att_in
+        fields = ['id','id_department','id_diemdanh','id_nhanvien','diemdanh']  
+class getAttStaffDetailOut(serializers.ModelSerializer):
+    class Meta :
+        model = staffDo_att_out
+        fields = ['id','id_department','id_diemdanh','id_nhanvien','diemdanh'] 
+class getAttStudent(serializers.ModelSerializer):
+    class Meta:
+        model = attendance
+        fields = ['id','diemdanh','id_diemdanh_id']
 
 class LoginSerializer(serializers.Serializer):
     username = serializers.CharField()
@@ -95,8 +107,13 @@ class SubjectSerializer(serializers.Serializer):
         if l:
             return l
         raise serializers.ValidationError("Error")
-
-
+class AttStudentSerializer(serializers.Serializer):
+    id=serializers.IntegerField()
+    def validate(self, data):
+        h = UserBackend.authenticate_att_student(self,**data)
+        if h:
+            return h
+        raise serializers.ValidationError("Error")
 class AttSerializer(serializers.Serializer):
     id = serializers.IntegerField()
     def validate(self,data):
@@ -104,12 +121,30 @@ class AttSerializer(serializers.Serializer):
         if h:
             return h
         raise serializers.ValidationError("Error")
-
+class AttDetailStaffInSerializer(serializers.Serializer):
+    id_nhanvien = serializers.IntegerField()
+    id_diemdanh = serializers.IntegerField()
+    id_department = serializers.IntegerField()
+    def validate(self,data):
+        a = UserBackend.authenticate_att_staff_in(self,**data)
+        if a:
+            return a
+        raise serializers.ValidationError("Error")
 class AttDetailSerializer(serializers.Serializer):
     mssv = serializers.IntegerField()
     id_diemdanh =serializers.IntegerField()
     def validate(self,data):
         a = UserBackend.authenticate_att_data(self,**data)
+        if a:
+            return a
+        raise serializers.ValidationError("Error")
+
+class AttDetailStaffOutSerializer(serializers.Serializer):
+    id_nhanvien = serializers.IntegerField()
+    id_diemdanh = serializers.IntegerField()
+    id_department = serializers.IntegerField()
+    def validate(self,data):
+        a = UserBackend.authenticate_att_staff_out(self,**data)
         if a:
             return a
         raise serializers.ValidationError("Error")

@@ -1,10 +1,10 @@
 from django.core.checks import messages
 from django.db.models.signals import post_save
-from django.http.response import HttpResponse, HttpResponseRedirect
+from django.http.response import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
 from system.giangvienViews import giangvienViews
-from .models import phanquyen, giangvien, lop, hocphan, sinhvien
+from .models import phanquyen, giangvien, lop, hocphan, sinhvien,diemdanh,attendance
 from django.shortcuts import render
 
 @csrf_exempt
@@ -31,7 +31,15 @@ def themGiangvien(request):
             return HttpResponseRedirect('adminGiangvien')
         except:
             return HttpResponseRedirect("adminThemgiangvien")
-
+def adminHomeSchool(request):
+    soluongsinhvien = sinhvien.objects.filter(owner=request.user.username).count()
+    soluonggiangvien = giangvien.objects.all().count()
+    soluonglop = lop.objects.filter(create_by= request.user.username).count()
+    ls =lop.objects.filter(create_by= request.user.username)
+    soluonghocphan = 0
+    for l in ls :
+        soluonghocphan += hocphan.objects.filter(id_lop_id=l.id).count()
+    return render(request,"templates/adminHomeSchool.html",{'soluonglop':soluonglop,'soluonghocphan':soluonghocphan,'soluongsinhvien':soluongsinhvien,'soluonggiangvien':soluonggiangvien,})
 def themsinhvien(request):
     if request.method != 'POST':
         return HttpResponse("<h2>Lỗi</h2>")
@@ -59,16 +67,17 @@ def themsinhvien(request):
 def toanbogiangvien(request):
     giangviens = giangvien.objects.all()
     return render(request, 'templates/toanbogiangvien.html', {'giangviens': giangviens})
-
+def adminDiemdanh(request):
+    return render(request,"templates/adminDiemdanh.html")
 def toanbosinhvien(request):
-    sinhviens = sinhvien.objects.all()
+    sinhviens = sinhvien.objects.filter(owner=request.user.username)
     return render(request,"templates/toanbosinhvien.html",{"sinhviens":sinhviens})
 def change_teacher_info(request):
     giangviens = giangvien.objects.all()
     return render(request, 'templates/change-teacher.html', {"giangviens": giangviens})
 
 def change_student(request):
-    sinhviens = sinhvien.objects.all()
+    sinhviens = sinhvien.objects.filter(owner=request.user.username)
     return render(request,"templates/change_student.html",{"sinhviens":sinhviens})
 @csrf_exempt
 def deleteTeacher(request):
@@ -129,7 +138,7 @@ def themlop(request):
     else:
         ten_lop = request.POST.get('ten_lop')
         try:
-            i = lop.objects.create(ten_lop=ten_lop)
+            i = lop.objects.create(ten_lop=ten_lop,create_by=request.user.username)
             i.save()
             return HttpResponseRedirect('adminLop')
         except:
@@ -153,3 +162,35 @@ def themhocphan(request):
 
 
 
+@csrf_exempt
+def onload_thongkeadmin(request):
+    try:
+        gs = giangvien.objects.filter(owner=request.user.username)
+        for g in gs:
+            hocphans = hocphan.objects.filter(id_giangvien_id=g.mscb)
+            list_data= []
+            print(hocphans)
+            for h in hocphans:
+                ds = diemdanh.objects.filter(id_hocphan_id = h.id)
+                tong_diemdanh = diemdanh.objects.filter(id_hocphan_id = h.id).count()
+                tong = 0
+                vang = 0
+                comat= 0
+                
+                for d in ds:
+                    atts = attendance.objects.filter(id_diemdanh_id=d.id)
+                    tong += attendance.objects.filter(id_diemdanh_id=d.id).count()
+                    slsv = attendance.objects.filter(id_diemdanh_id=d.id).count()
+                    for att in atts:
+                        
+                        if att.diemdanh == False :
+                            vang +=1
+                        else : 
+                            comat +=1
+                tylecomat = int((comat/tong)*100)
+                data = {"id_hocphan":h.id,"ten_hocphan":h.ten_hoc_phan,"so_buoi_diem_danh":tong_diemdanh,"soluongsinhvien":slsv,"tylecomat":tylecomat}
+                list_data.append(data)
+                print(list_data) 
+        return JsonResponse(json.dumps(list_data), content_type="application/json", safe=False)
+    except :
+        return HttpResponse("Error")

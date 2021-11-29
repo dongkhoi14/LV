@@ -4,7 +4,7 @@ from django.db.models.deletion import CASCADE, DO_NOTHING
 from django.db.models.signals import *
 from django.dispatch import receiver
 from django.db.models.fields import related
-from datetime import datetime,timedelta
+from datetime import datetime, time,timedelta
 from django.utils import timezone
 class phanquyen(AbstractUser):
     user_data = ((1,'quantri'), (2,'giangvien'), (3,'sinhvien'),(4,'staff'))
@@ -69,7 +69,6 @@ class sinhvien(models.Model):
     diachi = models.CharField(max_length=255,null=True,blank=True)
     so_dien_thoai = models.IntegerField(null=True)
     owner = models.CharField(max_length=255,blank=True,null=True)
-
     objects=models.Manager()
     def __str__(self):
         return "MSSV : " +str(self.mssv) + ", Tên : " + self.perm.first_name + " " + self.perm.last_name 
@@ -92,29 +91,16 @@ class diemdanh(models.Model):
 class attendance(models.Model):
     id = models.AutoField(primary_key=True)
     id_sinhvien = models.ForeignKey(sinhvien, on_delete=DO_NOTHING,related_name='attdata')
-    id_diemdanh = models.ForeignKey(diemdanh, on_delete=CASCADE)
-    ngay_tao = models.DateTimeField(auto_now_add=True)
-    ngay_cap_nhat = models.DateTimeField(auto_now=True)
-    diemdanh = models.BooleanField(default=False)
-
-class attendance_out(models.Model):
-    id = models.AutoField(primary_key=True)
-    id_sinhvien = models.ForeignKey(sinhvien, on_delete=DO_NOTHING,related_name='attendance_out')
-    id_diemdanh = models.ForeignKey(diemdanh, on_delete=CASCADE)
+    id_diemdanh = models.ForeignKey(diemdanh, on_delete=CASCADE,related_name="attdetails")
     ngay_tao = models.DateTimeField(auto_now_add=True)
     ngay_cap_nhat = models.DateTimeField(auto_now=True)
     diemdanh = models.BooleanField(default=False)
 
 
 
-class notifications(models.Model):
-    id = models.AutoField(primary_key=True)
-    id_giangvien = models.ForeignKey(giangvien,on_delete=models.CASCADE)
-    noti_content = models.TextField()
-    noti_title = models.CharField(max_length=255,blank=True)
-    id_hocphan = models.ForeignKey(hocphan, on_delete=models.CASCADE,default="1")
-    ngay_tao = models.DateTimeField(auto_now_add=True)
-    ngay_cap_nhat = models.DateTimeField(auto_now=True)
+
+
+
 
 
 
@@ -139,10 +125,43 @@ class staffDo_att_out(models.Model):
     id_nhanvien = models.ForeignKey(sinhvien, on_delete=DO_NOTHING)
     id_diemdanh = models.ForeignKey(staff_att, on_delete=CASCADE)
     id_department = models.ForeignKey(lop, on_delete=CASCADE,default=1)
-
     ngay_tao = models.DateTimeField(default=timezone.now)
     ngay_cap_nhat = models.DateTimeField(auto_now=True)
     diemdanh = models.BooleanField(default=False)
+
+class staff_event(models.Model):
+    id_event = models.AutoField(primary_key=True)
+    time_create = models.DateField(default=timezone.now)
+    name = models.CharField(max_length=254,default="")
+    time_start = models.DateTimeField()
+    time_end = models.DateTimeField()
+    id_department = models.ForeignKey(lop, on_delete=CASCADE,default=1)
+    is_disabled = models.BooleanField(default=False)
+
+class staff_event_checkin(models.Model):
+    id = models.AutoField(primary_key=True)
+    id_event = models.ForeignKey(staff_event,on_delete=CASCADE)
+    checkin = models.BooleanField(default=False)
+    timecheckin = models.DateTimeField(auto_now_add=True)
+    id_nhanvien = models.ForeignKey(sinhvien, on_delete=DO_NOTHING,default=None)
+
+class staff_event_checkout(models.Model):
+    id = models.AutoField(primary_key=True)
+    id_event = models.ForeignKey(staff_event,on_delete=CASCADE)
+    checkout = models.BooleanField(default=False)
+    timecheckout = models.DateTimeField(auto_now_add=True)
+    id_nhanvien = models.ForeignKey(sinhvien, on_delete=DO_NOTHING,default=None)
+
+@receiver(post_save,sender=staff_event)
+def createevent(sender,instance,created,**kwargs):
+    if created:
+        ss = sinhvien.objects.filter(id_lop_id = instance.id_department)
+        for s in ss:
+            i = staff_event_checkin.objects.create(id_event = instance,id_nhanvien_id=s.mssv)
+            i.save()
+            o = staff_event_checkout.objects.create(id_event = instance,id_nhanvien_id=s.mssv)
+            o.save()
+    
 @receiver(post_save,sender=phanquyen)
 def tao_nguoi_dung(sender,instance,created,**kwargs):
     if created:
@@ -151,7 +170,7 @@ def tao_nguoi_dung(sender,instance,created,**kwargs):
         if instance.user_type==2:
             giangvien.objects.create(perm=instance,hocvan="1")
         if instance.user_type==3:
-            sinhvien.objects.create(perm=instance, id_lop=lop.objects.get(id=2))
+            sinhvien.objects.create(perm=instance, id_lop=lop.objects.get(id=1))
         
 
 @receiver(post_save,sender=phanquyen)
@@ -162,4 +181,5 @@ def them_nguoi_dung(sender,instance,**kwargs):
         instance.giangvien.save()
     if instance.user_type==3:
         instance.sinhvien.save()
+    
     

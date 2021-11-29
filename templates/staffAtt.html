@@ -5,13 +5,16 @@ Quản lý nhân viên
 {% block headcontent %}
 <script src="http://netdna.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
 <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
 <style type="text/css">
     a:link {
         text-decoration: none;
     }
-
+    #staffAtt{
+        background-color:blue;
+    }
     h6 {
         color: white;
     }
@@ -131,7 +134,7 @@ Quản lý nhân viên
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title" style="text-align:center">Quét QR để chấm công</h4>
+                        <h4 class="modal-title" style="text-align:center" id="title">Quét QR để chấm công</h4>
                     </div>
                     <div class="modal-body" id="QRimage">
 
@@ -214,8 +217,9 @@ Quản lý nhân viên
                 data: { info: info }
             }).done(function (res) {
                 json_data = JSON.parse(res)
+                console.log(json_data)
                 var div = " <table class='table table-hover'><thead><tr><th>Tên</th><th>Check in</th><th>Check out</th><th>Số giờ làm việc</th><th></thead>"
-                for (key in json_data) {
+                for (key in json_data.reverse()) {
                     // div += "<tr><td>" + json_data[key]['hoten'] + "</td><td>" + json_data[key]['ngay_tao'] + "</td><td>" + json_data[key]['soluongnhanvien'] + "</td><td>" + json_data[key]['soluongdiemdanh'] + "</td><td></td></tr><tr id='" + json_data[key]['id_diemdanh'] + "'></tr>"
                     if (json_data[key]['checkin'] == false && json_data[key]['checkout'] == false) {
                         div += "<tr><td>" + json_data[key]['hoten'] + "</td><td>Chưa có</td><td>Chưa có</td><td>0</td></tr>"
@@ -226,7 +230,7 @@ Quản lý nhân viên
 
                     }
                     if (json_data[key]['checkin'] == true && json_data[key]['checkout'] == true) {
-                        div += "<tr><td>" + json_data[key]['hoten'] + "</td><td>" + json_data[key]['thoigiancheckin'] + "</td><td>" + json_data[key]['thoigiancheckin'] + "</td><td>Chưa có</td></tr>"
+                        div += "<tr><td>" + json_data[key]['hoten'] + "</td><td>" + json_data[key]['thoigiancheckin'] + "</td><td>" + json_data[key]['thoigiancheckout'] + "</td><td>"+json_data[key]['thoigianlamviec']+"</td></tr>"
 
                     }
 
@@ -242,7 +246,10 @@ Quản lý nhân viên
                 data: {},
             }).done(function (res) {
                 json_data_img = JSON.parse(res)
+                console.log(json_data_img)
+
                 $('#QRimage').html('<img src="' + json_data_img.url + '" style="display: block;margin-left: auto;margin-right: auto;" />');
+                $('#title').html('<div>Quét QR để checkin</div>')
             })
         })
         $(document).on("click", "#QRcheckout", function () {
@@ -252,7 +259,9 @@ Quản lý nhân viên
                 data: {},
             }).done(function (res) {
                 json_data_img = JSON.parse(res)
+                console.log(json_data_img)
                 $('#QRimage').html('<img src="' + json_data_img.url + '" style="display: block;margin-left: auto;margin-right: auto;" />');
+                $('#title').html('<div>Quét QR để checkout</div>')
             })
         })
     })

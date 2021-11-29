@@ -43,6 +43,14 @@ class UserBackend(ModelBackend):
         else:
             
             return h
+    def authenticate_att_student(self,id=None,**kwargs):
+        try:
+            a = attendance.objects.get(pk=id)
+            print(a)
+        except attendance.DoesNotExist:
+            return None
+        else:
+            return a
     def authenticate_att_data(self,mssv=None,id_diemdanh=None,**kwargs):
         try:
             a = attendance.objects.get(id_sinhvien=mssv,id_diemdanh=id_diemdanh)
@@ -50,4 +58,17 @@ class UserBackend(ModelBackend):
             return None
         else:
             return a
-        
+    def authenticate_att_staff_in(self,id_nhanvien = None,id_diemdanh =None,id_department = None,**kwargs):
+        try:
+            a = staffDo_att_in.objects.get(id_nhanvien=id_nhanvien,id_diemdanh=id_diemdanh,id_department=id_department)
+        except staffDo_att_in.DoesNotExist :
+            return None
+        else:
+            return a
+    def authenticate_att_staff_out(self,id_nhanvien = None,id_diemdanh =None,id_department = None,**kwargs):
+        try:
+            a = staffDo_att_out.objects.get(id_nhanvien=id_nhanvien,id_diemdanh=id_diemdanh,id_department=id_department)
+        except staffDo_att_out.DoesNotExist :
+            return None
+        else:
+            return a

@@ -3,7 +3,7 @@ from django.http import response
 from django.http.response import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
-from .models import attendance, attendance_out, lop, giangvien, hocphan, notifications, sinhvien, diemdanh
+from .models import attendance,lop, giangvien, hocphan, sinhvien, diemdanh
 from rest_framework import viewsets
 from django.http import request
 from django.core.serializers.json import DjangoJSONEncoder
@@ -52,24 +52,7 @@ def noti(request):
     return render(request, 'templates/noti.html', {'hocphans': hocphans})
 
 
-def addNotifications(request):
-    if request.method != "POST":
-        return HttpResponse("<h2>Lỗi</h2>")
-    else:
-        notiTitle = request.POST.get("notiTitle")
-        notiContent = request.POST.get('notiContent')
-        g = giangvien.objects.get(perm=request.user.id)
-        id_giangviens = g.mscb
-        id = request.POST.get('id')
-        try:
-            print("den day la duoc")
-            noti = notifications.objects.create(
-                id_giangvien_id=id_giangviens, noti_content=notiContent, noti_title=notiTitle, id_hocphan_id=id)
-            noti.save()
-            return HttpResponseRedirect('thongbao')
-        except:
-            messages.Error("Khoong the them thong bao")
-            return HttpResponseRedirect('addNoti')
+
 
 
 def thongke(request):
@@ -83,6 +66,7 @@ def onload_thongke(request):
         g = giangvien.objects.get(perm=request.user.id)
         hocphans = hocphan.objects.filter(id_giangvien_id=g.mscb)
         list_data= []
+        print(hocphans)
         for h in hocphans:
             ds = diemdanh.objects.filter(id_hocphan_id = h.id)
             tong_diemdanh = diemdanh.objects.filter(id_hocphan_id = h.id).count()
@@ -102,9 +86,8 @@ def onload_thongke(request):
                         comat +=1
             tylecomat = int((comat/tong)*100)
             data = {"id_hocphan":h.id,"ten_hocphan":h.ten_hoc_phan,"so_buoi_diem_danh":tong_diemdanh,"soluongsinhvien":slsv,"tylecomat":tylecomat}
-
             list_data.append(data)
-            
+            print(list_data) 
         return JsonResponse(json.dumps(list_data), content_type="application/json", safe=False)
     except :
         return HttpResponse("Error")
@@ -117,15 +100,16 @@ def details_thongke(request):
         h = hocphan.objects.get(pk = id_hocphan)
         l = lop.objects.get(pk = h.id_lop_id)
         ss = sinhvien.objects.filter(id_lop_id =l.id ) #Lay danh sach sinh vien
-
+        print(ss)
         ds = diemdanh.objects.filter(id_hocphan_id= id_hocphan) #lay diem danh
-
+        print(ds)
         list_data  = []
         for s in ss :
             count = 0
             for d in ds:
                 count += attendance.objects.filter(id_sinhvien = s.mssv,id_diemdanh=d.id,diemdanh=False).count()
             data = {"name": s.perm.first_name + " " + s.perm.last_name ,"mssv":s.mssv,"solanvang":count}
+            
             list_data.append(data)
         return JsonResponse(json.dumps(list_data), content_type="application/json", safe=False)
     except:
@@ -212,8 +196,7 @@ def createAtt(request):
         for student in students:
             att = attendance.objects.create(
                 id_sinhvien_id=student.mssv, id_diemdanh_id=currentAtt.id)
-            att_out = attendance_out.objects.create(
-                id_sinhvien_id=student.mssv, id_diemdanh_id=currentAtt.id)
+            
             att.save()
         print(students)
         data = {"id": currentAtt.id, "ngay_diem_danh": currentAtt.ngay_diem_danh,
@@ -287,31 +270,4 @@ def reAtt(request):
         return HttpResponse("Error")
 
 
-@csrf_exempt
-def allnoti(request):
-    id_hocphans = request.POST.get("id_hocphan")
-    g = giangvien.objects.get(perm=request.user.id)
-    id_giangviens = g.mscb
-    try:
-        notis = notifications.objects.filter(
-            id_hocphan_id=id_hocphans, id_giangvien_id=id_giangviens)
-        list_data = []
-        for noti in notis:
-            data = {"id": noti.id, "noti_title": noti.noti_title,
-                    "noti_content": noti.noti_content, "ngay_tao": noti.ngay_tao}
-            list_data.append(data)
-        return JsonResponse(json.dumps(list_data, cls=DjangoJSONEncoder), content_type="application/json", safe=False)
-    except:
-        return HttpResponse("Error")
 
-
-@csrf_exempt
-def deleteNoti(request):
-    id_noti = request.POST.get("id")
-    id_noti = int(id_noti)
-    try:
-        noti = notifications.objects.get(pk=id_noti)
-        noti.delete()
-        return HttpResponse("OK")
-    except:
-        return HttpResponse("Error")

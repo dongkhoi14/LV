@@ -12,13 +12,14 @@ from system.enterpriseViews import *
 from rest_framework.routers import DefaultRouter
 from django.conf.urls import include
 from django.urls import path
-from system.api import getSubjectAPI, loginAPI,getStudnetIDAPI,getAttAPI,UpdateAttDataAPI,getAttDetailAPI
+from system.api import *
 from knox import views as knox_views
 
 
 urlpatterns = [
     path('', views.adminLogin),
     path('admin/', admin.site.urls),
+    path('adminHomeSchool',adminHomeSchool,name="adminHomeSchool"),
     # Giảng viên
     path('adminGiangvien/',views.adminGiangvien),
     path('adminThemgiangvien',views.adminThemgiangvien),
@@ -29,10 +30,7 @@ urlpatterns = [
     path('giangvien_Lop',giangvien_Lop ),
     path('thongbao',giangvienNoti ),
     path('addNoti',addNoti),
-    path('addNotifications',addNotifications),
     path('noti',noti),
-    path('allnoti',allnoti, name='allnoti'),
-    path('deleteNoti',deleteNoti,name="deleteNoti"),
     path('deleteTeacher',deleteTeacher,name="deleteTeacher"),
     path('getupdateTeacher',getupdateTeacher,name="getupdateTeacher"),
     path('updateTeacher',updateTeacher,name="updateTeacher"),
@@ -68,10 +66,14 @@ urlpatterns = [
     path('thongke',thongke,name='thongke'),
     path('onload_thongke',onload_thongke,name='onload_thongke'),
     path('details_thongke',details_thongke,name='details_thongke'),
+    path('adminDiemdanh',adminDiemdanh,name='adminDiemdanh'),
+    path('onload_thongkeadmin',onload_thongkeadmin,name='onload_thongkeadmin'),
     #path('danhsach', danhsach, name='danhsach'),
     #Đăng nhập
     path('loginAdmin', views.loginAdmin),
     path('logout', views.logOut),
+    path('change_password',views.change_password),
+    path('changePassword',views.changePassword),
     #api
     path("api/auth", include('knox.urls')),
     path('api/auth/login',loginAPI.as_view()),
@@ -80,7 +82,11 @@ urlpatterns = [
     path('api/auth/att',getAttAPI.as_view()),
     path('api/auth/update/<int:pk>',UpdateAttDataAPI.as_view()),
     path('api/auth/attdetails',getAttDetailAPI.as_view()),
-
+    path('api/auth/updatestaffin/<int:pk>',UpdateAttDataStaffInAPI.as_view()),
+    path('api/auth/attdetailsstaffin',getAttDetailStaffInAPI.as_view()),
+    path('api/auth/updatestaffout/<int:pk>',UpdateAttDataStaffOutAPI.as_view()),
+    path('api/auth/attdetailsstaffout',getAttDetailStaffOutAPI.as_view()),
+    path('api/auth/attstudent',getAttStudentAPI.as_view()),
     #Enterprise
     path('adminEnterprise',views.adminEnterprise,name='adminEnterprise'),
     path('adminEnterpriseManager',adminEnterpriseManager,name="adminEnterpriseManager"),
@@ -96,4 +102,10 @@ urlpatterns = [
     path('createStaff',createStaff,name='createStaff'),
     path('QRcheckin',QRcheckin,name='QRcheckin'),
     path('QRcheckout',QRcheckout,name='QRcheckout'),
+    path('deleteStaff',deleteStaff,name='deleteStaff'),
+    path('staffEvent',staffEvent,name='staffEvent'),
+    path('staffHistory',staffHistory,name='staffHistory'),
+    path('staffEventAtt',staffEventAtt,name="staffEventAtt"),
+    path('historystaffattevent',historystaffattevent,name='historystaffattevent'),
+    path('deleteEvent',deleteEvent,name='deleteEvent'),
 ]

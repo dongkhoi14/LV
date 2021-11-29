@@ -2,9 +2,11 @@
 {% block title %}
 Quản lý nhân viên
 {% endblock title %}
+{% load static %}
 {% block headcontent %}
-
 <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
 <style type="text/css">
     a:link {
         text-decoration: none;
@@ -109,7 +111,7 @@ Quản lý nhân viên
             Quản lý nhân viên
         </div>
         <div class="panel-body">
-            
+
             <span>
                 <table class="table table-bordered table-hover " id="dev-table">
                     <thead>
@@ -125,27 +127,166 @@ Quản lý nhân viên
                         </tr>
                     </thead>
                     {% for staff in staffs %}
-                    <tr id="{{ t.mscb}}">
+                    {% if staff.perm.is_active == True %}
+                    <tr id="{{ staff.mssv}}">
                         <td> {{staff.perm.first_name}} {{ staff.perm.last_name}}</td>
                         <td>{{staff.mssv}}</td>
                         <td>{{staff.ngay_tao}}</td>
                         <td>{{staff.id_lop.ten_lop}}</td>
                         <td>{{staff.perm.username}}</td>
-                        <td><button class="btn btn-primary btn-block" id='deleteStudent' value="{{t.mssv}}"
-                                data-toggle="modal" data-target="#myModal">Cập nhật</button></td>
-                        <td><button class="btn btn-primary btn-block" id="getupdateStudent"
-                                value="{{t.mssv}}">Xóa</button>
+                        <td><button class="btn btn-primary btn-block" id='getupdateStaff' data-toggle="modal" data-target="#myModal" value="{{t.mssv}}"
+                                >Cập nhật</button></td>
+                        <td><button class="btn btn-primary btn-block" id="deleteStaff"
+                                value="{{staff.mssv}}">Xóa</button>
                         </td>
 
                     </tr>
+                      
+                    {% endif %}
 
                     {% endfor %}
                 </table>
             </span>
         </div>
     </div>
-</div>
+    <div class="form-group">
 
 
+        <!-- Modal -->
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog" role="document">
+                <form role="form" action="/updateTeacher" method="post">
+                    <div class="modal-content">
+                        <div class="modal-header" style="background-color:#428BCA;">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                    aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="myModalLabel" style=" text-align: center">Thay đổi Thông tin
+                                giảng viên</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label>Họ</label>
+                                <input type="text" class="form-control" placeholder="First Name" name="first_name"
+                                    id="first_name">
+                            </div>
+                            <div class="form-group">
+                                <label>Tên</label>
+                                <input type="text" class="form-control" placeholder="Last Name" name="last_name"
+                                    id="last_name">
+                            </div>
+                            <div class="form-group">
+                                <label>Trình độ</label>
+                                <select class="hocvan" id="hocvan">
+                                    <option value="1">Đại học</option>
+                                    <option value="2" selected>Thạc sĩ</option>
+                                    <option value="3">Tiến sĩ</option>
+                                    <option value="4">Giáo sư</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Địa chỉ hiện tại</label>
+                                <p id="present_address"></p>
+                                <label>Địa chỉ</label>
+                                <select name="ls_province" id="tinh"></select>
+                                <select name="ls_district" id="huyen"></select>
+                                <select name="ls_ward" id="xa"></select>
+                            </div>
+                            <div class="form-group">
+                                <label>Số điện thoại</label>
+                                <input type="text" class="form-control" name="sodienthoai" id="sodienthoai"
+                                    placeholder="Số điện thoại" data-format="0ddddddddd">
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" id="apply_change">Lưu</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+
+    <script src="{% static 'dist/js/vietnamlocalselector.js' %}"></script>
+    <script>
+        var localpicker = new LocalPicker({
+            province: "ls_province",
+            district: "ls_district",
+            ward: "ls_ward"
+        });
+
+        var options = {
+            /*
+                HTML Selector. You can pass value of name, id or class. 
+                It will automatically detect exist elements for you.
+                Example: 'myIdOrClass','#myId', '.myClass', 'myName'
+                */
+            province: 'ls_province',
+            district: 'ls_district',
+            ward: 'ls_ward',
+
+            /*
+            Define value for option tag. Valid option: id|name           
+            */
+            getValueBy: 'name',
+
+            //Placeholder text
+            provinceText: 'Chọn tỉnh / thành phố',
+            districtText: 'Chọn quận / huyện',
+            districtNoText: 'Địa phương này không có quận / huyện',
+            wardText: 'Chọn phường / xã',
+            wardNoText: 'Địa phương này không có phường / xã',
+
+            // Default value if no location exist
+            emptyValue: " ",
+
+            // Hide option where no local exist
+            hideEmptyValueOption: true,
+
+            // Hide place-holder option (first option)
+            hidePlaceHolderOption: true,
+
+            /*
+            Include local level on option text as prefix
+            Example: true = Quận Bình Thạnh | false = Bình Thạnh
+            */
+            provincePrefix: false,
+            districtPrefix: true,
+            wardPrefix: true,
+
+            /*
+            Include local level in option tag's attribute
+            */
+            levelAsAttribute: true,
+            levelAttributeName: "data-level",
+        };
+    </script>
+    <script>
+
+        $(document).ready(function () {
+            $(document).on("click", "#deleteStaff", function () {
+                var staffID = $(this).val();
+                console.log(staffID)
+                $.ajax({
+                    url: "{% url 'deleteStaff' %}",
+                    type: "POST",
+                    data: { staffID: staffID }
+                }).done(function (response) {
+                    if (response == "OK") {
+                        console.log("OKK")
+                        document.getElementById(staffID).style.display = "none";
+                        alert("Xóa giảng viên thành công")
+                    }
+                    if (response == "Error") {
+                        console.log("Not ok");
+                    }
+                })
+            })
+        })
+
+    </script>
 </div>
 {% endblock content %}

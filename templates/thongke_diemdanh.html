@@ -36,67 +36,77 @@
         <div class="row">
             <div class="panel panel-primary">
                 <div class="panel-heading">
-                  <h6 class="panel-title">Thống kê</h6>
-          
+                    <h6 class="panel-title">Thống kê</h6>
+
                 </div>
-          
+
                 <div id='thongke_table'></div>
-              </div>
+            </div>
         </div>
     </div>
 </div>
 <div class="modal fade bd-example-modal-lg" id="exampleModalCenter" tabindex="-1" role="dialog"
-        aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
+    aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
             <div class="modal-header">
-              <h3 class="modal-title" id="exampleModalLabel" style="text-align:center;">Chi tiết</h3>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
+                <h3 class="modal-title" id="exampleModalLabel" style="text-align:center;">Chi tiết</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body" id="modal-body">
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
-          </div>
         </div>
-      </div>
+    </div>
+</div>
 <script>
     // window.onload = function(){
     //     alert("OK")
     // }  
-        $(document).ready(function(){
+    $(document).ready(function () {
+        $.ajax({
+            url: "{% url 'onload_thongke'%}",
+            type: "POST",
+        }).done(function (res) {
+            console.log(res)
+            div = ""
+            json_data = JSON.parse(res)
+
+            console.log(json_data)
+            div += "<table class='table table-hover' id='dev-table'><thead><tr><th>Tên lớp</th><th>Số lần điểm danh</th><th>Số lượng sinh viên</th><th>Tỷ lệ có mặt</th><th>Chi tiết</th></tr></thead>";
+
+            for (key in json_data) {
+                div += "<tr><td>" + json_data[key]['ten_hocphan'] + "</td><td>" + json_data[key]['so_buoi_diem_danh'] + "</td><td>" + json_data[key]['soluongsinhvien'] + "</td><td>" + json_data[key]['tylecomat'] + "%</td><td><button type='button' class='btn btn-primary' data-toggle='modal' data-target='#exampleModalCenter' id='details' value='" + json_data[key]['id_hocphan'] + "' >Chi tiết</button></td></tr>"
+                console.log(json_data[key]["id_hocphan"])
+            }
+            div += "</table>"
+
+            $('#thongke_table').html(div)
+        })
+        $(document).on("click", "#details", function () {
+            id_hocphan = $(this).val()
             $.ajax({
-                url : "{% url 'onload_thongke'%}",
+                url: "{% url 'details_thongke'%}",
                 type: "POST",
-            }).done(function(res){
-                console.log(res)
-                div = ""
+                data: { id_hocphan: id_hocphan }
+            }).done(function (res) {
                 json_data = JSON.parse(res)
-
                 console.log(json_data)
-                div += "<table class='table table-hover' id='dev-table'><thead><tr><th>Tên lớp</th><th>Số lần điểm danh</th><th>Số lượng sinh viên</th><th>Tỷ lệ có mặt</th><th>Chi tiết</th></tr></thead>";
+                var div = ""
+                div += "<table class='table table-hover' id='dev-table'><thead><tr><th>Tên</th><th>MSSV</th><th>Số lần vắng</th></tr></thead>";
 
-                for (key in json_data){
-                    div += "<tr><td>"+json_data[key]['ten_hocphan']+"</td><td>"+json_data[key]['so_buoi_diem_danh']+"</td><td>"+json_data[key]['soluongsinhvien']+"</td><td>"+json_data[key]['tylecomat']+"%</td><td><button type='button' class='btn btn-primary' data-toggle='modal' data-target='#exampleModalCenter' id='details' value='"+json_data[key]['id_hocphan']+"' >Chi tiết</button></td></tr>"
+                for (key in json_data) {
+                    div += "<tr><td>" + json_data[key]['name'] + "</td><td>" + json_data[key]['mssv'] + "</td><td>" + json_data[key]['solanvang'] + "</td></tr>"
+                    
                 }
                 div += "</table>"
-
-                $('#thongke_table').html(div)
-            })
-            $(document).on("click","#details",function(){
-                id_hocphan = $(this).val()
-                $.ajax({
-                    url: "{% url 'details_thongke'%}",
-                    type: "POST",
-                    data: {id_hocphan:id_hocphan}
-                }).done(function(res){
-                    json_data = JSON.parse(res)
-                    console.log(json_data)
-                })
+                $('#modal-body').html(div)
             })
         })
+    })
 </script>
 {% endblock content %}

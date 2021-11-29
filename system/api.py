@@ -64,8 +64,20 @@ class getAttAPI(generics.GenericAPIView):
 class UpdateAttDataAPI(generics.UpdateAPIView):
     serializer_class  = getAttData
     queryset = attendance.objects.all()
+class UpdateAttDataStaffInAPI(generics.UpdateAPIView):
+    serializer_class  = getAttStaffDetailIn
+    queryset = staffDo_att_in.objects.all()
+class UpdateAttDataStaffOutAPI(generics.UpdateAPIView):
+    serializer_class  = getAttStaffDetailOut
+    queryset = staffDo_att_out.objects.all()
 
-
+class getAttStudentAPI(generics.GenericAPIView):
+    serializer_class = AttStudentSerializer
+    def post(self,request,*args,**kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        attStudent = serializer.validated_data
+        return Response(getAttStudent(attStudent,context=self.get_serializer_context()).data)
 class getAttDetailAPI(generics.GenericAPIView):
     serializer_class = AttDetailSerializer
     def post(self, request,*args,**kwargs) :
@@ -74,6 +86,19 @@ class getAttDetailAPI(generics.GenericAPIView):
         attDetail = serializer.validated_data
         return Response(getAttData(attDetail,context=self.get_serializer_context()).data)
     
-
+class getAttDetailStaffInAPI(generics.GenericAPIView):
+    serializer_class = AttDetailStaffInSerializer
+    def post(self, request,*args,**kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception = True)
+        attDetailStaffIn = serializer.validated_data
+        return Response(getAttStaffDetailIn(attDetailStaffIn,context=self.get_serializer_context()).data)
+class getAttDetailStaffOutAPI(generics.GenericAPIView):
+    serializer_class = AttDetailStaffOutSerializer
+    def post(self, request,*args,**kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception = True)
+        attDetailStaffOut = serializer.validated_data
+        return Response(getAttStaffDetailOut(attDetailStaffOut,context=self.get_serializer_context()).data)
   
 
