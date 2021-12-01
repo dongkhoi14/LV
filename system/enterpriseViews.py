@@ -1,5 +1,6 @@
 from django.db.models.signals import post_save
 from django.http.response import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.views.decorators import csrf
 from django.views.decorators.csrf import csrf_exempt
 import json
 from system.giangvienViews import giangvienViews
@@ -10,6 +11,9 @@ from datetime import timedelta,datetime
 from django.core.serializers.json import DjangoJSONEncoder
 from django import forms
 import qrcode
+from django.db.models.functions import TruncDay,TruncMonth
+from datetime import date
+
 import hashlib
 import unidecode
 from django.contrib import messages
@@ -30,7 +34,37 @@ def staffEvent(request):
     return render(request,"templates/staffAttEvent.html",{"departments":departments})
 def staffHistory(request):
     return render(request,"templates/staffHistory.html")
-
+@csrf_exempt
+def chart_draw(request):
+    ll = lop.objects.filter(create_by = request.user.username)
+    list_data = []
+    try:
+        
+        for l in ll:
+            count =0
+            ss = sinhvien.objects.filter(id_lop_id=l.id,owner=request.user.username)
+            for s in ss:
+                if s.perm.is_active == True:
+                    count +=1
+            data = {"tenlop":l.ten_lop,"soluong":count}
+            list_data.append(data)
+            
+        return JsonResponse(json.dumps(list_data),content_type="application/json", safe=False)
+    except :
+        return HttpResponse("Error")
+@csrf_exempt
+def chart_staff_att(request):
+    try:
+        list_data=[]
+        for i in range(1,13):
+            aa = staff_att.objects.filter(ngay_tao__month = i).count()
+            month = "Tháng "+str(i)
+            data = {"thang": month,"soluong":aa}
+            print(data)
+            list_data.append(data)
+        return JsonResponse(json.dumps(list_data),content_type="application/json", safe=False)
+    except :
+        return HttpResponse("Error")
 @csrf_exempt
 def deleteStaff(request):
     staffID = request.POST.get('staffID')
@@ -55,11 +89,11 @@ def getListDepartment(request):
             
             counts = 0
             for s in sinhvien.objects.filter(id_lop_id=d.id):
-                if staff.perm.is_active == True:
+                if s.perm.is_active == True:
                     counts +=1
             data = {"ten_bophan": d.ten_lop,"soluongnhanvien":counts}
             list_data.append(data)
-        print(list_data)
+            print(list_data)
         return JsonResponse(json.dumps(list_data),content_type="application/json", safe=False)
     except:
         return HttpResponse("Error")
@@ -247,7 +281,6 @@ def createStaff(request):
         sodienthoai = request.POST.get('sodienthoai')
         id_department = request.POST.get('id_department')
         try:
-            print("ok")
             user = phanquyen.objects.create_user(
                 username=username, first_name=first_name, last_name=last_name, password=password, email=email, user_type=3)
             user.user_type = 4
@@ -278,9 +311,8 @@ def staffEventAtt(request):
         a = event_name + checkintime
         
         time_create = datetime.strftime(timezone.now(),"%Y%m%d")
-        print(datetime.strftime(checkouttime_obj,"%H|%M|%S"))
-        data = event_name +"|"+time_create+"|"+datetime.strftime(checkintime_obj,"%H|%M|%S")+"3"
-        data2 = event_name +"|"+time_create+"|"+datetime.strftime(checkouttime_obj,"%H|%M|%S")+"4"
+        data = event_name +"|"+time_create+"|"+datetime.strftime(checkintime_obj,"%Y%m%d%H%M%S")+"3"
+        data2 = event_name +"|"+time_create+"|"+datetime.strftime(checkouttime_obj,"%Y%m%d%H%M%S")+"4"
 
         try:
             if department_id == "0":
@@ -341,7 +373,6 @@ def historystaffattevent(request):
             i['url_checkin'] = "/static/images/qrcodes/event/"+unidecode.unidecode(i['name'])+datetime.strftime(time_create,"%Y%m%d")+datetime.strftime(time_start,"%H%M%S")+"3.png"
             i['url_checkout'] = "/static/images/qrcodes/event/"+unidecode.unidecode(i['name'])+datetime.strftime(time_create,"%Y%m%d")+datetime.strftime(time_end,"%H%M%S")+"4.png"
 
-            print(i)
         return JsonResponse(json.dumps(list_data, cls=DjangoJSONEncoder),content_type="application/json",safe=False)
     except:
         return HttpResponse("ERROR")
@@ -360,9 +391,45 @@ def deleteEvent(request):
         return JsonResponse(json.dumps(data, cls=DjangoJSONEncoder),content_type="application/json",safe=False)
     except:
         return HttpResponse("ERROR")
-    
+@csrf_exempt   
 def deltailstaffevennt(request):
-    pass
+    if request.method == "POST":
+        name = request.POST.get('name')
+    try:
+        name = name.split("_")
+        time_create = datetime.strptime(name[2],"%d/%m/%Y")
+        ss = staff_event.objects.filter(name=name[0],time_create=time_create)
+        list_data = []
+        
+        
+        for s in ss :
+            
+            aa = staff_event_checkin.objects.filter(id_event_id=s.id_event)
+            for a in aa:
+
+                staff = sinhvien.objects.get(mssv = a.id_nhanvien_id)
+                data = {"id":a.id,"hoten":staff.perm.first_name+" "+staff.perm.last_name,"bophan":staff.id_lop.ten_lop,"checkin":"","time_checkin":"","checkout":"","time_checkout":""}
+
+
+                data['checkin'] = a.checkin
+                if a.checkin == True:
+                    data['time_checkin'] = datetime.strftime(a.timecheckin , '%d/%m/%Y %H:%M')
+                elif a.checkin ==False:
+                    data['time_checkin'] = ""
+                
+                b = staff_event_checkout.objects.get(id_event_id=s.id_event,id_nhanvien_id=staff.mssv)
+                print(b)
+                data['checkout'] = b.checkout
+                print(data['checkout'] )
+                if b.checkout == True:
+                    data['time_checkout'] = datetime.strftime(b.timecheckout , '%d/%m/%Y %H:%M')
+                elif b.checkout ==False:
+                    data['time_checkout'] = ""
+                print(data)
+                list_data.append(data)
+        return JsonResponse(json.dumps(list_data, cls=DjangoJSONEncoder),content_type="application/json",safe=False)
+    except:
+        return HttpResponse("ERROR")
 
 
 

@@ -1,75 +1,77 @@
 {% extends "templates/base_Enterprise.html" %}
 {% block title %}
-  Quản lý nhân viên
+Quản lý nhân viên
 {% endblock title %}
 {% block headcontent %}
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-  <link href="http://netdna.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" rel="stylesheet">
-  
-  <style type="text/css">
-    a:link {
-      text-decoration: none;
-    }
-    #adminEnterprise{
-      background-color: blue;
-    }
-    h6 {
-      color: white;
-    }
+<link href="http://netdna.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" rel="stylesheet">
 
-    .order-card {
-      color: #fff;
-    }
+<style type="text/css">
+  a:link {
+    text-decoration: none;
+  }
 
-    .bg-c-blue {
-      background: linear-gradient(45deg, #4099ff, #73b4ff);
-    }
+  #adminEnterprise {
+    background-color: blue;
+  }
 
-    .bg-c-green {
-      background: linear-gradient(45deg, #2ed8b6, #59e0c5);
-    }
+  h6 {
+    color: white;
+  }
 
-    .bg-c-yellow {
-      background: linear-gradient(45deg, #FFB64D, #ffcb80);
-    }
+  .order-card {
+    color: #fff;
+  }
 
-    .bg-c-pink {
-      background: linear-gradient(45deg, #FF5370, #ff869a);
-    }
+  .bg-c-blue {
+    background: linear-gradient(45deg, #4099ff, #73b4ff);
+  }
+
+  .bg-c-green {
+    background: linear-gradient(45deg, #2ed8b6, #59e0c5);
+  }
+
+  .bg-c-yellow {
+    background: linear-gradient(45deg, #FFB64D, #ffcb80);
+  }
+
+  .bg-c-pink {
+    background: linear-gradient(45deg, #FF5370, #ff869a);
+  }
 
 
-    .card {
-      border-radius: 5px;
-      -webkit-box-shadow: 0 1px 2.94px 0.06px rgba(4, 26, 55, 0.16);
-      box-shadow: 0 1px 2.94px 0.06px rgba(4, 26, 55, 0.16);
-      border: none;
-      margin-bottom: 30px;
-      -webkit-transition: all 0.3s ease-in-out;
-      transition: all 0.3s ease-in-out;
-    }
+  .card {
+    border-radius: 5px;
+    -webkit-box-shadow: 0 1px 2.94px 0.06px rgba(4, 26, 55, 0.16);
+    box-shadow: 0 1px 2.94px 0.06px rgba(4, 26, 55, 0.16);
+    border: none;
+    margin-bottom: 30px;
+    -webkit-transition: all 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out;
+  }
 
-    .card .card-block {
-      padding: 25px;
-    }
+  .card .card-block {
+    padding: 25px;
+  }
 
-    .order-card i {
-      font-size: 26px;
-    }
+  .order-card i {
+    font-size: 26px;
+  }
 
-    .f-left {
-      float: left;
-    }
+  .f-left {
+    float: left;
+  }
 
-    .f-right {
-      float: right;
-    }
-    
-  </style>
-  
+  .f-right {
+    float: right;
+  }
+</style>
+
 {% endblock headcontent %}
 
 {% block content %}
+
 <body>
   <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
   <div class="container">
@@ -87,15 +89,15 @@
         </div>
       </div>
       <div class="col">
-          <div class="card bg-c-green order-card">
-            <div class="card-block">
-              <a href="/addStaff">
-                <h6 class="m-b-20">Số lượng phòng ban : {{ departments}}</h6>
-              </a>
-              <br>
-              <h2 class="text-right"><i class="fa fa-plus-square f-left"></i></h2>
-            </div>
+        <div class="card bg-c-green order-card">
+          <div class="card-block">
+            <a href="/addStaff">
+              <h6 class="m-b-20">Số lượng phòng ban : {{ departments}}</h6>
+            </a>
+            <br>
+            <h2 class="text-right"><i class="fa fa-plus-square f-left"></i></h2>
           </div>
+        </div>
       </div>
       <div class="col">
         <div class="card bg-c-yellow order-card">
@@ -108,20 +110,149 @@
           </div>
         </div>
       </div>
-      
 
-   
 
+
+
+
+    </div>
+    <div class="row">
+      <div class="col">
+        <div class="card card-default">
+          <div class="card-header" style="text-align: center;">Nhân viên</div>
+          <div class="card-body">
+            <canvas id="myChart" height="100px" width="200px"></canvas>
+          </div>
+        </div>
+
+      </div>
+      <div class="col">
+        <div class="card card-default">
+          <div class="card-header" style="text-align: center;">Chấm công</div>
+
+          <div class="card-body">
+            <canvas id="myChart1" height="100px" width="200px"></canvas>
+          </div>
+        </div>
+
+      </div>
       
     </div>
-    
+    <div class="row">
+      <div class="col">
+        <div class="card card-default">
+          <div class="card-body">
+            <canvas id="myChart1" height="100px" width="200px"></canvas>
+          </div>
+        </div>
+
+      </div>
+    </div>
     <br><br><br><br><br><br><br><br>
+
   </div>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.6.0/chart.min.js"></script>
 
-  <script src="http://netdna.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js"></script>
+  <script>
+    var jsonObj = ["Ruby", "jQuery", "Java", "ASP.Net", "PHP"]
+
+  // var BarChart = (myChart,{
+  //     labels: ["Ruby", "jQuery", "Java", "ASP.Net", "PHP"],
+  //     datasets: [{
+  //         label:"ok",
+  //         data: [13, 20, 30, 40, 50]
+  //     }]
+  // })
+  </script>
   <script type="text/javascript">
+    $(document).ready(function () {
+      $.ajax({
+        url:'chart_staff_att',
+        type:'post',
+        data:{},
 
+      }).done(function(res){
+        var json_data = JSON.parse(res)
+        console.log(json_data)
+        var label = []
+        var data = []
+
+        for (key in json_data) {
+          label.push(json_data[key]['thang'])
+          data.push(json_data[key]['soluong'])
+        }
+        console.log(data)
+        let myChart = document.getElementById("myChart1").getContext('2d');
+        let barChart = new Chart(myChart, {
+          type: "bar",
+          data: {
+            labels: label,
+            datasets: [
+              {
+                label: "Chấm công",
+                data: data,
+                backgroundColor: [
+                  '#3b73cc',
+
+                ],
+                
+              }
+            ],
+
+          },
+          option: {
+            responsive: true,
+            title: {
+              display: true,
+              text: 'Population Bar Chart'
+            }
+          }
+        });
+      })
+      $.ajax({
+        url: 'chart_draw',
+        type: 'post',
+        data: {}
+      }).done(function (res) {
+        json_data = JSON.parse(res)
+        console.log(json_data)
+        var label = []
+        var data = []
+
+        for (key in json_data) {
+          label.push(json_data[key]['tenlop'])
+          data.push(json_data[key]['soluong'])
+        }
+        console.log(data)
+        let myChart = document.getElementById("myChart").getContext('2d');
+        let barChart = new Chart(myChart, {
+          type: "bar",
+          data: {
+            labels: label,
+            datasets: [
+              {
+                label: "Nhân viên",
+                data: data,
+                backgroundColor: [
+                  '#3fc93a',
+
+                ],
+                
+              }
+            ],
+
+          },
+          option: {
+            responsive: true,
+            title: {
+              display: true,
+              text: 'Population Bar Chart'
+            }
+          }
+        });
+      })
+    })
   </script>
 </body>
 {% endblock content %}

@@ -96,6 +96,14 @@ class attendance(models.Model):
     ngay_cap_nhat = models.DateTimeField(auto_now=True)
     diemdanh = models.BooleanField(default=False)
 
+class attendance_out(models.Model):
+    id = models.AutoField(primary_key=True)
+    id_sinhvien = models.ForeignKey(sinhvien, on_delete=DO_NOTHING,related_name='attdataout')
+    id_diemdanh = models.ForeignKey(diemdanh, on_delete=CASCADE,related_name="attdetailsout")
+    ngay_tao = models.DateTimeField(auto_now_add=True)
+    ngay_cap_nhat = models.DateTimeField(auto_now=True)
+    diemdanh = models.BooleanField(default=False)
+
 
 
 
@@ -140,16 +148,16 @@ class staff_event(models.Model):
 
 class staff_event_checkin(models.Model):
     id = models.AutoField(primary_key=True)
-    id_event = models.ForeignKey(staff_event,on_delete=CASCADE)
+    id_event = models.ForeignKey(staff_event,on_delete=CASCADE,related_name="eventcheckin")
     checkin = models.BooleanField(default=False)
-    timecheckin = models.DateTimeField(auto_now_add=True)
+    timecheckin = models.DateTimeField(auto_now=True)
     id_nhanvien = models.ForeignKey(sinhvien, on_delete=DO_NOTHING,default=None)
 
 class staff_event_checkout(models.Model):
     id = models.AutoField(primary_key=True)
-    id_event = models.ForeignKey(staff_event,on_delete=CASCADE)
+    id_event = models.ForeignKey(staff_event,on_delete=CASCADE,related_name="eventcheckout")
     checkout = models.BooleanField(default=False)
-    timecheckout = models.DateTimeField(auto_now_add=True)
+    timecheckout = models.DateTimeField(auto_now=True)
     id_nhanvien = models.ForeignKey(sinhvien, on_delete=DO_NOTHING,default=None)
 
 @receiver(post_save,sender=staff_event)

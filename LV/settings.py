@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'qr_code',
     'corsheaders',
 
+
 ]
 
 MIDDLEWARE = [
@@ -57,6 +58,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
+
 ]
 
 ROOT_URLCONF = 'LV.urls'
@@ -64,7 +66,7 @@ ROOT_URLCONF = 'LV.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [ BASE_DIR ],
+        'DIRS': [BASE_DIR],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -90,8 +92,8 @@ DATABASES = {
         'NAME': 'djangodatabase',
         'HOST': 'localhost',
         'PORT': '3306',
-        'USER':'root',
-        'PASSWORD':'123456',
+        'USER': 'root',
+        'PASSWORD': '123456',
     }
 }
 
@@ -135,7 +137,7 @@ USE_TZ = False
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     BASE_DIR / "static",
-   
+
 ]
 
 # Default primary key field type
@@ -143,7 +145,7 @@ STATICFILES_DIRS = [
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'system.phanquyen'
-AUTHENTICATION_BACKENDS=['system.UserBackend.UserBackend']
+AUTHENTICATION_BACKENDS = ['system.UserBackend.UserBackend']
 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
@@ -152,8 +154,8 @@ REST_FRAMEWORK = {
         'knox.auth.TokenAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
-   'rest_framework.permissions.AllowAny',
-]
+        'rest_framework.permissions.AllowAny',
+    ]
 }
 QR_CODE_CACHE_ALIAS = 'qr-code'
 SERVE_QR_CODE_IMAGE_PATH = 'qr-code-image/'
@@ -168,9 +170,8 @@ CACHES = {
     }
 }
 
-CORS_ALLOW_ALL_ORIGINS = True # If this is used then `CORS_ALLOWED_ORIGINS` will not have any effect
+# If this is used then `CORS_ALLOWED_ORIGINS` will not have any effect
+CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
 
-ALLOWED_HOSTS=[ "localhost", "127.0.0.1","192.168.1.12"]
-
-
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "192.168.1.12"]

@@ -41,25 +41,32 @@
           <h6 class="panel-title">Giảng viên</h6>
 
         </div>
-        <div class="form-group">
-          <label>Môn học </label>
-          <select id="id_hocphan" name="id_hocphan">
-            {% for hocphan in hocphans %}
-            <option value="{{ hocphan.id }}"> {{hocphan.ten_hoc_phan}} ---- {{hocphan.id_lop.ten_lop}}</option>
-            {% endfor %}
+        <div class="panel-body">
+          <div class="form-group">
+            <div><label>Môn học </label>
+              <select id="id_hocphan" name="id_hocphan">
+                {% for hocphan in hocphans %}
+                <option value="{{ hocphan.id }}"> {{hocphan.ten_hoc_phan}} ---- {{hocphan.id_lop.ten_lop}}</option>
+                {% endfor %}
 
-          </select>
+              </select>
+              <button type="button" class="btn btn-primary btn-block" id="danhsach">Danh sách sinh viên</button>
+            </div>
+            <div id="student_data">
+            </div>
+            <div id="att_datas"></div>
+            <div id="attStudentList">
+
+            </div>
+            <div id="student_data_btn">
+            </div>
+          </div>
+        </div>
+        <div class="panel-footer">
+
 
         </div>
-        <div class="card-footer">
-          <button type="button" class="btn btn-primary btn-block" id="danhsach">Danh sách sinh viên</button>
-        </div>
-        <div id="student_data">
-        </div>
-        <div id="att_datas"></div>
-        <div id="attStudentList">
 
-        </div>
       </div>
 
     </div>
@@ -126,6 +133,10 @@
         $(document).ready(function () {
           $('#danhsach').click(function () {
             var id_hocphan = $('#id_hocphan').val()
+            $("#student_data").html("");
+            $("#att_datas").html("");
+            $("#attStudentList").html("");
+            $("#student_data_btn").html("");
 
             $.ajax({
               url: "{% url 'danhsach_sinhvien' %}",
@@ -136,15 +147,18 @@
                 var json_data = JSON.parse(response);
                 var div = "";
 
-                div += "<table class='table table-hover' id='dev-table'><thead><tr><th>MSSV</th><th>Ho tên</th><th>Lớp</th><tr></thead>";
+                div += "<table class='table table-hover table-bordered' id='dev-table'><thead><tr><th>MSSV</th><th>Ho tên</th><th>Lớp</th><tr></thead>";
                 for (key in json_data) {
-                  div += "<tr><td>" + json_data[key]['id'] + "</td><td>" + json_data[key]['name'] + "</td><td>" + json_data[key]['lop'] + "</td><td></td><tr>";
+                  div += "<tr><td>" + json_data[key]['id'] + "</td><td>" + json_data[key]['name'] + "</td><td>" + json_data[key]['lop'] + "</td><tr>";
                 }
                 div += "</table>"
 
-                div += "<button type='button' class='btn btn-primary' data-toggle='modal' data-target='#exampleModalCenter' id='historyAtt'>Lịch sử</button>";
-                div += "<button class='btn btn-primary' class='btn btn-primary'  id= 'createAtt'>Điểm danh</button>"
+                var div1 = "<div id = 'btndiemdanh' ><button type='button' class='btn btn-primary' style='width:33.3%' data-toggle='modal' data-target='#exampleModalCenter' id='historyAtt' value='" + id_hocphan + "'>Lịch sử</button>";
+                div1 += "<button class='btn btn-primary' class='btn btn-primary' type='button' style='width:33.3%' id= 'createAtt'>Điểm danh một lần</button>"
+                div1 += "<button class='btn btn-primary' class='btn btn-primary' type='button' style='width:33.3%' id= 'createAttInOut'>Điểm danh đầu buổi, cuối buổi</button></div>"
                 $("#student_data").html(div);
+                $("#student_data_btn").html(div1)
+
               })
               .fail(function () {
                 alert("Lỗi")
@@ -159,7 +173,7 @@
               $.ajax({
                 url: "{% url 'historyAtt' %}",
                 type: 'POST',
-                data: { id_hocphan: id_hocphan, ngay_diem_danh: ngay_diem_danh },
+                data: { id_hocphan: $(this).val(), ngay_diem_danh: ngay_diem_danh },
               }).done(function (response) {
                 var json_data_att = JSON.parse(response);
                 console.log(json_data_att)
@@ -182,61 +196,7 @@
                 $("#exampleModalLongTitle").html("<h3 style='text-align:center;'>Lịch sử</h3>")
 
               })
-              $(document).on("click", "#historyAttData", function () {
-                id_diemdanh = $(this).val()
-                $.ajax({
-                  url: "{% url 'historyAttData'%}",
-                  type: 'POST',
-                  data: { id_diemdanh: id_diemdanh },
-                }).done(function (response) {
-                  json_data = JSON.parse(response)
-                  console.log(json_data)
-                  div = ""
-                  div += "<table class='table table-hover' id='dev-table'><thead><tr><th>MSSV</th><th>Ho tên</th><th>Trạng thái</th><th>Ngay tao</th><th>ID</th><th>Điểm danh</th><tr></thead>";
 
-                  for (key in json_data) {
-                    var trangthai = ""
-                    if (json_data[key]['trangthai'] == true) {
-                      if (json_data[key]['is_disabled'] == false) {
-                        trangthai = "Đã điểm danh"
-                        div += "<tr ><div><td>" + json_data[key]['mssv'] + "</td><td>" + json_data[key]['ho'] + " " + json_data[key]['ten'] + "</td><td style='background-color:green;' id='" + json_data[key]['id_att'] + "'>" + trangthai + "</td><td>" + json_data[key]['ngay_diem_danh'] + " </td><td>" + json_data[key]['id_diemdanh'] + " </td><td><button class='btn btn-primary' value='" + json_data[key]['id_att'] + "' id='reAtt'>Điểm danh</button></td></div><tr>";
-                      } else {
-                        trangthai = "Đã điểm danh"
-                        div += "<tr ><div><td>" + json_data[key]['mssv'] + "</td><td>" + json_data[key]['ho'] + " " + json_data[key]['ten'] + "</td><td style='background-color:green;' id='" + json_data[key]['id_att'] + "'>" + trangthai + "</td><td>" + json_data[key]['ngay_diem_danh'] + " </td><td>" + json_data[key]['id_diemdanh'] + " </td><td><button class='btn btn-primary' value='" + json_data[key]['id_att'] + "' id='reAtt' disabled>Điểm danh</button></td></div><tr>";
-                      }
-
-
-                    } else {
-                      if (json_data[key]['is_disabled'] == false) {
-                        trangthai = "Chưa điểm danh"
-                        div += "<tr ><div><td>" + json_data[key]['mssv'] + "</td><td>" + json_data[key]['ho'] + " " + json_data[key]['ten'] + "</td><td style='background-color:red;' id='" + json_data[key]['id_att'] + "'>" + trangthai + "</td><td>" + json_data[key]['ngay_diem_danh'] + " </td><td>" + json_data[key]['id_diemdanh'] + " </td><td><button class='btn btn-primary' value='" + json_data[key]['id_att'] + "' id='reAtt'>Điểm danh</button></td></div><tr>";
-                      } else {
-                        trangthai = "Đã điểm danh"
-                        div += "<tr ><div><td>" + json_data[key]['mssv'] + "</td><td>" + json_data[key]['ho'] + " " + json_data[key]['ten'] + "</td><td style='background-color:red;' id='" + json_data[key]['id_att'] + "'>" + trangthai + "</td><td>" + json_data[key]['ngay_diem_danh'] + " </td><td>" + json_data[key]['id_diemdanh'] + " </td><td><button class='btn btn-primary' value='" + json_data[key]['id_att'] + "' id='reAtt' disabled>Điểm danh</button></td></div><tr>";
-                      }
-
-                    }
-                  }
-                  div += "</table>"
-
-                  $('#student_data').html(div)
-                })
-                $(document).on("click", "#reAtt", function () {
-                  id_att = $(this).val()
-                  console.log(id_att)
-                  $.ajax({
-                    url: "{% url 'reAtt'%}",
-                    type: 'post',
-                    data: { id_att: id_att }
-                  }).done(function (res) {
-                    console.log(res)
-                    document.getElementById(id_att).style.backgroundColor = "green"
-                    
-                    delete id_att
-                  })
-
-                })
-              })
               $(document).on("click", "#deleteAtt", function () {
                 id_diemdanh = $(this).val()
                 $.ajax({
@@ -261,79 +221,324 @@
 
             })
 
-            $(document).on("click", "#createAtt", function () {
-              var today = new Date();
-              var dd = String(today.getDate()).padStart(2, '0');
-              var mm = String(today.getMonth() + 1).padStart(2, '0');
-              var yyyy = today.getFullYear();
-              ngay_diem_danh = yyyy + "-" + mm + "-" + dd;
-              var id_hocphan = $('#id_hocphan').val();
-              var cf = confirm("Tạo điểm danh");
-              if (cf == true) {
-                $.ajax({
-                  url: "{% url 'createAtt' %}",
-                  type: 'POST',
-                  data: { ngay_diem_danh: ngay_diem_danh, id_hocphan: id_hocphan },
-                })
-                  .done(function (response) {
-                    console.log(response);
-                    var json_data_att = JSON.parse(response);
 
-                    var div = "";
+          })
+          $(document).on("click", "#createAtt", function () {
+            var today = new Date();
+            var dd = String(today.getDate()).padStart(2, '0');
+            var mm = String(today.getMonth() + 1).padStart(2, '0');
+            var yyyy = today.getFullYear();
+            ngay_diem_danh = yyyy + "-" + mm + "-" + dd;
+            var id_hocphan = $('#id_hocphan').val();
+            var cf = confirm("Tạo điểm danh");
+            if (cf == true) {
+              $.ajax({
+                url: "{% url 'createAtt' %}",
+                type: 'POST',
+                data: { ngay_diem_danh: ngay_diem_danh, id_hocphan: id_hocphan },
+              })
+                .done(function (response) {
+                  console.log(response);
+                  var json_data_att = JSON.parse(response);
 
-                    div += "<table class='table table-hover' id='dev-table'><thead><tr><th>ID</th><th>Ngày điểm danh</th><th>Lớp</th><tr></thead>";
-                    for (key in json_data_att) {
-                      div += "<tr><div><td>" + json_data_att[key]['id'] + "</td><td>" + json_data_att[key]['ngay_diem_danh'] + "</td><td>" + json_data_att[key]['tenlop'] + "</td><td style='width: 50px;'><button id='createQR'  class='btn btn-primary' value='" + json_data_att[key]['id'] + "' data-toggle='modal' data-target='#QRCodeModal' >Tạo QR</button></td><td style='width: 50px;'><button  class='btn btn-primary' value='" + json_data_att[key]['id'] + "' id='historyAttData' >Danh sách</button></td><td style='width: 50px;'><button  class='btn btn-primary' data-toggle='modal' data-target='#exampleModalCenter' id='historyAtt' >Lịch sử</button></td></div><tr>";
-                    }
-                    div += "</table>"
+                  var div = "";
 
-                    $("#att_datas").html(div);
-                  })
-                $(document).on("click", "#createQR", function () {
-                  id_diemdanh = $(this).val()
-                  $.ajax({
-                    url: "{% url 'createQR' %}",
-                    type: 'POST',
-                    data: { id_diemdanh: id_diemdanh, ngay_diem_danh: ngay_diem_danh }
-                  }).done(function (response) {
-                    var json_data_img = JSON.parse(response);
-
-                    $('#qrImage').html('<img src="' + json_data_img.url + '" style="display: block;margin-left: auto;margin-right: auto;" />');
-
-                  })
-                })
-              }
-              $(document).on("click", "#historyAttData", function () {
-                id_diemdanh = $(this).val()
-                $.ajax({
-                  url: "{% url 'historyAttData'%}",
-                  type: 'POST',
-                  data: { id_diemdanh: id_diemdanh },
-                }).done(function (response) {
-                  json_data = JSON.parse(response)
-                  console.log(json_data)
-                  div = ""
-                  div += "<table class='table table-hover' id='dev-table'><thead><tr><th>MSSV</th><th>Ho tên</th><th>Trạng thái</th><th>Ngay tao</th><th>ID</th><th>Điểm danh</th><tr></thead>";
-
-                  for (key in json_data) {
-                    var trangthai = ""
-                    if (json_data[key]['trangthai'] == true) {
-                      trangthai = "Đã điểm danh"
-                      div += "<tr ><div><td>" + json_data[key]['mssv'] + "</td><td>" + json_data[key]['ho'] + " " + json_data[key]['ten'] + "</td><td style='background-color:green;' id='" + json_data[key]['id_att'] + "'>" + trangthai + "</td><td>" + json_data[key]['ngay_diem_danh'] + " </td><td>" + json_data[key]['id_diemdanh'] + " </td><td><button class='btn btn-primary' value='" + json_data[key]['id_att'] + "' id='reAtt'>Điểm danh</button></td></div><tr>";
-
-
-                    } else {
-                      trangthai = "Chưa điểm danh"
-                      div += "<tr ><div><td>" + json_data[key]['mssv'] + "</td><td>" + json_data[key]['ho'] + " " + json_data[key]['ten'] + "</td><td style='background-color:red;' id='" + json_data[key]['id_att'] + "'>" + trangthai + "</td><td>" + json_data[key]['ngay_diem_danh'] + " </td><td>" + json_data[key]['id_diemdanh'] + " </td><td><button class='btn btn-primary'  value='" + json_data[key]['id_att'] + "' id='reAtt'>Điểm danh</button ></td></div><tr>";
-
-                    }
+                  div += "<table class='table table-hover' id='dev-table'><thead><tr><th>ID</th><th>Ngày điểm danh</th><th>Lớp</th><tr></thead>";
+                  for (key in json_data_att) {
+                    div += "<tr><div><td>" + json_data_att[key]['id'] + "</td><td>" + json_data_att[key]['ngay_diem_danh'] + "</td><td>" + json_data_att[key]['tenlop'] + "</td><td style='width: 50px;'><button id='createQR'  class='btn btn-primary' value='" + json_data_att[key]['id'] + "' data-toggle='modal' data-target='#QRCodeModal' >Tạo QR</button></td><td style='width: 50px;'><button  class='btn btn-primary' value='" + json_data_att[key]['id'] + "' id='historyAttData' >Danh sách</button></td></div><tr>";
                   }
                   div += "</table>"
 
-                  $('#student_data').html(div)
+                  $("#att_datas").html(div);
                 })
+              $(document).on("click", "#createQR", function () {
+                id_diemdanh = $(this).val()
+                $.ajax({
+                  url: "{% url 'createQR' %}",
+                  type: 'POST',
+                  data: { id_diemdanh: id_diemdanh, ngay_diem_danh: ngay_diem_danh }
+                }).done(function (response) {
+                  var json_data_img = JSON.parse(response);
+
+                  $('#qrImage').html('<img src="' + json_data_img.url + '" style="display: block;margin-left: auto;margin-right: auto;" />');
+
+                })
+              })
+
+            }
+
+          })
+          $(document).on("click", "#createAttInOut", function () {
+            var today = new Date();
+            var dd = String(today.getDate()).padStart(2, '0');
+            var mm = String(today.getMonth() + 1).padStart(2, '0');
+            var yyyy = today.getFullYear();
+            ngay_diem_danh = yyyy + "-" + mm + "-" + dd;
+            var id_hocphan = $('#id_hocphan').val();
+            console.log(id_hocphan)
+            var cf = confirm("Tạo điểm danh");
+            if (cf == true) {
+              $.ajax({
+                url: 'createAttInOut',
+                type: 'POST',
+                data: { ngay_diem_danh: ngay_diem_danh, id_hocphan: id_hocphan },
+
+              }).done(function (res) {
+                console.log(res)
+                var json_data_att = JSON.parse(res);
+
+                var div = "";
+
+                div += "<table class='table table-hover' id='dev-table'><thead><tr><th>ID</th><th>Ngày điểm danh</th><th>Lớp</th><tr></thead>";
+                for (key in json_data_att) {
+                  div += "<tr><div><td>" + json_data_att[key]['id'] + "</td><td>" + json_data_att[key]['ngay_diem_danh'] + "</td><td>" + json_data_att[key]['tenlop'] + "</td><td style='width: 50px;'><button id='createQR'  class='btn btn-primary' value='" + json_data_att[key]['id'] + "' data-toggle='modal' data-target='#QRCodeModal' >QR Checkin</button></td><td style='width: 50px;'><button id='createQRcheckout'  class='btn btn-primary' value='" + json_data_att[key]['id'] + "' data-toggle='modal' data-target='#QRCodeModal' >QR Checkout</button></td><<td style='width: 50px;'><button  class='btn btn-primary' value='" + json_data_att[key]['id'] + "' id='historyAttData' >Danh sách</button></td></div><tr>";
+                  
+                }
+                div += "</table>"
+
+                $("#att_datas").html(div);
+              })
+              
+              $(document).on("click", "#createQRcheckout", function () {
+                id_diemdanh = $(this).val()
+                $.ajax({
+                  url: "{% url 'createQRcheckout' %}",
+                  type: 'POST',
+                  data: { id_diemdanh: id_diemdanh, ngay_diem_danh: ngay_diem_danh }
+                }).done(function (response) {
+                  var json_data_img = JSON.parse(response);
+                  console.log(json_data_img.url)
+                  $('#qrImage').html('<img src="' + json_data_img.url + '" style="display: block;margin-left: auto;margin-right: auto;" />');
+
+                })
+              })
+            }
+          })
+          $(document).on("click", "#historyAttData", function () {
+            id_diemdanh = $(this).val()
+            $.ajax({
+              url: "{% url 'historyAttData'%}",
+              type: 'POST',
+              data: { id_diemdanh: id_diemdanh },
+            }).done(function (response) {
+              json_data = JSON.parse(response)
+              console.log(json_data)
+              div = ""
+              if (json_data[0]['cocheckout'] == false) {
+                div += "<table class='table table-hover' id='dev-table'><thead><tr><th>MSSV</th><th>Ho tên</th><th>Trạng thái</th><th>Ngay tao</th><th>ID</th><th>Điểm danh</th><tr></thead>";
+
+                if (json_data[0]['is_disabled'] == false) {
+
+                  for (var key = 1; key <= json_data.length - 1; key++) {
+                    if (json_data[key]['trangthai'] == true) {
+                      var trangthai = "Đã điểm danh"
+                      div += "<tr ><div><td>" + json_data[key]['mssv'] + "</td><td>" + json_data[key]['ho'] + " " + json_data[key]['ten'] + "</td><td style='background-color:green;' id='" + json_data[key]['id_att'] + "'>" + trangthai + "</td><td>" + json_data[key]['ngay_diem_danh'] + " </td><td>" + json_data[key]['id_diemdanh'] + " </td><td><button class='btn btn-primary' value='" + json_data[key]['id_att'] + "' id='reAtt'>Điểm danh</button></td></div><tr>";
+                    } else {
+                      var trangthai = "Chưa điểm danh"
+                      div += "<tr ><div><td>" + json_data[key]['mssv'] + "</td><td>" + json_data[key]['ho'] + " " + json_data[key]['ten'] + "</td><td style='background-color:red;' id='" + json_data[key]['id_att'] + "'>" + trangthai + "</td><td>" + json_data[key]['ngay_diem_danh'] + " </td><td>" + json_data[key]['id_diemdanh'] + " </td><td><button class='btn btn-primary' value='" + json_data[key]['id_att'] + "' id='reAtt'>Điểm danh</button></td></div><tr>";
+                    }
+
+                  }
+                  var div1 = ""
+                  div1 += "<table class='table table-hover' id='dev-table'><thead><tr><th>ID</th><th>Ngày điểm danh</th><th>Lớp</th><tr></thead>";
+                  div1 += "<tr><div><td>" + json_data[0]['id'] + "</td><td>" + json_data[0]['ngay_diemdanh'] + "</td><td>" + json_data[0]['ten_hocphan'] + "</td><td style='width: 50px;'><button id='createQR'  class='btn btn-primary' value='" + json_data[0]['id'] + "' data-toggle='modal' data-target='#QRCodeModal' >Tạo QR</button></td><td style='width: 50px;'></td></div><tr>";
+                  div1 += "</table>"
+                } else {
+                  for (var key = 1; key <= json_data.length - 1; key++) {
+                    if (json_data[key]['trangthai'] == true) {
+                      var trangthai = "Đã điểm danh"
+                      div += "<tr ><div><td>" + json_data[key]['mssv'] + "</td><td>" + json_data[key]['ho'] + " " + json_data[key]['ten'] + "</td><td style='background-color:green;' id='" + json_data[key]['id_att'] + "'>" + trangthai + "</td><td>" + json_data[key]['ngay_diem_danh'] + " </td><td>" + json_data[key]['id_diemdanh'] + " </td><td><button class='btn btn-primary' value='" + json_data[key]['id_att'] + "' id='reAtt' disabled>Điểm danh</button></td></div><tr>";
+                    } else {
+                      var trangthai = "Chưa điểm danh"
+                      div += "<tr ><div><td>" + json_data[key]['mssv'] + "</td><td>" + json_data[key]['ho'] + " " + json_data[key]['ten'] + "</td><td style='background-color:red;' id='" + json_data[key]['id_att'] + "'>" + trangthai + "</td><td>" + json_data[key]['ngay_diem_danh'] + " </td><td>" + json_data[key]['id_diemdanh'] + " </td><td><button class='btn btn-primary' value='" + json_data[key]['id_att'] + "' id='reAtt' disabled>Điểm danh</button></td></div><tr>";
+                    }
+
+                  }
+                  var div1 = ""
+                  div1 += "<table class='table table-hover' id='dev-table'><thead><tr><th>ID</th><th>Ngày điểm danh</th><th>Lớp</th><tr></thead>";
+                  div1 += "<tr><div><td>" + json_data[0]['id'] + "</td><td>" + json_data[0]['ngay_diemdanh'] + "</td><td>" + json_data[0]['ten_hocphan'] + "</td><td style='width: 50px;'><button id='createQR'  class='btn btn-primary' value='" + json_data[0]['id'] + "' data-toggle='modal' data-target='#QRCodeModal' disabled>Tạo QR</button></td><td style='width: 50px;'></td></div><tr>";
+                  div1 += "</table>"
+                }
+
+
+
+              }
+              if (json_data[0]['cocheckout'] == true) {
+                var div1 = "";
+
+                div1 += "<table class='table table-hover' id='dev-table'><thead><tr><th>ID</th><th>Ngày điểm danh</th><th>Lớp</th><tr></thead>";
+                if (json_data[0]['is_disabled'] == false) {
+                  div1 += "<tr><div><td>" + json_data[0]['id'] + "</td><td>" + json_data[0]['ngay_diemdanh'] + "</td><td>" + json_data[0]['ten_hocphan'] + "</td><td style='width: 50px;'><button id='createQR'  class='btn btn-primary' value='" + json_data[0]['id'] + "' data-toggle='modal' data-target='#QRCodeModal' >QR Checkin</button></td><td style='width: 50px;'><button id='createQRcheckout'  class='btn btn-primary' value='" + json_data[0]['id'] + "' data-toggle='modal' data-target='#QRCodeModal' >QR Checkout</button></td></div><tr>";
+
+                } else {
+                  div1 += "<tr><div><td>" + json_data[0]['id'] + "</td><td>" + json_data[0]['ngay_diemdanh'] + "</td><td>" + json_data[0]['ten_hocphan'] + "</td><td style='width: 50px;'><button id='createQR'  class='btn btn-primary' value='" + json_data[0]['id'] + "' data-toggle='modal' data-target='#QRCodeModal' disabled>QR Checkin</button></td><td style='width: 50px;'><button id='createQRcheckout'  class='btn btn-primary' value='" + json_data[0]['id'] + "' data-toggle='modal' data-target='#QRCodeModal' disabled >QR Checkout</button></td></div><tr>";
+
+                }
+                div1 += "</table>"
+
+                div += "<table class='table table-hover' id='dev-table'><thead><tr><th>MSSV</th><th>Ho tên</th><th>Checkin</th><th>Checkout</th><th>Ngay tao</th><th>ID</th><th></th><th></th><tr></thead>";
+                for (var key = 1; key <= json_data.length - 1; key++) {
+                  if (json_data[key]["trangthai_in"] == true) {
+                    if (json_data[key]["trangthai_out"] == true) {
+                      div += "<tr>"
+                      div += "<td>" + json_data[key]['mssv'] + "</td>"
+                      div += "<td> " + json_data[key]["ho"] + " " + json_data[key]["ten"] + "</td>"
+                      div += "<td style='background-color:green;' id='" + json_data[key]['id_att_in'] + "'>Đã Checkin </td>"
+                      div += "<td style='background-color:green;' id='" + json_data[key]['id_att_out'] + "'>Đã Checkout </td>"
+                      div += "<td> " + json_data[key]["ngay_diem_danh"] + "</td>"
+                      div += "<td>" + json_data[key]['id_diemdanh'] + " </td>"
+                      if (json_data[0]['is_disabled'] == false) {
+                        div += "<td><button class='btn btn-primary btn-block' id='reAttIn' value='" + json_data[key]["id_att_in"] + "'>Checkin</button> </td>"
+                        div += "<td><button class='btn btn-primary btn-block' id='reAttOut' value='" + json_data[key]["id_att_out"] + "'>Checkout</button> </td>"
+                      } else {
+                        div += "<td><button class='btn btn-primary btn-block' id='reAttIn' value='" + json_data[key]["id_att_in"] + "' disabled>Checkin</button> </td>"
+                        div += "<td><button class='btn btn-primary btn-block' id='reAttOut' value='" + json_data[key]["id_att_out"] + "' disabled>Checkout</button> </td>"
+                      }
+                      div += "</td>"
+                    }
+                    if (json_data[key]["trangthai_out"] == false) {
+                      div += "<tr>"
+                      div += "<td>" + json_data[key]['mssv'] + "</td>"
+                      div += "<td> " + json_data[key]["ho"] + " " + json_data[key]["ten"] + "</td>"
+                      div += "<td style='background-color:green;' id='" + json_data[key]['id_att_in'] + "'>Đã Checkin </td>"
+                      div += "<td style='background-color:red;' id='" + json_data[key]['id_att_out'] + "'> Chưa Checkout </td>"
+                      div += "<td> " + json_data[key]["ngay_diem_danh"] + "</td>"
+                      div += "<td>" + json_data[key]['id_diemdanh'] + " </td>"
+                      if (json_data[0]['is_disabled'] == false) {
+                        div += "<td><button class='btn btn-primary btn-block' id='reAttIn' value='" + json_data[key]["id_att_in"] + "'>Checkin</button> </td>"
+                        div += "<td><button class='btn btn-primary btn-block' id='reAttOut' value='" + json_data[key]["id_att_out"] + "'>Checkout</button> </td>"
+                      } else {
+                        div += "<td><button class='btn btn-primary btn-block' id='reAttIn' value='" + json_data[key]["id_att_in"] + "' disabled>Checkin</button> </td>"
+                        div += "<td><button class='btn btn-primary btn-block' id='reAttOut' value='" + json_data[key]["id_att_out"] + "' disabled>Checkout</button> </td>"
+                      }
+                      div += "</td>"
+                    }
+
+                  }
+                  if (json_data[key]["trangthai_in"] == false) {
+                    if (json_data[key]["trangthai_out"] == true) {
+                      div += "<tr>"
+                      div += "<td>" + json_data[key]['mssv'] + "</td>"
+                      div += "<td> " + json_data[key]["ho"] + " " + json_data[key]["ten"] + "</td>"
+                      div += "<td style='background-color:red;' id='" + json_data[key]['id_att_in'] + "'>Chưa Checkin </td>"
+                      div += "<td style='background-color:green;'id='" + json_data[key]['id_att_out'] + "' >Đã Checkout </td>"
+                      div += "<td> " + json_data[key]["ngay_diem_danh"] + "</td>"
+                      div += "<td>" + json_data[key]['id_diemdanh'] + " </td>"
+                      if (json_data[0]['is_disabled'] == false) {
+                        div += "<td><button class='btn btn-primary btn-block' id='reAttIn' value='" + json_data[key]["id_att_in"] + "'>Checkin</button> </td>"
+                        div += "<td><button class='btn btn-primary btn-block' id='reAttOut' value='" + json_data[key]["id_att_out"] + "'>Checkout</button> </td>"
+                      } else {
+                        div += "<td><button class='btn btn-primary btn-block' id='reAttIn' value='" + json_data[key]["id_att_in"] + "' disabled>Checkin</button> </td>"
+                        div += "<td><button class='btn btn-primary btn-block' id='reAttOut' value='" + json_data[key]["id_att_out"] + "' disabled>Checkout</button> </td>"
+                      }
+                      div += "</td>"
+                    }
+                    if (json_data[key]["trangthai_out"] == false) {
+                      div += "<tr>"
+                      div += "<td>" + json_data[key]['mssv'] + "</td>"
+                      div += "<td> " + json_data[key]["ho"] + " " + json_data[key]["ten"] + "</td>"
+                      div += "<td style='background-color:red;'id='" + json_data[key]['id_att_in'] + "' >Chưa Checkin </td>"
+                      div += "<td style='background-color:red;' id='" + json_data[key]['id_att_out'] + "'> Chưa Checkout </td>"
+                      div += "<td> " + json_data[key]["ngay_diem_danh"] + "</td>"
+                      div += "<td>" + json_data[key]['id_diemdanh'] + " </td>"
+                      if (json_data[0]['is_disabled'] == false) {
+                        div += "<td><button class='btn btn-primary btn-block' id='reAttIn' value='" + json_data[key]["id_att_in"] + "'>Checkin</button> </td>"
+                        div += "<td><button class='btn btn-primary btn-block' id='reAttOut' value='" + json_data[key]["id_att_out"] + "'>Checkout</button> </td>"
+                      } else {
+                        div += "<td><button class='btn btn-primary btn-block' id='reAttIn' value='" + json_data[key]["id_att_in"] + "' disabled>Checkin</button> </td>"
+                        div += "<td><button class='btn btn-primary btn-block' id='reAttOut' value='" + json_data[key]["id_att_out"] + "' disabled>Checkout</button> </td>"
+                      }
+                      div += "</td>"
+                    }
+
+
+
+                  }
+
+                }
+              }
+
+              div += "</table>"
+              $("#att_datas").html(div1);
+              $('#student_data').html(div)
+            })
+            $(document).on("click", "#createQR", function () {
+              id_diemdanh = $(this).val()
+              $.ajax({
+                url: "{% url 'createQR' %}",
+                type: 'POST',
+                data: { id_diemdanh: id_diemdanh, ngay_diem_danh: ngay_diem_danh }
+              }).done(function (response) {
+                var json_data_img = JSON.parse(response);
+
+                $('#qrImage').html('<img src="' + json_data_img.url + '" style="display: block;margin-left: auto;margin-right: auto;" />');
 
               })
+            })
+            $(document).on("click", "#createQRcheckout", function () {
+                id_diemdanh = $(this).val()
+                console.log(id_diemdanh)
+                $.ajax({
+                  url: "{% url 'createQRcheckout' %}",
+                  type: 'POST',
+                  data: { id_diemdanh: id_diemdanh, ngay_diem_danh: ngay_diem_danh }
+                }).done(function (response) {
+                  var json_data_img = JSON.parse(response);
+                  console.log(json_data_img.url)
+
+                  $('#qrImage').html('<img src="' + json_data_img.url + '" style="display: block;margin-left: auto;margin-right: auto;" />');
+
+                })
+              })
+              $(document).on("click", "#createQRcheckout", function () {
+                id_diemdanh = $(this).val()
+                $.ajax({
+                  url: "{% url 'createQRcheckout' %}",
+                  type: 'POST',
+                  data: { id_diemdanh: id_diemdanh, ngay_diem_danh: ngay_diem_danh }
+                }).done(function (response) {
+                  var json_data_img = JSON.parse(response);
+                  console.log(json_data_img.url)
+                  $('#qrImage').html('<img src="' + json_data_img.url + '" style="display: block;margin-left: auto;margin-right: auto;" />');
+
+                })
+              })
+            $(document).on("click", "#reAttIn", function () {
+              var id_att_in = $(this).val()
+              $.ajax({
+                url: 'reAttIn',
+                type: 'post',
+                data: { id_att_in: id_att_in }
+              }).done(function (res) {
+                console.log(res)
+                document.getElementById(id_att_in).style.backgroundColor = "green"
+
+              })
+            })
+            $(document).on("click", "#reAttOut", function () {
+              var id_att_out = $(this).val()
+              $.ajax({
+                url: 'reAttOut',
+                type: 'post',
+                data: { id_att_out: id_att_out }
+              }).done(function (res) {
+                console.log(res)
+                document.getElementById(id_att_out).style.backgroundColor = "green"
+              })
+            })
+            $(document).on("click", "#reAtt", function () {
+              id_att = $(this).val()
+              console.log(id_att)
+              $.ajax({
+                url: "{% url 'reAtt'%}",
+                type: 'post',
+                data: { id_att: id_att }
+              }).done(function (res) {
+                console.log(res)
+                document.getElementById(id_att).style.backgroundColor = "green"
+
+              })
+
             })
           })
         })

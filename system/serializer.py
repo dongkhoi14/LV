@@ -2,6 +2,8 @@ from rest_framework import fields, serializers
 from .models import *
 from django.contrib.auth import authenticate
 from .UserBackend import UserBackend
+from rest_framework import viewsets, permissions, generics
+from rest_framework.response import Response
 
 class StudentID(serializers.ModelSerializer):
     class Meta:
@@ -148,3 +150,135 @@ class AttDetailStaffOutSerializer(serializers.Serializer):
         if a:
             return a
         raise serializers.ValidationError("Error")
+
+#staff checkin event
+class getStaffEvent(serializers.ModelSerializer):
+    class Meta:
+        model = staff_event
+        fields = ['id_event','name','time_create','id_department','time_start','time_end']
+
+class getEventCheckin(serializers.ModelSerializer):
+    eventcheckin = getStaffEvent(many = True, read_only=True)
+    class Meta:
+        model = staff_event_checkin
+        fields = ['id','checkin','eventcheckin']
+class AttStaffEventSerializer(serializers.Serializer):
+    time_create = serializers.DateField()
+    time_start = serializers.DateTimeField()
+    name = serializers.CharField()
+    id_department = serializers.IntegerField()
+    def validate(self,data):
+        a = UserBackend.authenticatie_att_event_checkin(self,**data)
+        if a:
+            return a
+        raise serializers.ValidationError("Error")
+class AttStaffEventDetailIn(serializers.Serializer):
+    id_event = serializers.IntegerField()
+    id_nhanvien =serializers.IntegerField()
+    def validate(self,data):
+        a = UserBackend.authenticatie_att_event_detail_checkin(self,**data)
+        if a:
+            return a
+        raise serializers.ValidationError("Error")
+class AttStaffEventDetailInAPI(generics.GenericAPIView):
+    serializer_class = AttStaffEventDetailIn
+    def post (self,request,*args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        eventdetail = serializer.validated_data
+        return Response(getEventCheckin(eventdetail,context=self.get_serializer_context()).data)
+
+
+
+
+
+class AttStaffEventAPICheckin(generics.GenericAPIView):
+    serializer_class = AttStaffEventSerializer
+    def post(self, request,*args,**kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        event = serializer.validated_data
+        return Response(getStaffEvent(event,context=self.get_serializer_context()).data)
+class UpdateAttEventDataInAPI(generics.UpdateAPIView):
+    serializer_class  = getEventCheckin
+    queryset = staff_event_checkin.objects.all()
+#staff checkout event
+
+
+class getEventCheckOut(serializers.ModelSerializer):
+    eventcheckout = getStaffEvent(many = True, read_only=True)
+    class Meta:
+        model = staff_event_checkout
+        fields = ['id','checkout','eventcheckout']
+class AttStaffEventOutSerializer(serializers.Serializer):
+    time_create = serializers.DateField()
+    time_start = serializers.DateTimeField()
+    name = serializers.CharField()
+    id_department = serializers.IntegerField()
+    def validate(self,data):
+        a = UserBackend.authenticatie_att_event_checkin(self,**data)
+        if a:
+            return a
+        raise serializers.ValidationError("Error")
+
+class AttStaffEventDetailOut(serializers.Serializer):
+    id_event = serializers.IntegerField()
+    id_nhanvien =serializers.IntegerField()
+    def validate(self,data):
+        a = UserBackend.authenticatie_att_event_detail_checkout(self,**data)
+        if a:
+            return a
+        raise serializers.ValidationError("Error")
+class AttStaffEventDetailOutAPI(generics.GenericAPIView):
+    serializer_class = AttStaffEventDetailOut
+    def post (self,request,*args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        eventdetail = serializer.validated_data
+        return Response(getEventCheckOut(eventdetail,context=self.get_serializer_context()).data)
+
+
+
+
+
+class AttStaffEventAPICheckout(generics.GenericAPIView):
+    serializer_class = AttStaffEventOutSerializer
+    def post(self, request,*args,**kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        event = serializer.validated_data
+        return Response(getStaffEvent(event,context=self.get_serializer_context()).data)
+class UpdateAttEventDataOutAPI(generics.UpdateAPIView):
+    serializer_class  = getEventCheckOut
+    queryset = staff_event_checkout.objects.all()
+#check out cua sinh vien
+class getAttDataOut(serializers.ModelSerializer):
+    
+    class Meta:
+        model =attendance
+        fields = ['id','id_diemdanh','id_sinhvien','diemdanh']
+class getAttOut(serializers.ModelSerializer):
+    attdetails = getAttData(many=True, read_only=True)
+    class Meta:
+        model = diemdanh
+        fields = ['id','ngay_diem_danh','attdetailsout']
+class AttDetailOutSerializer(serializers.Serializer):
+    mssv = serializers.IntegerField()
+    id_diemdanh =serializers.IntegerField()
+    def validate(self,data):
+        a = UserBackend.authenticate_att_data_out(self,**data)
+        if a:
+            return a
+        raise serializers.ValidationError("Error")
+
+
+class getAttDetailAPIOut(generics.GenericAPIView):
+    serializer_class = AttDetailOutSerializer
+    def post(self, request,*args,**kwargs) :
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        attDetailOut = serializer.validated_data
+        return Response(getAttDataOut(attDetailOut,context=self.get_serializer_context()).data)
+class UpdateAttDataOutAPI(generics.UpdateAPIView):
+    serializer_class  = getAttDataOut
+    queryset = attendance_out.objects.all()

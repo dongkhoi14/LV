@@ -11,7 +11,7 @@ Sự kiện{% endblock title %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
 <script
     src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
-    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
 
 <style type="text/css">
     a:link {
@@ -275,6 +275,22 @@ Sự kiện{% endblock title %}
                         </div>
                     </div>
                 </div>
+                <div class="modal fade" id="details" role="dialog">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h4 class="modal-title" style="text-align:center" id="title">Chi tiết</h4>
+                            </div>
+                            <div class="modal-body" id="detailscontent">
+
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             {% if messages %}
@@ -344,7 +360,7 @@ Sự kiện{% endblock title %}
                     if (json_data[key]['is_disabled'] == false) {
                         id += 1
                         value_button = json_data[key]['name'] + "_" + id + "_" + json_data[key]['time_create']
-                        div += "<tr id=" + id + "><td>" + json_data[key]['name'] + "</td><td>" + json_data[key]['time_create'] + "</td><td>" + json_data[key]['time_start'] + "</td><td>" + json_data[key]['time_end'] + "</td><td><button class='btn btn-primary btn-block' id='eventStaffCheckin' data-toggle='modal' data-target='#QR' value=" + id + ">Checkin</button></td><td><button class='btn btn-primary btn-block' id='eventStaffCheckout' data-toggle='modal' data-target='#QR' value=" + id + ">Checkout</button></td><td><button class='btn btn-primary btn-block' value='" + value_button + " id='detailstaffevent'>Chi tiết</button></td></td><td><button class='btn btn-primary btn-block' id='deleteEvent' value='" + value_button + "''>Xóa</button></td></tr>"
+                        div += "<tr id=" + id + "><td>" + json_data[key]['name'] + "</td><td>" + json_data[key]['time_create'] + "</td><td>" + json_data[key]['time_start'] + "</td><td>" + json_data[key]['time_end'] + "</td><td><button class='btn btn-primary btn-block' id='eventStaffCheckin' data-toggle='modal' data-target='#QR' value=" + id + ">Checkin</button></td><td><button class='btn btn-primary btn-block' id='eventStaffCheckout' data-toggle='modal' data-target='#QR' value=" + id + ">Checkout</button></td><td><button class='btn btn-primary btn-block' value='" + value_button + "' id='detailstaffevent' data-toggle='modal' data-target='#details'>Chi tiết</button></td></td><td><button class='btn btn-primary btn-block' id='deleteEvent' value='" + value_button + "''>Xóa</button></td></tr>"
 
                         var urlcheckin = json_data[key]['url_checkin']
                         var urlcheckout = json_data[key]['url_checkout']
@@ -357,7 +373,7 @@ Sự kiện{% endblock title %}
                     } else {
                         id += 1
                         value_button = json_data[key]['name'] + "_" + id + "_" + json_data[key]['time_create']
-                        div += "<tr id=" + id + "><td >" + json_data[key]['name'] + "</td><td>" + json_data[key]['time_create'] + "</td><td>" + json_data[key]['time_start'] + "</td><td>" + json_data[key]['time_end'] + "</td><td><button class='btn btn-primary btn-block' id='eventStaffCheckin' disabled >Checkin</button></td><td><button class='btn btn-primary btn-block' id='eventStaffCheckout' disabled>Checkout</button></td><td><button class='btn btn-primary btn-block' value='" + value_button + " id='detailstaffevent'>Chi tiết</button></td></td><td><button class='btn btn-primary btn-block' id='deleteEvent' value='" + value_button + "''>Xóa</button></td></tr>"
+                        div += "<tr id=" + id + "><td >" + json_data[key]['name'] + "</td><td>" + json_data[key]['time_create'] + "</td><td>" + json_data[key]['time_start'] + "</td><td>" + json_data[key]['time_end'] + "</td><td><button class='btn btn-primary btn-block' id='eventStaffCheckin' disabled >Checkin</button></td><td><button class='btn btn-primary btn-block' id='eventStaffCheckout' disabled>Checkout</button></td><td><button class='btn btn-primary btn-block' value='" + value_button + "' id='detailstaffevent' data-toggle='modal' data-target='#details'>Chi tiết</button></td></td><td><button class='btn btn-primary btn-block' id='deleteEvent' value='" + value_button + "''>Xóa</button></td></tr>"
                         item = {}
                         item['id'] = id
                         item['urlcheckin'] = urlcheckin
@@ -368,8 +384,44 @@ Sự kiện{% endblock title %}
                 }
                 $("#historystaffattevent").html(div)
             })
-            $(document).on("click","#detailstaffevent",function(){
+            $(document).on("click", "#detailstaffevent", function () {
                 console.log($(this).val())
+                $.ajax({
+                    url: "deltailstaffevennt",
+                    type: 'POST',
+                    data: {
+                        name: $(this).val()
+                    }
+                }).done(function (res) {
+                    console.log(res)
+                    json_data = JSON.parse(res)
+                    console.log(json_data)
+                    var div = "<table class='table table-bordered table-hover'> <tr><th>Tên</th><th>Bộ phận</th><th>Checkin</th><th>Checkout</th></tr><thead></thead>"
+                    for(key in json_data){
+                        if (json_data[key]['checkin'] == true){
+                            if (json_data[key]['checkout']==true){
+                                div += "<tr><td>"+json_data[key]['hoten']+"</td><td>"+json_data[key]['bophan']+"</td><td>"+json_data[key]['time_checkin']+"</td><td>"+json_data[key]['time_checkout']+"</td></tr>"
+
+                            }
+                            if (json_data[key]['checkout']==false){
+                                div += "<tr><td>"+json_data[key]['hoten']+"</td><td>"+json_data[key]['bophan']+"</td><td>"+json_data[key]['time_checkin']+"</td><td>"+"Chưa có"+"</td></tr>"
+
+                            }
+                        }
+                        if (json_data[key]['checkin'] == false){
+                            if (json_data[key]['checkout']==true){
+                                div += "<tr><td>"+json_data[key]['hoten']+"</td><td>"+json_data[key]['bophan']+"</td><td>"+"Chưa có"+"</td><td>"+json_data[key]['time_checkout']+"</td></tr>"
+
+                            }
+                            if (json_data[key]['checkout']==false){
+                                div += "<tr><td>"+json_data[key]['hoten']+"</td><td>"+json_data[key]['bophan']+"</td><td>"+"Chưa có"+"</td><td>"+"Chưa có"+"</td></tr>"
+
+                            }
+                        }
+                    }
+                    div += "</table>"
+                    $("#detailscontent").html(div)
+                })
             })
             $(document).on("click", '#eventStaffCheckin', function () {
                 id = $(this).val()
@@ -385,7 +437,6 @@ Sự kiện{% endblock title %}
             })
             $(document).on("click", '#deleteEvent', function () {
                 $(this).html("<span class='glyphicon glyphicon-refresh spinning'></span>")
-                console.log($(this).val())
                 $.ajax({
                     url: 'deleteEvent',
                     type: 'POST',
@@ -402,8 +453,12 @@ Sự kiện{% endblock title %}
             $(document).on("click", "#addEvent", function () {
                 var checkintime = $("#in").val()
                 var checkouttime = $("#out").val()
+                
+                console.log(Date.parse(checkouttime) )
+                console.log(Date.parse(checkintime))
+                
                 var event_name = $("#event_name").val()
-                if (checkintime < checkouttime && checkouttime != "" && checkouttime != "") {
+                if (Date.parse(checkintime) < Date.parse(checkouttime) && checkouttime != "" && checkouttime != "") {
                     $(this).html("<span class='glyphicon glyphicon-refresh spinning'></span>")
                     var department_id = $("#department_id").val()
                     $.ajax({

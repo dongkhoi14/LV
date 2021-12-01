@@ -1,6 +1,8 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.backends import ModelBackend, UserModel
 from system.models import *
+from datetime import timedelta,datetime
+
 class UserBackend(ModelBackend):
     def authenticate(self,username=None, password=None, **kwargs):
         UserModel=get_user_model()
@@ -58,6 +60,13 @@ class UserBackend(ModelBackend):
             return None
         else:
             return a
+    def authenticate_att_data_out(self,mssv = None,id_diemdanh=None,**kwargs):
+        try:
+            a=attendance_out.objects.get(id_sinhvien = mssv,id_diemdanh=id_diemdanh)
+        except attendance_out.DoesNotExist:
+            return None
+        else:
+            return a
     def authenticate_att_staff_in(self,id_nhanvien = None,id_diemdanh =None,id_department = None,**kwargs):
         try:
             a = staffDo_att_in.objects.get(id_nhanvien=id_nhanvien,id_diemdanh=id_diemdanh,id_department=id_department)
@@ -72,3 +81,28 @@ class UserBackend(ModelBackend):
             return None
         else:
             return a
+    def authenticatie_att_event_checkin(self,name=None,time_create=None,time_start = None,id_department=None,**kwargs):
+        try:
+            a = staff_event.objects.get(name= name,time_create =time_create,id_department = id_department )
+            
+        except staff_event.DoesNotExist:
+            return None
+        else:
+            return a
+        
+    
+    def authenticatie_att_event_detail_checkin(self, id_event = None,id_nhanvien = None,**kwargs):
+        try:
+            a = staff_event_checkin.objects.get(id_event_id = id_event,id_nhanvien_id = id_nhanvien)
+        except staff_event_checkin.DoesNotExist:
+            return None
+        else:
+            return a
+    def authenticatie_att_event_detail_checkout(self, id_event = None,id_nhanvien = None,**kwargs):
+        try:
+            a = staff_event_checkout.objects.get(id_event_id = id_event,id_nhanvien_id = id_nhanvien)
+        except staff_event_checkout.DoesNotExist:
+            return None
+        else:
+            return a
+

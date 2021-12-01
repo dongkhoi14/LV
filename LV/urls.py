@@ -13,6 +13,7 @@ from rest_framework.routers import DefaultRouter
 from django.conf.urls import include
 from django.urls import path
 from system.api import *
+from system.serializer import *
 from knox import views as knox_views
 
 
@@ -68,6 +69,12 @@ urlpatterns = [
     path('details_thongke',details_thongke,name='details_thongke'),
     path('adminDiemdanh',adminDiemdanh,name='adminDiemdanh'),
     path('onload_thongkeadmin',onload_thongkeadmin,name='onload_thongkeadmin'),
+    path('createAttInOut',createAttInOut,name='createAttInOut'),
+    path('createQRcheckin',createQRcheckin,name='createQRcheckin'),
+    path('createQRcheckin',createQRcheckin,name='createQRcheckin'),
+    path('createQRcheckout',createQRcheckout,name='createQRcheckout'),
+    path('reAttIn',reAttIn,name='reAttIn'),
+    path('reAttOut',reAttOut,name='reAttOut'),
     #path('danhsach', danhsach, name='danhsach'),
     #Đăng nhập
     path('loginAdmin', views.loginAdmin),
@@ -87,6 +94,17 @@ urlpatterns = [
     path('api/auth/updatestaffout/<int:pk>',UpdateAttDataStaffOutAPI.as_view()),
     path('api/auth/attdetailsstaffout',getAttDetailStaffOutAPI.as_view()),
     path('api/auth/attstudent',getAttStudentAPI.as_view()),
+    path('api/event/checkin',AttStaffEventAPICheckin.as_view()),
+    path('api/att/attsvout',getAttDetailAPIOut.as_view()),
+    path('api/att/attsvout/update/<int:pk>',UpdateAttDataOutAPI.as_view()),
+    path('api/event/update/in/<int:pk>',UpdateAttEventDataInAPI.as_view()),
+    path('api/event/detailin',AttStaffEventDetailInAPI.as_view()),
+
+    path('api/event/checkout',AttStaffEventAPICheckout.as_view()),
+    path('api/event/update/out/<int:pk>',UpdateAttEventDataOutAPI.as_view()),
+    path('api/event/detailout',AttStaffEventDetailOutAPI.as_view()),
+
+
     #Enterprise
     path('adminEnterprise',views.adminEnterprise,name='adminEnterprise'),
     path('adminEnterpriseManager',adminEnterpriseManager,name="adminEnterpriseManager"),
@@ -108,4 +126,7 @@ urlpatterns = [
     path('staffEventAtt',staffEventAtt,name="staffEventAtt"),
     path('historystaffattevent',historystaffattevent,name='historystaffattevent'),
     path('deleteEvent',deleteEvent,name='deleteEvent'),
+    path('deltailstaffevennt',deltailstaffevennt,name='deltailstaffevennt'),
+    path('chart_draw',chart_draw,name='chart_draw'),
+    path('chart_staff_att',chart_staff_att,name='chart_staff_att'),
 ]

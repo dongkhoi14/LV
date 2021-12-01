@@ -135,7 +135,6 @@ Quản lý nhân viên
         </div>
     </div>
 </div>
-<script src="http://netdna.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js"></script>
 <script type="text/javascript">
     $(document).ready(function () {
         $.ajax({
@@ -143,7 +142,7 @@ Quản lý nhân viên
             type: 'POST',
             data: {}
         }).done(function (res) {
-
+            console.log(res)
             json_data = JSON.parse(res)
             console.log(json_data)
             var div = ""
