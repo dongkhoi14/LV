@@ -105,4 +105,46 @@ class UserBackend(ModelBackend):
             return None
         else:
             return a
-
+    def authenticate_staff(self,mssv=None,*args, **kwargs):
+        try:
+            a = sinhvien.objects.get(mssv=mssv)
+        except sinhvien.DoesNotExist:
+            return None
+        else:
+            return a
+    def authenticate_department(self,id=None,*args, **kwargs):
+        try:
+            a= lop.objects.get(id=id)
+        except  lop.DoesNotExist:
+            return None
+        else:
+            return a
+    def authenticate_evetn_check_in(self,id_event=None,id_nhanvien=None,*args, **kwargs):
+        try:
+            a = staff_event_checkin.objects.get(id_nhanvien_id = id_nhanvien,id_event_id = id_event)
+        except staff_event_checkin.DoesNotExist:
+            return None
+        else:
+            return a
+    def authenticate_evetn_check_out(self,id_event=None,id_nhanvien=None,*args, **kwargs):
+        try:
+            a = staff_event_checkout.objects.get(id_nhanvien_id = id_nhanvien,id_event_id = id_event)
+        except staff_event_checkout.DoesNotExist:
+            return None
+        else:
+            return a
+    
+    def authenticate_staff_checkin(self,id_diemdanh=None,id_nhanvien=None,*args, **kwargs):
+        try:
+            a = staffDo_att_in.objects.get(id_nhanvien_id = id_nhanvien,id_diemdanh_id = id_diemdanh)
+        except staffDo_att_in.DoesNotExist:
+            return None
+        else:
+            return a
+    def authenticate_staff_checkout(self,id_diemdanh=None,id_nhanvien=None,*args, **kwargs):
+        try:
+            a = staffDo_att_out.objects.get(id_nhanvien_id = id_nhanvien,id_diemdanh_id = id_diemdanh)
+        except staffDo_att_out.DoesNotExist:
+            return None
+        else:
+            return a

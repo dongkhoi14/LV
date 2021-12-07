@@ -143,7 +143,7 @@ class staff_event(models.Model):
     name = models.CharField(max_length=254,default="")
     time_start = models.DateTimeField()
     time_end = models.DateTimeField()
-    id_department = models.ForeignKey(lop, on_delete=CASCADE,default=1)
+    id_department = models.ForeignKey(lop, on_delete=CASCADE,default=1,related_name="departmentatt")
     is_disabled = models.BooleanField(default=False)
 
 class staff_event_checkin(models.Model):
@@ -151,14 +151,14 @@ class staff_event_checkin(models.Model):
     id_event = models.ForeignKey(staff_event,on_delete=CASCADE,related_name="eventcheckin")
     checkin = models.BooleanField(default=False)
     timecheckin = models.DateTimeField(auto_now=True)
-    id_nhanvien = models.ForeignKey(sinhvien, on_delete=DO_NOTHING,default=None)
+    id_nhanvien = models.ForeignKey(sinhvien, on_delete=DO_NOTHING,default=None,related_name="staffcheckin")
 
 class staff_event_checkout(models.Model):
     id = models.AutoField(primary_key=True)
     id_event = models.ForeignKey(staff_event,on_delete=CASCADE,related_name="eventcheckout")
     checkout = models.BooleanField(default=False)
     timecheckout = models.DateTimeField(auto_now=True)
-    id_nhanvien = models.ForeignKey(sinhvien, on_delete=DO_NOTHING,default=None)
+    id_nhanvien = models.ForeignKey(sinhvien, on_delete=DO_NOTHING,default=None,related_name="staffcheckout")
 
 @receiver(post_save,sender=staff_event)
 def createevent(sender,instance,created,**kwargs):

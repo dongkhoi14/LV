@@ -174,4 +174,4 @@ CACHES = {
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "192.168.1.12"]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "192.168.1.12","lv.web.domains"]

@@ -20,8 +20,6 @@ from django.utils import timezone
 # data = [{"1":2},{"ok":{"a":1,"b":2,"c":3}}]
 # print(data[1]['ok']['a'])
 
-c = staff_event.objects.filter(name="xzczxczx",time_create = datetime.strptime("20211201","%Y%m%d"))
-
-for a in c:
-    print(getStaffEvent(a).data)
+c = lop.objects.get(pk=3)
+print(getDepartment(c).data)
 
