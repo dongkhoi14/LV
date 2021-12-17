@@ -2,8 +2,10 @@
 
 {% block title %}Sinh viên{% endblock title %}
 {% block headcontent %}
-<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+<link href="http://netdna.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
 <style media="screen">
     a:link {
@@ -23,7 +25,7 @@
     }
     .bordersv {
     border-top: 1px dashed #CCCCCC;
-    font-size: 10pt;
+    font-size: 12pt;
     line-height: 22px;
 	padding-top:5px;
 	padding-bottom:5px;
@@ -32,80 +34,73 @@
 {% endblock headcontent %}
 {% block content %}
 <div class="container">
-    <div class="row">
         <div class="form-content">
+            <div class="card card-info">
+                <h3 class="card-header" style="text-align: center;">THÔNG TIN SINH VIÊN</h3>
+                <div class="card-body">
+                    <table class='table table-hover'  id='dev-table' >
+                   
+                   
 
-            <div class="panel panel-primary">
-
-                <table class='table table-hover' width="100%" id='dev-table' cellspacing="0" cellpadding="0">
-                    <tr>
-                        <td colspan="2">
-                            <div align="center" class="textbold">
-                                THÔNG TIN SINH VIÊN </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="2">&nbsp;</td>
-                    </tr>
-
-                    <div class="form-group">
-
-                    <tr>
-                        <td width="24%" class="bordersv">
-                            <div class="bg" align="left">
-                                Mã SV </div>
-                        </td>
-                        <td width="76%" class="bordersv">
-                            <div class="bold" align="left">{{sinhvien.mssv}}</div>
-                        </td>
-                    </tr></div>
-                    <div class="form-group">
-
+                        <div class="form-group">
+    
                         <tr>
-                            <td class="bordersv">
-                                <div class="bg" align="left">Họ tên</div>
+                            <td width="24%" class="bordersv">
+                               
+                                    Mã SV 
                             </td>
-                            <td class="bordersv">
-                                <div class="bold" align="left">{{request.user.first_name}} {{request.user.last_name}}
-                                </div>
+                            <td width="76%" class="bordersv">
+                                <div class="bold" align="left">{{sinhvien.mssv}}</div>
                             </td>
-                        </tr>
-                    </div>
-                    <div class="form-group">
-
-                        <tr>
-                            <td class="bordersv">
-                                <div class="bg" align="left">Lớp</div>
-                            </td>
-                            <td class="bordersv">
-                                <div class="bold" align="left">{{sinhvien.id_lop.ten_lop}}</div>
-                            </td>
-                        </tr>
-                    </div>
-                    <div class="form-group">
-
-                        <tr>
-                            <td class="bordersv">
-                                <div class="bg" align="left">Địa chỉ</div>
-                            </td>
-                            <td class="bordersv">
-                                <div class="bold" align="left">{{sinhvien.diachi}}</div>
-                            </td>
-                        </tr>
-                    </div>
-                    <div class="form-group">
-                        <tr>
-                            <td class="bordersv">
-                                <div class="bg" align="left">Số điện thoại</div>
-                            </td>
-                            <td class="bordersv">
-                                <div class="bold" align="left">{{sinhvien.so_dien_thoai}} </div>
-                            </td>
-                        </tr>
-                    </div>
-
-
-                </table>
+                        </tr></div>
+                        <div class="form-group">
+    
+                            <tr>
+                                <td class="bordersv">
+                                    <div class="bg" align="left">Họ tên</div>
+                                </td>
+                                <td class="bordersv">
+                                    <div class="bold" align="left">{{request.user.first_name}} {{request.user.last_name}}
+                                    </div>
+                                </td>
+                            </tr>
+                        </div>
+                        <div class="form-group">
+    
+                            <tr>
+                                <td class="bordersv">
+                                    <div class="bg" align="left">Lớp</div>
+                                </td>
+                                <td class="bordersv">
+                                    <div class="bold" align="left">{{sinhvien.id_lop.ten_lop}}</div>
+                                </td>
+                            </tr>
+                        </div>
+                        <div class="form-group">
+    
+                            <tr>
+                                <td class="bordersv">
+                                    <div class="bg" align="left">Địa chỉ</div>
+                                </td>
+                                <td class="bordersv">
+                                    <div class="bold" align="left">{{sinhvien.diachi}}</div>
+                                </td>
+                            </tr>
+                        </div>
+                        <div class="form-group">
+                            <tr>
+                                <td class="bordersv">
+                                    <div class="bg" align="left">Số điện thoại</div>
+                                </td>
+                                <td class="bordersv">
+                                    <div class="bold" align="left">{{sinhvien.so_dien_thoai}} </div>
+                                </td>
+                            </tr>
+                        </div>
+    
+    
+                    </table>
+                </div>
             </div>
         </div>
     </div>

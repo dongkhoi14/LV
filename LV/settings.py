@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
-
+import os
 import rest_framework
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -135,10 +135,11 @@ USE_TZ = False
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [
-    BASE_DIR / "static",
+# STATICFILES_DIRS = [
+#     BASE_DIR / "static",
 
-]
+# ]
+STATIC_ROOT = os.path.join(BASE_DIR, "static/")
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
@@ -174,4 +175,6 @@ CACHES = {
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "192.168.1.12","lv.web.domains"]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "192.168.1.12","lv.web.domains","www.lv.web.domains"]
+
+LOGIN_REDIRECT_URL = '/loginAdmin'

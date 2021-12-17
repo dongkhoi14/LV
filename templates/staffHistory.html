@@ -78,40 +78,7 @@ Quản lý nhân viên
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
     <div class="container">
         <div class="row">
-            <div class="col">
-                <div class="card bg-c-blue order-card">
-                    <div class="card-block">
-                        <a href="">
-                            <h6 class="m-b-20">Tổng số nhân viên </h6>
-                        </a>
-                        <br>
-                        <h2 class="text-right"><i class="fa fa-user f-left"></i></h2>
-
-                    </div>
-                </div>
-            </div>
-            <div class="col">
-                <div class="card bg-c-green order-card">
-                    <div class="card-block">
-                        <a href="">
-                            <h6 class="m-b-20">Số lượng phòng ban : </h6>
-                        </a>
-                        <br>
-                        <h2 class="text-right"><i class="fa fa-plus-square f-left"></i></h2>
-                    </div>
-                </div>
-            </div>
-            <div class="col">
-                <div class="card bg-c-yellow order-card">
-                    <div class="card-block">
-                        <a href="">
-                            <h6 class="m-b-20">Chấm công</h6>
-                        </a>
-                        <br>
-                        <h2 class="text-right"><i class="fa fa-building f-left"></i></h2>
-                    </div>
-                </div>
-            </div>
+            
 
 
 
@@ -123,6 +90,31 @@ Quản lý nhân viên
     </div>
 
     
+<script>
+    $(document).ready(function(){
+        $.ajax({
+            url:'historystaffattevent',
+            type:'POST',
+            data: {}
+        }).done(function(res){
+            json_data= JSON.parse(res)
+            console.log(json_data)
+            for (key in json_data){
+                $.ajax({
+                    url:'gethistory',
+                    type:'post',
+                    data:{
+                      name : json_data[key]['name'],
+                      time_create : json_data[key]['time_create'],
+                      time_start: json_data[key]['time_start']  
+                    }
+                }).done(function(res){
+                    console.log(res)
+                })
+            }
+        })
+    })
 
+</script>
 </body>
 {% endblock content %}

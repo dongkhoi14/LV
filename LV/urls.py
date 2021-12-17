@@ -9,6 +9,7 @@ from system.adminViews import *
 from system.giangvienViews import *
 from system.sinhvienViews import *
 from system.enterpriseViews import *
+
 from rest_framework.routers import DefaultRouter
 from django.conf.urls import include
 from django.urls import path
@@ -38,6 +39,7 @@ urlpatterns = [
     path('toanbosinhvien', toanbosinhvien, name="toanbosinhvien"),
     path('change_student', change_student, name="change_student"),
     path('historyAttData', historyAttData, name="historyAttData"),
+    path('lopgiangvien',lopgiangvien,name='lopgiangvien'),
     # Lớp
     path('adminLop/', views.adminLop),
     path('adminThemlop', views.adminThemlop),
@@ -77,10 +79,11 @@ urlpatterns = [
     path('reAttOut', reAttOut, name='reAttOut'),
     #path('danhsach', danhsach, name='danhsach'),
     # Đăng nhập
-    path('loginAdmin', views.loginAdmin),
+    path('loginAdmin', views.loginAdmin,name='login'),
     path('logout', views.logOut),
     path('change_password', views.change_password),
     path('changePassword', views.changePassword),
+    path('register',views.signup_view,name='signup_view'),
     # api
     path("api/auth", include('knox.urls')),
     path('api/auth/login', loginAPI.as_view()),
@@ -140,4 +143,5 @@ urlpatterns = [
     path('deltailstaffevennt', deltailstaffevennt, name='deltailstaffevennt'),
     path('chart_draw', chart_draw, name='chart_draw'),
     path('chart_staff_att', chart_staff_att, name='chart_staff_att'),
+    path('gethistory',gethistory,name='gethistory'),
 ]

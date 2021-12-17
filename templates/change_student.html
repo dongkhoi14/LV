@@ -51,15 +51,15 @@
           </tr>
         </thead>
         {% for sinhvien in sinhviens %}
-        <tr id="{{ t.mscb}}">
+        <tr id="{{ sinhvien.mscb}}">
           <td> {{sinhvien.perm.first_name}} {{ sinhvien.perm.last_name}}</td>
           <td>{{sinhvien.mssv}}</td>
           <td>{{sinhvien.ngay_tao}}</td>
           <td>{{sinhvien.ngay_cap_nhat}}</td>
           <td>{{sinhvien.perm.username}}</td>
-          <td><button class="btn btn-primary btn-block" id='deleteStudent' value="{{t.mssv}}" data-toggle="modal"
+          <td><button class="btn btn-primary btn-block"  id="getupdateStudent" value="{{sinhvien.mssv}}" data-toggle="modal"
               data-target="#myModal">Cập nhật</button></td>
-          <td><button class="btn btn-primary btn-block" id="getupdateStudent" value="{{t.mssv}}">Xóa</button></td>
+          <td><button class="btn btn-primary btn-block" id='deleteStudent' value="{{sinhvien.mssv}}">Xóa</button></td>
 
         </tr>
 
@@ -185,16 +185,16 @@
 <script>
   $(document).ready(function () {
     $(document).on("click", "#deleteStudent", function () {
-      var teacherID = $(this).val();
-      console.log(teacherID)
+      var studentID = $(this).val();
+      console.log(studentID)
       $.ajax({
-        url: "{% url 'deleteStudent' %}",
+        url: "deleteStudent",
         type: "POST",
-        data: { teacherID: teacherID }
+        data: { studentID: studentID }
       }).done(function (response) {
         if (response == "OK") {
           console.log("OKK")
-          document.getElementById(teacherID).style.display = "none";
+          document.getElementById(studentID).style.display = "none";
           alert("Xóa giảng viên thành công")
         }
         if (response == "Error") {
@@ -211,6 +211,7 @@
       type: "POST",
       data: { teacherID: teacherID }
     }).done(function (response) {
+      console.log(response)
       var json_data = JSON.parse(response)
       console.log(json_data)
 
@@ -246,7 +247,7 @@
       var t = $("#tinh option:selected").val()
       console.log(t)
       $.ajax({
-        url: "{% url 'updateTeacher' %}",
+        url: "{% url 'updateStudent' %}",
         type: "POST",
         data: {
           teacherID: teacherID,

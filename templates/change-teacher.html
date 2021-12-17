@@ -4,7 +4,13 @@
 {% load static %}
 
 {% block headcontent %}
-<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<link href="http://netdna.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+  integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+  integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+  integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
 <style media="screen">
   a:link {
@@ -20,54 +26,63 @@
   }
 
   .row {
-    margin: 20px;
+    align-items: center;
+    justify-content: center
   }
+  .modal-content {
+ 
+ /* 80% of window height */
+
+ height: 90%;
+
+
+}       
+
 </style>
 {% endblock headcontent %}
 
 {% block content %}
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
 
 <div class="container">
 
   <div class="row">
 
-    <div class="panel panel-primary">
-      <div class="panel-heading">
-        <h6 class="panel-title">Teachers</h6>
+    <div class="card card-primary">
+      <h3 class="card-header" style="text-align:center">Cập nhật giảng viên</h3>
 
+      <div class="card-body">
+        <table class="table table-hover"  id="dev-table">
+          <thead>
+
+            <tr>
+              <th>Họ tên</th>
+              <th>MSCB</th>
+              <th>Ngày tạo</th>
+              <th>Ngày cập nhật</th>
+              <th>Tài khoản</th>
+              <th>Cập nhật</th>
+              <th>Delete</th>
+            </tr>
+          </thead>
+          {% for t in giangviens %}
+          <tr id="{{ t.mscb}}">
+            <td> {{t.perm.first_name}} {{ t.perm.last_name}}</td>
+            <td>{{t.mscb}}</td>
+            <td>{{t.ngay_tao}}</td>
+            <td>{{t.ngay_cap_nhat}}</td>
+            <td>{{t.perm.username}}</td>
+            <td><button class="btn btn-primary btn-block" id='getupdateTeacher' value="{{t.mscb}}" data-toggle="modal"
+                data-target="#myModal">Cập nhật</button></td>
+            <td><button class="btn btn-primary btn-block" id="deleteTeacher" value="{{t.mscb}}">Xóa</button></td>
+
+          </tr>
+
+          {% endfor %}
+        </table>
       </div>
 
-      <table class="table table-hover" id="dev-table">
-        <thead>
-
-          <tr>
-            <th>Họ tên</th>
-            <th>MSCB</th>
-            <th>Ngày tạo</th>
-            <th>Ngày cập nhật</th>
-            <th>Tài khoản</th>
-            <th>Cập nhật</th>
-            <th>Delete</th>
-          </tr>
-        </thead>
-        {% for t in giangviens %}
-        <tr id="{{ t.mscb}}">
-          <td> {{t.perm.first_name}} {{ t.perm.last_name}}</td>
-          <td>{{t.mscb}}</td>
-          <td>{{t.ngay_tao}}</td>
-          <td>{{t.ngay_cap_nhat}}</td>
-          <td>{{t.perm.username}}</td>
-          <td><button class="btn btn-primary btn-block" id='getupdateTeacher' value="{{t.mscb}}" data-toggle="modal"
-              data-target="#myModal">Cập nhật</button></td>
-          <td><button class="btn btn-primary btn-block" id="deleteTeacher" value="{{t.mscb}}">Xóa</button></td>
-
-        </tr>
-
-        {% endfor %}
-      </table>
     </div>
-
-
   </div>
 
 </div>
@@ -75,14 +90,15 @@
 
 
   <!-- Modal -->
-  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog" role="document">
+  <div class="modal fade" id="myModal" tabindex="-1"  role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-dialog-centered" role="document">
       <form role="form" action="/updateTeacher" method="post">
         <div class="modal-content">
           <div class="modal-header" style="background-color:#428BCA;">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                aria-hidden="true">&times;</span></button>
+            
             <h4 class="modal-title" id="myModalLabel" style=" text-align: center">Thay đổi Thông tin giảng viên</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+              aria-hidden="true">&times;</span></button>
           </div>
           <div class="modal-body">
             <div class="form-group">

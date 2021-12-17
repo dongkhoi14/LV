@@ -19,20 +19,21 @@ class quantri(models.Model):
     type_data = ((1,'school'),(2,'company'))
     gioitinh = models.BooleanField(default=True)
     type = models.CharField(choices=type_data,max_length=255,default=1)
+    name = models.CharField(max_length=254,default="")
         
 class giangvien(models.Model):
-    hocvan_choice = ((1,"Dai Hoc"),(2,"Thac Si"),(3,"Tien Si"),(4,"Giao Su"))
     mscb = models.AutoField(primary_key=True)
     gioitinh = models.BooleanField(default=True)
-
     ngay_tao = models.DateTimeField(auto_now_add=True)
     ngay_cap_nhat = models.DateTimeField(auto_now=True)
     perm = models.OneToOneField(phanquyen, on_delete=models.CASCADE,related_name="teacher")
     dia_chi = models.CharField(max_length=255,blank=True,null=True)
     so_dien_thoai = models.IntegerField(null=True)
-    hocvan = models.CharField(max_length=255)
+    hocvan = models.CharField(max_length=255,default=1)
     owner = models.CharField(max_length=255,blank=True,null=True)
     objects=models.Manager()
+    tentochuc = models.CharField(max_length=254,default="")
+
 
 
 
@@ -70,6 +71,8 @@ class sinhvien(models.Model):
     so_dien_thoai = models.IntegerField(null=True)
     owner = models.CharField(max_length=255,blank=True,null=True)
     objects=models.Manager()
+    tentochuc = models.CharField(max_length=254,default="")
+
     def __str__(self):
         return "MSSV : " +str(self.mssv) + ", Tên : " + self.perm.first_name + " " + self.perm.last_name 
     class Meta:
@@ -175,8 +178,6 @@ def tao_nguoi_dung(sender,instance,created,**kwargs):
     if created:
         if instance.user_type==1:
             quantri.objects.create(perm=instance,type=1)
-        if instance.user_type==2:
-            giangvien.objects.create(perm=instance,hocvan="1")
         if instance.user_type==3:
             sinhvien.objects.create(perm=instance, id_lop=lop.objects.get(id=1))
         
@@ -185,8 +186,6 @@ def tao_nguoi_dung(sender,instance,created,**kwargs):
 def them_nguoi_dung(sender,instance,**kwargs):
     if instance.user_type==1:
         instance.quantri.save()
-    if instance.user_type==2:
-        instance.giangvien.save()
     if instance.user_type==3:
         instance.sinhvien.save()
     

@@ -20,6 +20,14 @@ from django.utils import timezone
 # data = [{"1":2},{"ok":{"a":1,"b":2,"c":3}}]
 # print(data[1]['ok']['a'])
 
-c = lop.objects.get(pk=3)
-print(getDepartment(c).data)
-
+# class a():
+#     def b(self):
+#         print("ok")
+# c = a()
+# c.b
+# c = phanquyen.objects.get(pk=79)
+# c.set_password("123")
+# c.save()
+c= phanquyen.objects.get(pk=15)
+print(c)
+c.delete()

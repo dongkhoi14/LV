@@ -13,27 +13,35 @@ from django import forms
 import qrcode
 from django.db.models.functions import TruncDay,TruncMonth
 from datetime import date
+from django.contrib.auth.decorators import login_required
 
 import hashlib
 import unidecode
 from django.contrib import messages
+@login_required(login_url='login')
 def adminEnterpriseManager(request):
     
     return render(request,"templates/adminEnterpriseManager.html")
+@login_required(login_url='login')
 def staff(request):
     staffs = sinhvien.objects.filter(owner = request.user.username)
     return render(request,"templates/staff.html",{'staffs':staffs})
+@login_required(login_url='login')
 def department(request):
     departments = lop.objects.filter(create_by = request.user.username)
     
     return render(request,"templates/department.html",{"departments":departments})
 def staffAtt(request):
     return render(request,"templates/staffAtt.html")
+@login_required(login_url='login')
 def staffEvent(request):
     departments = lop.objects.filter(create_by = request.user.username)
     return render(request,"templates/staffAttEvent.html",{"departments":departments})
+@login_required(login_url='login')
 def staffHistory(request):
     return render(request,"templates/staffHistory.html")
+
+@login_required(login_url='login')
 @csrf_exempt
 def chart_draw(request):
     ll = lop.objects.filter(create_by = request.user.username)
@@ -52,6 +60,7 @@ def chart_draw(request):
         return JsonResponse(json.dumps(list_data),content_type="application/json", safe=False)
     except :
         return HttpResponse("Error")
+@login_required(login_url='login')
 @csrf_exempt
 def chart_staff_att(request):
     try:
@@ -60,11 +69,11 @@ def chart_staff_att(request):
             aa = staff_att.objects.filter(ngay_tao__month = i).count()
             month = "Tháng "+str(i)
             data = {"thang": month,"soluong":aa}
-            print(data)
             list_data.append(data)
         return JsonResponse(json.dumps(list_data),content_type="application/json", safe=False)
     except :
         return HttpResponse("Error")
+@login_required(login_url='login')
 @csrf_exempt
 def deleteStaff(request):
     staffID = request.POST.get('staffID')
@@ -79,6 +88,7 @@ def deleteStaff(request):
         return HttpResponse("OK")
     except:
         return HttpResponse("Error")
+@login_required(login_url='login')
 @csrf_exempt
 def getListDepartment(request):
     departments = lop.objects.filter(create_by = request.user.username)
@@ -97,7 +107,7 @@ def getListDepartment(request):
         return JsonResponse(json.dumps(list_data),content_type="application/json", safe=False)
     except:
         return HttpResponse("Error")
-
+@login_required(login_url='login')
 @csrf_exempt
 def addDepartment(request):
     departmentName =request.POST.get("departmentName")
@@ -108,7 +118,7 @@ def addDepartment(request):
         return HttpResponse("OK")
     except:
         return HttpResponse("Error")
-    
+@login_required(login_url='login')   
 @csrf_exempt
 def createStaffAtt(request):
     try:
@@ -128,13 +138,16 @@ def createStaffAtt(request):
                     a.save()
                     b.save()
                     print("OK")
+            messages.success(request, 'Tạo thành công')
 
             return HttpResponse("OK")
         else : 
+            messages.error(request, 'Tạo không thành công, đã có chấm công cho hôm nay!')
+
             return HttpResponse("Day ValueError")
     except:
         return HttpResponse("Error")
-    
+@login_required(login_url='login')   
 @csrf_exempt
 def historyStaffAtt(request):
     try:
@@ -145,35 +158,37 @@ def historyStaffAtt(request):
         atts = staff_att.objects.all()
         for att in atts:
             for department in departments:
-            
-                countstaff = sinhvien.objects.filter(id_lop_id=department.id).count()
+                
+                countstaff = 0
                 count = 0
                 staffs = sinhvien.objects.filter(id_lop_id=department.id)
-                print(staffs)
+                
+                       
                 for staff in staffs:
-                    try:
+                    if staff.perm.is_active == True:
+                        try:
                         
-                        attin = staffDo_att_in.objects.get(id_diemdanh_id=att.id,id_nhanvien_id=staff.mssv,id_department=department.id)
-                    
-                        attout = staffDo_att_out.objects.get(id_diemdanh_id=att.id,id_nhanvien_id=staff.mssv,id_department=department.id)
-                        if attin.diemdanh == True and attout.diemdanh == True:
-                            if attout.ngay_cap_nhat - attin.ngay_cap_nhat > timedelta(hours=8):
-                                count += 1
-                    
+                            attin = staffDo_att_in.objects.get(id_diemdanh_id=att.id,id_nhanvien_id=staff.mssv,id_department=department.id)
+                        
+                            attout = staffDo_att_out.objects.get(id_diemdanh_id=att.id,id_nhanvien_id=staff.mssv,id_department=department.id)
+                            if attin.diemdanh == True and attout.diemdanh == True:
+                                if attout.ngay_cap_nhat - attin.ngay_cap_nhat > timedelta(hours=8):
+                                    count += 1
+                            countstaff += 1 
                             
 
-                        attdatas  = staffDo_att_in.objects.filter(id_diemdanh_id=att.id,diemdanh=True).count()
-                        data = {"id_diemdanh":att.id,"bophan":department.ten_lop,"id_department":department.id,"soluongnhanvien":countstaff,"ngay_tao":att.ngay_tao.date(),"soluongdiemdanh":count}
+                            attdatas  = staffDo_att_in.objects.filter(id_diemdanh_id=att.id,diemdanh=True).count()
+                            data = {"id_diemdanh":att.id,"bophan":department.ten_lop,"id_department":department.id,"soluongnhanvien":countstaff,"ngay_tao":att.ngay_tao.date(),"soluongdiemdanh":count}
 
-                    except:
-                        print("Khong co su lieu")
+                        except:
+                            print("khong co du lieu diem danh cua nhan vien nay"+ staff.perm.first_name + staff.perm.last_name)
                 list_data.append(data)
-        
+                print(data)
         list_data.reverse()
         return JsonResponse(json.dumps(list_data, cls=DjangoJSONEncoder),content_type= "application/json",safe=False)
     except :
         return HttpResponse("Error")
-
+@login_required(login_url='login')
 @csrf_exempt
 def detailsatt(request):
     try:
@@ -185,25 +200,31 @@ def detailsatt(request):
         staffs = sinhvien.objects.filter(id_lop_id = d.id)
         list_data = []
         for staff in staffs :
-            
-            attin = staffDo_att_in.objects.get(id_diemdanh_id= id_att,id_nhanvien_id = staff.mssv,id_department_id=d.id)
-            attout = staffDo_att_out.objects.get(id_diemdanh_id= id_att,id_nhanvien_id = staff.mssv,id_department_id=d.id)
-            
-            if  attin.diemdanh==True and attout.diemdanh == True :
-                print(str(attout.ngay_cap_nhat -attin.ngay_cap_nhat))
+            print(staff.perm.first_name  + staff.perm.last_name)
+            if staff.perm.is_active == True:
+                try:
+                    
+                    attin = staffDo_att_in.objects.get(id_diemdanh_id= id_att,id_nhanvien_id = staff.mssv,id_department_id=d.id)
+                    attout = staffDo_att_out.objects.get(id_diemdanh_id= id_att,id_nhanvien_id = staff.mssv,id_department_id=d.id)
+                    
+                    if  attin.diemdanh==True and attout.diemdanh == True :
+                        print(str(attout.ngay_cap_nhat -attin.ngay_cap_nhat))
 
-                data = {"hoten":staff.perm.first_name + " " + staff.perm.last_name,"checkin":True,"thoigiancheckin":attin.ngay_cap_nhat.ctime(),"checkout":True,"thoigiancheckout":attout.ngay_cap_nhat.ctime(),"phongban":staff.id_lop.ten_lop,"comat" : True,"thoigianlamviec":str(attout.ngay_cap_nhat -attin.ngay_cap_nhat)}
-            else:
-                if attin.diemdanh==True and attout.diemdanh == False :
-                    data = {"hoten":staff.perm.first_name + " " + staff.perm.last_name,"checkin":True,"thoigiancheckin":attin.ngay_cap_nhat.ctime(),"checkout":False,"thoigiancheckout":"","phongban":staff.id_lop.ten_lop,"comat" : False,"thoigianlamviec":""}
-                elif attin.diemdanh == False and attout.diemdanh == False :
-                    data = {"hoten":staff.perm.first_name + " " + staff.perm.last_name,"checkin":False,"thoigiancheckin":"","checkout":False,"thoigiancheckout":"","phongban":staff.id_lop.ten_lop,"comat" : False,"thoigianlamviec":""}
-
-            list_data.append(data)
+                        data = {"hoten":staff.perm.first_name + " " + staff.perm.last_name,"checkin":True,"thoigiancheckin":attin.ngay_cap_nhat.ctime(),"checkout":True,"thoigiancheckout":attout.ngay_cap_nhat.ctime(),"phongban":staff.id_lop.ten_lop,"comat" : True,"thoigianlamviec":str(attout.ngay_cap_nhat -attin.ngay_cap_nhat)}
+                        list_data.append(data)
+                    else:
+                        if attin.diemdanh==True and attout.diemdanh == False :
+                            data = {"hoten":staff.perm.first_name + " " + staff.perm.last_name,"checkin":True,"thoigiancheckin":attin.ngay_cap_nhat.ctime(),"checkout":False,"thoigiancheckout":"","phongban":staff.id_lop.ten_lop,"comat" : False,"thoigianlamviec":""}
+                        elif attin.diemdanh == False and attout.diemdanh == False :
+                            data = {"hoten":staff.perm.first_name + " " + staff.perm.last_name,"checkin":False,"thoigiancheckin":"","checkout":False,"thoigiancheckout":"","phongban":staff.id_lop.ten_lop,"comat" : False,"thoigianlamviec":""}
+                        list_data.append(data)
+                except :
+                    print("")
+                
         return JsonResponse(json.dumps(list_data, cls=DjangoJSONEncoder),content_type="application/json",safe=False)
     except :
         return HttpResponse("Error")
-
+@login_required(login_url='login')
 @csrf_exempt
 def QRcheckin(request):
     day = timezone.now().date()
@@ -227,10 +248,11 @@ def QRcheckin(request):
         )
         img = qrcode.make(str(id_diemdanh)+date_time+"1") # 1 = checkin
         img.save(filename)
+        print(response_data)
         return HttpResponse(json.dumps(response_data))
     except:
         return HttpResponse("deo' OK")
-
+@login_required(login_url='login')
 @csrf_exempt
 def QRcheckout(request):
     day = timezone.now().date()
@@ -257,12 +279,12 @@ def QRcheckout(request):
         return HttpResponse(json.dumps(response_data))
     except:
         return HttpResponse("deo' OK")
-
+@login_required(login_url='login')
 @csrf_exempt
 def addStaff(request):
     departments = lop.objects.filter(create_by=request.user.username)
     return render(request,"templates/addStaff.html",{"departments":departments})
-
+@login_required(login_url='login')
 def createStaff(request):
     global data_address
     if request.method == "POST":
@@ -281,24 +303,28 @@ def createStaff(request):
         sodienthoai = request.POST.get('sodienthoai')
         id_department = request.POST.get('id_department')
         try:
-            user = phanquyen.objects.create_user(
+            u = phanquyen.objects.create_user(
                 username=username, first_name=first_name, last_name=last_name, password=password, email=email, user_type=3)
-            user.user_type = 4
-            a = sinhvien.objects.get(perm = user.id)
-
+            u.user_type = 4
+            a = sinhvien.objects.get(perm = u.id)
+            print("1")
             a.id_lop_id = id_department
+            print("2")
             a.diachi = diachi
+            print("3")
             a.so_dien_thoai = sodienthoai
+            print("4")
             a.owner = request.user.username
+            print("5")
             a.save()
-            user.save()
+            u.save()
             return HttpResponseRedirect("adminEnterprise")
         except:
             return HttpResponseRedirect("/")
 
 
 
-    
+@login_required(login_url='login')    
 @csrf_exempt
 def staffEventAtt(request):
     if request.method == "POST":
@@ -344,11 +370,12 @@ def staffEventAtt(request):
             
 
             messages.success(request, 'Tạo thành công')
+            print(messages)
             return HttpResponse("OK")
         except Exception:
             messages.error(request, 'Tạo thất bai')
             return HttpResponse("Eror")
-
+@login_required(login_url='login')
 @csrf_exempt
 def historystaffattevent(request):
     try:
@@ -376,7 +403,7 @@ def historystaffattevent(request):
         return JsonResponse(json.dumps(list_data, cls=DjangoJSONEncoder),content_type="application/json",safe=False)
     except:
         return HttpResponse("ERROR")
-
+@login_required(login_url='login')
 @csrf_exempt
 def deleteEvent(request):
     if request.method == "POST":
@@ -418,18 +445,45 @@ def deltailstaffevennt(request):
                     data['time_checkin'] = ""
                 
                 b = staff_event_checkout.objects.get(id_event_id=s.id_event,id_nhanvien_id=staff.mssv)
-                print(b)
                 data['checkout'] = b.checkout
-                print(data['checkout'] )
                 if b.checkout == True:
                     data['time_checkout'] = datetime.strftime(b.timecheckout , '%d/%m/%Y %H:%M')
                 elif b.checkout ==False:
                     data['time_checkout'] = ""
-                print(data)
                 list_data.append(data)
         return JsonResponse(json.dumps(list_data, cls=DjangoJSONEncoder),content_type="application/json",safe=False)
     except:
         return HttpResponse("ERROR")
+@login_required(login_url='login')
+@csrf_exempt
+def updateStaff(request):
+    pass
+
+@csrf_exempt
+def gethistory(request):
+    if request.method == "POST":
+        name = request.POST.get('name')
+        time_create = request.POST.get('time_create')
+        time_start = request.POST.get('time_start')
+        try:
+            
+            ii = staff_event.objects.filter(name=name,time_create = datetime.strptime(time_create,"%d/%m/%Y"),time_start = datetime.strptime(time_start,"%d/%m/%Y %H/%S"))
+            countstaff = 0
+            print("OK")
+            for i in ii:
+                staffs = sinhvien.objects.filter(id_lop_id=i.id_department)
+                for staff in staffs:
+                    if staff.perm.is_active == True:
+                        countstaff +=1
+            data = [{"slnv":countstaff,"slpb":len(ii)}]
+            return JsonResponse(json.dumps(data),content_type="application/json",safe=False)
+        except:
+            return HttpResponse("Error")
+
+        
+
+            
+
 
 
 

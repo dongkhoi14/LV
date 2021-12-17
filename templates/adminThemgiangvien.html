@@ -1,114 +1,180 @@
 {% extends 'templates/base.html' %}
 {% block title %}Thêm giảng viên{% endblock title %}
+{% load static %}
 {% block headcontent %}<style media="screen">
-    a:link {
-      text-decoration: none;
-    }
+  a:link {
+    text-decoration: none;
+  }
 
-    .note {
-      text-align: center;
-      height: 80px;
-      background: -webkit-linear-gradient(left, #0072ff, #8811c5);
-      color: #fff;
-      font-weight: bold;
-      line-height: 80px;
-    }
+  .note {
+    text-align: center;
+    height: 80px;
+    background: -webkit-linear-gradient(left, #0072ff, #8811c5);
+    color: #fff;
+    font-weight: bold;
+    line-height: 80px;
+  }
 
-    .form-content {
-      padding: 5%;
-      border: 1px solid #ced4da;
-      margin-bottom: 2%;
-    }
+  .form-content {
+    padding: 5%;
+    border: 1px solid #ced4da;
+    margin-bottom: 2%;
+  }
 
-    .form-control {
-      border-radius: 1.5rem;
-    }
+  .form-control {
+    border-radius: 1.5rem;
+  }
 
-    .btnSubmit {
-      border: none;
-      border-radius: 1.5rem;
-      padding: 1%;
-      width: 20%;
-      cursor: pointer;
-      background: #0062cc;
-      color: #fff;
-    }
-  </style>
+  .btnSubmit {
+    border: none;
+    border-radius: 1.5rem;
+    padding: 1%;
+    width: 20%;
+    cursor: pointer;
+    background: #0062cc;
+    color: #fff;
+  }
+</style>
 
-  <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+<link href="http://netdna.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
 {% endblock headcontent %}
 
 
 {% block content %}
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+
 <div class="container register-form">
-    <div class="form">
-      
-
-        <div class="row">
-          <div class="col-md-12">
-            <div class="card card-primary">
-              <div class="card-header" style="text-align:center">
-                <h3 class="card-title" >Thêm giảng viên</h3>
-              </div>
-              <!-- /.card-header -->
-              <!-- form start -->
-              <form role="form" action="/themgiangvien" method="post">
-                  {% csrf_token %}
-                <div class="card-body">
-
-                  <div class="form-group">
-                    <label>Họ</label>
-                    <input type="text" class="form-control" placeholder="First Name" name="first_name">
-                  </div>
-                   <div class="form-group">
-                    <label>Tên</label>
-                    <input type="text" class="form-control" placeholder="Last Name" name="last_name">
-                  </div>
-                   <div class="form-group">
-                    <label>Tên người dùng</label>
-                    <input type="text" class="form-control" placeholder="Username" name="username">
-                  </div>
-                  <div class="form-group">
-                    <label>Dia chi</label>
-                    <input type="text" class="form-control" placeholder="Dia chi" name="diachi">
-                  </div>
-                  <div class="form-group">
-                    <label>So dien thoai</label>
-                    <input type="text" class="form-control" placeholder="So dien thoai" name="sodienthoai">
-                  </div>
-                    <div class="form-group">
-                    <label>Địa chỉ email</label>
-                    <input type="email" class="form-control" name="email" placeholder="Enter email">
-                  </div>
-
-                  <div class="form-group">
-                    <label>Mật khẩu</label>
-                    <input type="password" class="form-control" placeholder="Password" name="password">
-                  </div>
-                 <!-- <div class="form-group">
-                    <label>Trình độ</label>
-                    <select class="hocvan" name="hocvan">
-                      <option value="1" selected>Đại học</option>
-                      <option value="2">Thạc sĩ</option>
-                      <option value="3">Tiến sĩ</option>
-                      <option value="4" >Giáo sư</option>
-                    </select> -->
-                     
-
-                </div>
-                <!-- /.card-body -->
-
-                <div class="card-footer">
-                  <button type="submit" class="btn btn-primary btn-block">Add Staff</button>
-                </div>
-              </form>
-            </div>            
+  <div class="form">
 
 
-
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card card-primary">
+          <div class="card-header" style="text-align:center">
+            <h3 class="card-title">Thêm giảng viên</h3>
           </div>
+          <!-- /.card-header -->
+          <!-- form start -->
+          <form role="form" action="/themgiangvien" method="post">
+            {% csrf_token %}
+            <div class="card-body">
+
+              <div class="form-group">
+                <label>Họ</label>
+                <input type="text" class="form-control" placeholder="First Name" name="first_name">
+              </div>
+              <div class="form-group">
+                <label>Tên</label>
+                <input type="text" class="form-control" placeholder="Last Name" name="last_name">
+              </div>
+              <div class="form-group">
+                <label>Tên người dùng</label>
+                <input type="text" class="form-control" placeholder="Username" name="username">
+              </div>
+              <div class="form-group">
+
+                <label>Địa chỉ</label>
+                <select name="ls_province" id="tinh"></select>
+                <select name="ls_district" id="huyen"></select>
+                <select name="ls_ward" id="xa"></select>
+                <div></div>
+              </div>
+              <div class="form-group">
+                <label>Số điện thoại</label>
+                <input type="number" class="form-control" placeholder="So dien thoai" name="sodienthoai">
+              </div>
+              <div class="form-group">
+                <label>Địa chỉ email</label>
+                <input type="email" class="form-control" name="email" placeholder="Enter email">
+              </div>
+
+              <div class="form-group">
+                <label>Mật khẩu</label>
+                <input type="password" class="form-control" placeholder="Password" name="password">
+              </div>
+              <div class="form-group">
+                <label>Trình độ</label>
+                <select class="hocvan" name="hocvan">
+                  <option value="1" selected>Đại học</option>
+                  <option value="2">Thạc sĩ</option>
+                  <option value="3">Tiến sĩ</option>
+                  <option value="4">Giáo sư</option>
+                </select>
+
+
+              </div>
+              <!-- /.card-body -->
+
+              <div class="card-footer">
+                <button type="submit" class="btn btn-primary btn-block">Add Staff</button>
+              </div>
+          </form>
+        </div>
+
+
+
       </div>
     </div>
   </div>
+  <script src="{% static 'dist/js/vietnamlocalselector.js' %}"></script>
+  <script>
+      var localpicker = new LocalPicker({
+          province: "ls_province",
+          district: "ls_district",
+          ward: "ls_ward"
+      });
+  
+      var options = {
+          /*
+              HTML Selector. You can pass value of name, id or class. 
+              It will automatically detect exist elements for you.
+              Example: 'myIdOrClass','#myId', '.myClass', 'myName'
+              */
+          province: 'ls_province',
+          district: 'ls_district',
+          ward: 'ls_ward',
+  
+          /*
+          Define value for option tag. Valid option: id|name           
+          */
+          getValueBy: 'name',
+  
+          //Placeholder text
+          provinceText: 'Chọn tỉnh / thành phố',
+          districtText: 'Chọn quận / huyện',
+          districtNoText: 'Địa phương này không có quận / huyện',
+          wardText: 'Chọn phường / xã',
+          wardNoText: 'Địa phương này không có phường / xã',
+  
+          // Default value if no location exist
+          emptyValue: " ",
+  
+          // Hide option where no local exist
+          hideEmptyValueOption: true,
+  
+          // Hide place-holder option (first option)
+          hidePlaceHolderOption: true,
+  
+          /*
+          Include local level on option text as prefix
+          Example: true = Quận Bình Thạnh | false = Bình Thạnh
+          */
+          provincePrefix: true,
+          districtPrefix: true,
+          wardPrefix: true,
+  
+          /*
+          Include local level in option tag's attribute
+          */
+          levelAsAttribute: true,
+          levelAttributeName: "data-level",
+      };
+  </script>
+</div>
+
 {% endblock content %}

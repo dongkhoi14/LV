@@ -28,8 +28,7 @@
   <div class="row">
 
     <div class="panel panel-primary">
-      <div class="panel-heading">
-        <h6 class="panel-title">Giảng viên</h6>
+      <div class="panel-heading">Lớp giảng dạy</h6>
 
       </div>
 
@@ -37,32 +36,44 @@
         <thead>
 
           <tr>
+            <th>Tên Hoc phan</th>
             <th>Tên lớp</th>
-            <th>Ngày tạo</th>
-            <th>Ngày cập nhật</th>
             <th>Số lượng sinh viên</th>
-            <th>Delete</th>
           </tr>
         </thead>
-        <tr>
 
-          <td>
-            <select>
-              {% for hocphan in hocphans %}
-              <option value='{{ hocphan.id }}'>{{ hocphan.ten_hoc_phan }} </option>
-              {% endfor %}
-            </select>
-          </td>
-          <td>{{ hocphan.ngay_tao }}</td>
-          <td>{{t.ngay_tao}}</td>
-          <td>{{t.perm.date_updated}}</td>
-          <td>{{t.perm.username}}</td>
+        <thead id="table"></thead>
 
-        </tr>
+
+
 
       </table>
     </div>
 
 
   </div>
-</div>{% endblock content %}
+</div>
+<script>
+  $(document).ready(function () {
+    $.ajax({
+      url: 'lopgiangvien',
+      type: 'GET',
+      data: {}
+    }).done(function (res) {
+      console.log(res)
+      var div = ""
+      json_data = JSON.parse(res)
+      for (key in json_data) {
+        div += "<tr>"
+        div += "<td>" + json_data[key]['tenlop'] + "</td>"
+        div += "<td>" + json_data[key]['tenhocphan'] + "</td>"
+        div += "<td>" + json_data[key]['slsv'] + "</td>"
+        // div +="<td>"+json_data[key]['tenhocphan']+"</td>"
+        div += "</tr>"
+      }
+      $("#table").html(div)
+    })
+  })
+</script>
+
+{% endblock content %}

@@ -4,9 +4,11 @@
 {% load static %}
 
 {% block headcontent %}
-<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
 
+<link href="http://netdna.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 <style media="screen">
     a:link {
         text-decoration: none;
@@ -31,20 +33,20 @@
 {% endblock headcontent %}
 
 {% block content %}
+
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+
 <div class="container">
     <div class="form-content">
-        <div class="row">
-            <div class="panel panel-primary">
-                <div class="panel-heading">
-                    <h6 class="panel-title">Thống kê</h6>
+            <div class="card card-primary">
+                    <h3 class="card-header" style="text-align:center">Thống kê</h3>
 
-                </div>
-
-                <div id='thongke_table'></div>
+                <div class ='card-body'><div id='thongke_table'></div></div>
+                
             </div>
-        </div>
     </div>
 </div>
+
 <div class="modal fade bd-example-modal-lg" id="exampleModalCenter" tabindex="-1" role="dialog"
     aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -63,6 +65,7 @@
         </div>
     </div>
 </div>
+
 <script>
     // window.onload = function(){
     //     alert("OK")
@@ -77,7 +80,7 @@
             json_data = JSON.parse(res)
 
             console.log(json_data)
-            div += "<table class='table table-hover' id='dev-table'><thead><tr><th>Tên lớp</th><th>Số lần điểm danh</th><th>Số lượng sinh viên</th><th>Tỷ lệ có mặt</th><th>Chi tiết</th></tr></thead>";
+            div += "<table class='table table-striped 'id='dev-table'><thead><tr><th>Tên lớp</th><th>Số lần điểm danh</th><th>Số lượng sinh viên</th><th>Tỷ lệ có mặt</th><th>Chi tiết</th></tr></thead>";
 
             for (key in json_data) {
                 div += "<tr><td>" + json_data[key]['ten_hocphan'] + "</td><td>" + json_data[key]['so_buoi_diem_danh'] + "</td><td>" + json_data[key]['soluongsinhvien'] + "</td><td>" + json_data[key]['tylecomat'] + "%</td><td><button type='button' class='btn btn-primary' data-toggle='modal' data-target='#exampleModalCenter' id='details' value='" + json_data[key]['id_hocphan'] + "' >Chi tiết</button></td></tr>"

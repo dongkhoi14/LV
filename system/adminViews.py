@@ -12,6 +12,9 @@ def themGiangvien(request):
     if request.method != 'POST':
         return HttpResponse("<h2>Lỗi</h2>")
     else:
+        ls_province = request.POST.get("ls_province")
+        ls_district = request.POST.get("ls_district")
+        ls_ward = request.POST.get("ls_ward")
         first_name = request.POST.get('first_name')
         last_name = request.POST.get('last_name')
         username = request.POST.get('username')
@@ -19,21 +22,30 @@ def themGiangvien(request):
         email = request.POST.get('email')
         diachi = request.POST.get('diachi')
         sodienthoai = request.POST.get('sodienthoai')
+        diachi = str(ls_province) + " " + str(ls_district) + " " + str(ls_ward)
+        hocvan = request.POST.get('hocvan')
+        
         try:
-            user = phanquyen.objects.create_user(
-                username=username, first_name=first_name, last_name=last_name, password=password, email=email, user_type=2)
+            print("ok")
+            u = phanquyen.objects.create_user(username=username, first_name=first_name, last_name=last_name, password=password, email=email, user_type=2)
+            u.save()
+            a = giangvien.objects.create(perm= phanquyen.objects.get(pk=u.id))
+            
             print("Toi day")
-
-            user.giangvien.so_dien_thoai = sodienthoai
-            user.giangvien.dia_chi=diachi
-            user.giangvien.owner=request.user.username
-            user.save()
+            a.so_dien_thoai = int(sodienthoai)
+            a.dia_chi=diachi
+            a.owner=request.user.username
+            a.tentochuc= request.user.quantri.name
+            a.hocvan = hocvan
+            print("Toi day")
+            
+            a.save()
             return HttpResponseRedirect('adminGiangvien')
         except:
             return HttpResponseRedirect("adminThemgiangvien")
 def adminHomeSchool(request):
     soluongsinhvien = sinhvien.objects.filter(owner=request.user.username).count()
-    soluonggiangvien = giangvien.objects.all().count()
+    soluonggiangvien = giangvien.objects.filter(owner=request.user.username).count()
     soluonglop = lop.objects.filter(create_by= request.user.username).count()
     ls =lop.objects.filter(create_by= request.user.username)
     soluonghocphan = 0
@@ -54,13 +66,14 @@ def themsinhvien(request):
         sodienthoai = request.POST.get('sodienthoai')
         try:
             print("ok")
-            user = phanquyen.objects.create_user(
+            u = phanquyen.objects.create_user(
                 username=username, first_name=first_name, last_name=last_name, password=password, email=email, user_type=3)
-            user.sinhvien.id_lop_id = id_lop
-            user.sinhvien.diachi = diachi
-            user.sinhvien.so_dien_thoai = sodienthoai
-            user.sinhvien.owner = request.user.username
-            user.save()
+            u.sinhvien.id_lop_id = id_lop
+            u.sinhvien.diachi = diachi
+            u.sinhvien.so_dien_thoai = sodienthoai
+            u.sinhvien.owner = request.user.username
+            u.sinhvien.tentochuc = request.user.quantri.name
+            u.save()
             return HttpResponseRedirect("adminSinhvien")
         except:
             return HttpResponseRedirect("/")

@@ -1,4 +1,5 @@
 import json
+from django.http.response import JsonResponse
 from django.shortcuts import render
 from system.models import *
 from django.http import HttpResponse
@@ -37,10 +38,10 @@ def danhsach_diemdanh(request):
 
 @csrf_exempt
 def deleteStudent(request):
-    teacherID = request.POST.get("teacherID")
+    studentID = request.POST.get("studentID")
     try:
-        studentObject = sinhvien.objects.get(pk=teacherID)
-        studentUser = phanquyen.objects.get(username=teacherObject.perm)
+        studentObject = sinhvien.objects.get(mssv=studentID)
+        studentUser = phanquyen.objects.get(username=studentObject.perm)
         studentUser.delete()
         return HttpResponse("OK")
     except:
@@ -49,9 +50,10 @@ def deleteStudent(request):
 def getupdateStudent(request):
     teacherID  = request.POST.get("teacherID")
     try:
-        teacherObject = sinhvien.objects.get(mscb=teacherID)
+        teacherObject = sinhvien.objects.get(mssv=teacherID)
+        data = {"mssv":teacherObject.mssv,"ho":teacherObject.perm.first_name,"ten":teacherObject.perm.last_name,"diachi":teacherObject.diachi,"sodienthoai":teacherObject.so_dien_thoai}
+        print(data)
 
-        data = {"mscb":teacherObject.mscb,"ho":teacherObject.perm.first_name,"ten":teacherObject.perm.last_name,"diachi":teacherObject.dia_chi,"hocvan":teacherObject.hocvan,"sodienthoai":teacherObject.so_dien_thoai}
         return HttpResponse(json.dumps(data))
     except:
         return HttpResponse("Error")
@@ -65,11 +67,11 @@ def updateStudent(request):
     sodienthoai = request.POST.get("sodienthoai")
     try:
         print(teacherID)
-        
+        print(diachi)
         g = sinhvien.objects.get(pk=teacherID)
         u = phanquyen.objects.get(id= g.perm_id)
         if diachi != "":
-            g.dia_chi = diachi
+            g.diachi = diachi
             g.save()
 
         if u.first_name != first_name:

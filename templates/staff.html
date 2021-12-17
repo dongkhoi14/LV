@@ -6,7 +6,7 @@ Quản lý nhân viên
 {% block headcontent %}
 <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-  <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
 <style type="text/css">
     a:link {
         text-decoration: none;
@@ -134,14 +134,14 @@ Quản lý nhân viên
                         <td>{{staff.ngay_tao}}</td>
                         <td>{{staff.id_lop.ten_lop}}</td>
                         <td>{{staff.perm.username}}</td>
-                        <td><button class="btn btn-primary btn-block" id='getupdateStaff' data-toggle="modal" data-target="#myModal" value="{{t.mssv}}"
-                                >Cập nhật</button></td>
+                        <td><button class="btn btn-primary btn-block" id='getupdateStaff' data-toggle="modal"
+                                data-target="#myModal" value="{{staff.mssv}}">Cập nhật</button></td>
                         <td><button class="btn btn-primary btn-block" id="deleteStaff"
                                 value="{{staff.mssv}}">Xóa</button>
                         </td>
 
                     </tr>
-                      
+
                     {% endif %}
 
                     {% endfor %}
@@ -174,15 +174,7 @@ Quản lý nhân viên
                                 <input type="text" class="form-control" placeholder="Last Name" name="last_name"
                                     id="last_name">
                             </div>
-                            <div class="form-group">
-                                <label>Trình độ</label>
-                                <select class="hocvan" id="hocvan">
-                                    <option value="1">Đại học</option>
-                                    <option value="2" selected>Thạc sĩ</option>
-                                    <option value="3">Tiến sĩ</option>
-                                    <option value="4">Giáo sư</option>
-                                </select>
-                            </div>
+                            
                             <div class="form-group">
                                 <label>Địa chỉ hiện tại</label>
                                 <p id="present_address"></p>
@@ -285,8 +277,80 @@ Quản lý nhân viên
                     }
                 })
             })
+            $(document).on("click", "#getupdateStaff", function () {
+            var teacherID = $(this).val();
+            console.log($(this).val())
+            $.ajax({
+                url: "{% url 'getupdateStudent' %}",
+                type: "POST",
+                data: { teacherID: teacherID }
+            }).done(function (response) {
+                console.log(response)
+                var json_data = JSON.parse(response)
+                console.log(json_data)
+
+                $("#first_name").val("" + json_data["ho"])
+                $("#last_name").val("" + json_data["ten"])
+                if (json_data["diachi"] == null) {
+                    document.getElementById('present_address').innerHTML = "Không có địa chỉ"
+                } else {
+                    document.getElementById('present_address').innerHTML = json_data["diachi"]
+                }
+                document.getElementById('hocvan').value = json_data["hocvan"];
+                if (json_data["diachi"] == null) {
+                    $("#so_dien_thoai").val(json_data["so_dien_thoai"])
+                } else {
+                }
+            }).fail(function () {
+                alert("Lỗi, vui lòng thử lại");
+            })
+            $(document).on("click", "#apply_change", function () {
+                var first_name = $("#first_name").val()
+                var last_name = $("#last_name").val()
+                if ($("#tinh").val() != null && $("#huyen").val() != null && $("#xa").val() != null) {
+                    var tinh = $("#tinh option:selected").text()
+                    var huyen = $("#huyen option:selected").text()
+                    var xa = $("#xa option:selected").text()
+                    var diachi = xa + ", " + huyen + ", " + tinh
+
+                } else {
+                    diachi = ""
+                }
+                var sodienthoai = $("#sodienthoai").val()
+                var hocvan = $("#hocvan").val()
+                var t = $("#tinh option:selected").val()
+                console.log(t)
+                $.ajax({
+                    url: "{% url 'updateStudent' %}",
+                    type: "POST",
+                    data: {
+                        teacherID: teacherID,
+                        first_name: first_name,
+                        last_name: last_name,
+                        diachi: diachi,
+                        sodienthoai: sodienthoai,
+                        hocvan: hocvan
+                    }
+                }).done(function (response) {
+                    console.log(teacherID)
+                    $.removeData(teacherID)
+                    location.reload();
+
+                })
+
+
+
+            })
+            $('[data-dismiss=modal]').on('click', function (e) {
+                location.reload();
+            })
+
         })
 
+        })
+       
+
     </script>
+
 </div>
 {% endblock content %}

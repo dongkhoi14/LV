@@ -2,8 +2,11 @@
 
 {% block title %}Điểm danh sinh viên{% endblock title %}
 {% block headcontent %}
-<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+<link href="http://netdna.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
 
 <style media="screen">
     a:link {
@@ -34,21 +37,20 @@
 
 {% block content %}
 <div class="container">
-    <div class="row">
-        <div class="panel panel-primary">
-            <div class="panel-heading">
-                <h6 class="panel-title">Điểm danh</h6>
+        <div class="card card-primary">
+                <h6 class="card-header">Điểm danh</h6>
 
-            </div>
-            <div class="form-group">
-                <label>Môn học </label>
-                <select id="id_hocphan" name="id_hocphan">
-                    {% for hocphan in hocphans %}
-                    <option value="{{ hocphan.id }}"> {{hocphan.ten_hoc_phan}} ---- {{hocphan.id_lop.ten_lop}}</option>
-                    {% endfor %}
-
-                </select>
-
+            <div class="card-body">
+                <div class="form-group">
+                    <label>Môn học </label>
+                    <select id="id_hocphan" name="id_hocphan">
+                        {% for hocphan in hocphans %}
+                        <option value="{{ hocphan.id }}"> {{hocphan.ten_hoc_phan}} ---- {{hocphan.id_lop.ten_lop}}</option>
+                        {% endfor %}
+    
+                    </select>
+    
+                </div>
             </div>
             <div class="card-footer">
                 <button type="button" class="btn btn-primary btn-block" id="danhsach_diemdanh">Xem</button>
@@ -56,9 +58,9 @@
             <div id="studentAtt">
             </div>
         </div>
-    </div>
     <script>
-        $(document).on("click", "#danhsach_diemdanh", function () {
+        $(document).ready(function(){
+            $(document).on("click", "#danhsach_diemdanh", function () {
             var id_hocphan = $("#id_hocphan").val()
             $.ajax({
                 url: "{% url 'danhsach_diemdanh'%}",
@@ -84,6 +86,7 @@
                 div += "</table>"
                 $("#studentAtt").html(div)
             })
+        })
         })
     </script>
 </div>

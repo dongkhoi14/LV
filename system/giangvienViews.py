@@ -12,51 +12,68 @@ from django.http import FileResponse
 from django.core.checks import messages
 from datetime import datetime, timedelta
 from django.utils import timezone
+from django.contrib.auth.decorators import login_required
 
-
+@login_required(login_url='login')
 def giangvienViews(request):
     g = giangvien.objects.get(perm=request.user.id)
 
     return render(request, 'templates/giangvien.html', {'giangvien': g})
 
-
+@login_required(login_url='login')
 def giangvien_Lop(request):
     lops = lop.objects.all()
     g = giangvien.objects.get(perm=request.user.id)
     hocphans = hocphan.objects.filter(id_giangvien=g.mscb)
-    return render(request, 'templates/giangvien_Lop.html', {'lops': lops, 'hocphans': hocphans})
-
-
+    list_data = []
+    for h in hocphans:
+        slsv = sinhvien.objects.filter(id_lop=h.id_lop_id).count()
+        data = {"tenhocphan":h.ten_hoc_phan,"tenlop":lop.objects.get(id = h.id_lop_id).ten_lop,"slsv":slsv}
+        
+        list_data.append(data)
+    return render(request, 'templates/giangvien_Lop.html', {"list_data":json.dumps(list_data)})
+@login_required(login_url='login')
+def lopgiangvien(request):
+    g = giangvien.objects.get(perm=request.user.id)
+    hocphans = hocphan.objects.filter(id_giangvien=g.mscb)
+    list_data = []
+    for h in hocphans:
+        slsv = sinhvien.objects.filter(id_lop=h.id_lop_id).count()
+        data = {"tenhocphan":h.ten_hoc_phan,"tenlop":lop.objects.get(id = h.id_lop_id).ten_lop,"slsv":slsv}
+        
+        list_data.append(data)
+    return JsonResponse(json.dumps(list_data),content_type = 'application/json',safe=False)
+@login_required(login_url='login')
 def giangvien_diemdanh(request):
     lops = lop.objects.all()
     g = giangvien.objects.get(perm=request.user.id)
     hocphans = hocphan.objects.filter(id_giangvien=g.mscb)
     return render(request, "templates/giangvien_diemdanh.html", {"lops": lops, "hocphans": hocphans})
 
-
+@login_required(login_url='login')
 def giangvienNoti(request):
     g = giangvien.objects.get(perm=request.user.id)
     hocphans = hocphan.objects.filter(id_giangvien=g.mscb)
     return render(request, 'templates/giangvienNoti.html', {'hocphans': hocphans})
 
-
+@login_required(login_url='login')
 def addNoti(request):
     g = giangvien.objects.get(perm=request.user.id)
     hocphans = hocphan.objects.filter(id_giangvien=g.mscb)
     return render(request, "templates/giangvien_addNoti.html", {'hocphans': hocphans})
 
-
+@login_required(login_url='login')
 def noti(request):
     g = giangvien.objects.get(perm=request.user.id)
     hocphans = hocphan.objects.filter(id_giangvien=g.mscb)
     return render(request, 'templates/noti.html', {'hocphans': hocphans})
 
-
+@login_required(login_url='login')
 def thongke(request):
 
     return render(request, "templates/thongke_diemdanh.html")
 
-
+@login_required(login_url='login')
 @csrf_exempt
 def onload_thongke(request):
     try:
@@ -70,11 +87,11 @@ def onload_thongke(request):
             tong = 0
             vang = 0
             comat = 0
-
+            slsv = sinhvien.objects.filter(id_lop_id = h.id_lop).count()
             for d in ds:
                 atts = attendance.objects.filter(id_diemdanh_id=d.id)
                 tong += attendance.objects.filter(id_diemdanh_id=d.id).count()
-                slsv = attendance.objects.filter(id_diemdanh_id=d.id).count()
+                
                 for att in atts:
 
                     if att.diemdanh == False:
@@ -90,7 +107,7 @@ def onload_thongke(request):
     except:
         return HttpResponse("Error")
 
-
+@login_required(login_url='login')
 @csrf_exempt
 def details_thongke(request):
     if request.method == "POST":
@@ -114,7 +131,7 @@ def details_thongke(request):
     except:
         return HttpResponse("Error")
 
-
+@login_required(login_url='login')
 @csrf_exempt
 def danhsach_sinhvien(request):
     id_hocphan = request.POST.get("id_hocphan")
@@ -128,12 +145,13 @@ def danhsach_sinhvien(request):
         
     list_data = []
     for s in sinhviens:
-        data = {"id": s.mssv, "name": s.perm.first_name +
-                " " + s.perm.last_name, "lop": s.id_lop.ten_lop}
-        list_data.append(data)
+        if s.perm.is_active == True:
+            data = {"id": s.mssv, "name": s.perm.first_name +
+                    " " + s.perm.last_name, "lop": s.id_lop.ten_lop}
+            list_data.append(data)
     return JsonResponse(json.dumps(list_data), content_type="application/json", safe=False)
 
-
+@login_required(login_url='login')
 @csrf_exempt
 def historyAtt(request):
     id_hocphan = request.POST.get("id_hocphan")
@@ -141,7 +159,7 @@ def historyAtt(request):
     atts = diemdanh.objects.filter(
         id_hocphan_id=id_hocphan)
     list_data = []
-
+    tong = 0
     for data in atts:
 
         att_in = attendance.objects.filter(id_diemdanh_id=data.id)
@@ -151,12 +169,20 @@ def historyAtt(request):
         for att in att_in:
             
             try:
-                att_out = attendance_out.objects.get(id_diemdanh_id=att.id_diemdanh, id_sinhvien_id=att.id_sinhvien)
-                if att.diemdanh == True and att_out.diemdanh == True:
-                    count += 1
+                s = sinhvien.objects.get(mssv = att.id_sinhvien_id)
+                print(s)
+                if s.perm.is_active == True:
+                    att_out = attendance_out.objects.get(id_diemdanh_id=att.id_diemdanh, id_sinhvien_id=att.id_sinhvien)
+                    tong +=1
+                    if att.diemdanh == True and att_out.diemdanh == True:
+                        count += 1
             except :
-                if att.diemdanh == True :
-                    count += 1
+                s = sinhvien.objects.get(mssv = att.id_sinhvien_id)
+                print(s)
+                if s.perm.is_active == True:
+                    tong+=1
+                    if att.diemdanh == True :
+                        count += 1
 
 
         if data.is_disabled == True:
@@ -164,11 +190,12 @@ def historyAtt(request):
         else:
             trangthai = "enabled"
         data = {"id": data.id, "ngay_diem_danh": data.ngay_diem_danh,
-                "ten_lop": data.id_hocphan.ten_hoc_phan, "dadiemdanh": count, "tong": len(att_in), "trangthai": trangthai}
+                "ten_lop": data.id_hocphan.ten_hoc_phan, "dadiemdanh": count, "tong": tong, "trangthai": trangthai}
         list_data.append(data)
+        list_data.reverse()
     return JsonResponse(json.dumps(list_data, cls=DjangoJSONEncoder), content_type="application/json", safe=False)
 
-
+@login_required(login_url='login')
 @csrf_exempt
 def deleteAtt(request):
     id_diemdanh = request.POST.get("id_diemdanh")
@@ -181,7 +208,7 @@ def deleteAtt(request):
     except:
         return HttpResponse("ERR")
 
-
+@login_required(login_url='login')
 @csrf_exempt
 def createAtt(request):
     id_hocphan = request.POST.get("id_hocphan")
@@ -209,7 +236,7 @@ def createAtt(request):
     except:
         return HttpResponse("ERR")
 
-
+@login_required(login_url='login')
 @csrf_exempt
 def createQR(request):
     id_diemdanh = request.POST.get("id_diemdanh")
@@ -232,10 +259,21 @@ def createQR(request):
     except:
         return HttpResponse("deo' OK")
 
-
+@login_required(login_url='login')
 @csrf_exempt
 def historyAttData(request):
     id_diemdanh = request.POST.get("id_diemdanh")
+    context = {"id_diemdanh": "",
+                    "mssv": "",
+                    "ho": "",
+                    "ten": "",
+                    "trangthai_in": "",
+                    "trangthai_out": "",
+                    "id_att_in": "",
+                    "id_att_out":"",
+                    "ngay_diem_danh": "",
+                    
+                    }
     try:
         d = diemdanh.objects.get(pk=id_diemdanh)
         att = attendance.objects.filter(id_diemdanh_id=id_diemdanh)
@@ -249,33 +287,24 @@ def historyAttData(request):
             print(att)
             list_data.append(data)
             for a in att:
-                context = {"id_diemdanh": "",
-                    "mssv": "",
-                    "ho": "",
-                    "ten": "",
-                    "trangthai_in": "",
-                    "trangthai_out": "",
-                    "id_att_in": "",
-                    "id_att_out":"",
-                    "ngay_diem_danh": "",
-                    
-                    }
-                s = sinhvien.objects.get(mssv=a.id_sinhvien_id)
                 
-                out =attendance_out.objects.get(id_diemdanh_id = id_diemdanh,id_sinhvien_id = s.mssv)
-                context['id_diemdanh'] = d.id
-                context['mssv'] = s.mssv 
-                context['ho'] = s.perm.first_name
-                context['ten'] = s.perm.last_name
-                context['trangthai_in'] = a.diemdanh
-                context['trangthai_out'] = out.diemdanh
-                context['id_att_in'] = a.id
-                context['id_att_out'] = out.id
-                context['ngay_diem_danh'] = d.ngay_diem_danh
-                    
-               
-                print(context)
-                list_data.append(context)
+                s = sinhvien.objects.get(mssv=a.id_sinhvien_id)
+                print(a.mssv)
+                if s.perm.is_active == True:
+                    out =attendance_out.objects.get(id_diemdanh_id = id_diemdanh,id_sinhvien_id = s.mssv)
+                    context['id_diemdanh'] = d.id
+                    context['mssv'] = s.mssv 
+                    context['ho'] = s.perm.first_name
+                    context['ten'] = s.perm.last_name
+                    context['trangthai_in'] = a.diemdanh
+                    context['trangthai_out'] = out.diemdanh
+                    context['id_att_in'] = a.id
+                    context['id_att_out'] = out.id
+                    context['ngay_diem_danh'] = d.ngay_diem_danh
+                        
+                
+                    print(context)
+                    list_data.append(context)
         except  : 
             list_data[0]["cocheckout"] = False
             list_data[0]['is_disabled'] = d.is_disabled
@@ -283,22 +312,23 @@ def historyAttData(request):
             for a in att:
                 s = sinhvien.objects.get(mssv=a.id_sinhvien_id)
                 print(a)
-                if d.is_disabled == False:
+                if s.perm.is_active == True:
+                    if d.is_disabled == False:
 
-                    context = {"id_diemdanh": d.id, "mssv": s.mssv, "ho": s.perm.first_name, "ten": s.perm.last_name,
-                            "trangthai": a.diemdanh, "id_att": a.id, "ngay_diem_danh": d.ngay_diem_danh, "is_disabled": False}
-                else:
-                    context = {"id_diemdanh": d.id, "mssv": s.mssv, "ho": s.perm.first_name, "ten": s.perm.last_name,
-                            "trangthai": a.diemdanh, "id_att": a.id, "ngay_diem_danh": d.ngay_diem_danh, "is_disabled": True}
+                        context = {"id_diemdanh": d.id, "mssv": s.mssv, "ho": s.perm.first_name, "ten": s.perm.last_name,
+                                "trangthai": a.diemdanh, "id_att": a.id, "ngay_diem_danh": d.ngay_diem_danh, "is_disabled": False}
+                    else:
+                        context = {"id_diemdanh": d.id, "mssv": s.mssv, "ho": s.perm.first_name, "ten": s.perm.last_name,
+                                "trangthai": a.diemdanh, "id_att": a.id, "ngay_diem_danh": d.ngay_diem_danh, "is_disabled": True}
 
-                list_data.append(context)
-        
+                    list_data.append(context)
+        print(list_data)
         return JsonResponse(json.dumps(list_data, cls=DjangoJSONEncoder), content_type="application/json", safe=False)
 
     except:
         return HttpResponse("Not ok")
 
-
+@login_required(login_url='login')
 @csrf_exempt
 def reAtt(request):
     id_att = request.POST.get("id_att")
@@ -309,6 +339,7 @@ def reAtt(request):
         return HttpResponse("OK")
     except:
         return HttpResponse("Error")
+@login_required(login_url='login')
 @csrf_exempt
 def reAttIn(request):
     id_att_in = request.POST.get("id_att_in")
@@ -319,6 +350,7 @@ def reAttIn(request):
         return HttpResponse("OK")
     except :
         return HttpResponse("Error")
+@login_required(login_url='login')
 @csrf_exempt
 def reAttOut(request):
     id_att_out = request.POST.get("id_att_out")
@@ -329,6 +361,7 @@ def reAttOut(request):
         return HttpResponse("OK")
     except :
         return HttpResponse("Error")
+@login_required(login_url='login')
 @csrf_exempt
 def createAttInOut(request):
     id_hocphan = request.POST.get("id_hocphan")
@@ -361,7 +394,7 @@ def createAttInOut(request):
     except:
         return HttpResponse("ERR")
 
-
+@login_required(login_url='login')
 @csrf_exempt
 def createQRcheckin(request):
     id_diemdanh = request.POST.get("id_diemdanh")
@@ -385,7 +418,7 @@ def createQRcheckin(request):
     except:
         return HttpResponse("deo' OK")
 
-
+@login_required(login_url='login')
 @csrf_exempt
 def createQRcheckout(request):
     id_diemdanh = request.POST.get("id_diemdanh")

@@ -166,7 +166,7 @@
       <i class="fas fa-bars" id="sidebar_btn"></i>
     </label>
     <div class="left_area">
-      <h3>School Management</h3>
+      <h3>{{request.user.sinhvien.tentochuc}}</h3>
     </div>
     <div class="right_area">
       <a href="/logout" class="logout_btn">Logout</a>
@@ -180,7 +180,7 @@
 
     </center>
 
-    <a href="/student-dashboard"><i class="fas fa-desktop"></i><span>Quản lý</span></a>
+    <a href="/sinhvien"><i class="fas fa-desktop"></i><span>Quản lý</span></a>
     <a href="/student_att"><i class="fas fa-address-card"></i><span>Điểm danh</span></a>
 
   </div>

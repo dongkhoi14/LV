@@ -169,20 +169,21 @@
   </style>
 
 
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css">
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
 
   <header>
     <label for="check">
       <i ></i>
     </label>
     <div class="left_area">
-      <h3>Quản lý Doanh nghiệp</h3>
+      <h3>{{request.user.quantri.name}}</h3>
     </div>
     <div class="right_area">
       <a href="/logout" class="logout_btn">Đăng xuất</a>
     </div>
   </header>
   <div class="sidebar">
+  <div class="name-com"></div>
     <center>
 
       <img src="{% static  'images/admin.png' %}" class="profile_image" alt="">
@@ -191,8 +192,8 @@
     </center>
     <a href="/adminEnterprise" id="adminEnterprise"><i class="fa fa-home"></i><span>Trang chủ</span></a>
 
-    <a href="/adminEnterpriseManager" id="adminEnterpriseManager"><i class="fas fa-chalkboard-teacher"></i><span>Quản lý</span></a>
-    <a href="/staffAtt" id="staffAtt"><i class="far fa-calendar-check"></i><span>Chấm công</span></a>
+    <a href="/adminEnterpriseManager" id="adminEnterpriseManager"><i class="fa fa-user"></i><span>Quản lý</span></a>
+    <a href="/staffAtt" id="staffAtt"><i class="fa fa-list-alt"></i><span>Chấm công</span></a>
     <a href="/staffEvent" id="staffEvent"><i class="fa fa-calendar "></i><span>Sự kiện</span></a>
     <a href="/staffHistory" id="staffHistory"><i class="fa fa-history "></i><span>Lịch sử</span></a>
 
