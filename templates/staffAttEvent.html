@@ -454,12 +454,11 @@ Sự kiện{% endblock title %}
             $(document).on("click", "#addEvent", function () {
                 var checkintime = $("#in").val()
                 var checkouttime = $("#out").val()
+                console.log(Date.parse(checkintime) > Date.parse(checkouttime))
                 
-                console.log(Date.parse(checkouttime) )
-                console.log(Date.parse(checkintime))
                 
                 var event_name = $("#event_name").val()
-                if (Date.parse(checkintime) < Date.parse(checkouttime) && checkouttime != "" && checkouttime != "") {
+                if ( checkouttime != "" && checkouttime != "") {
                     $(this).html("<span class='glyphicon glyphicon-refresh spinning'></span>")
                     var department_id = $("#department_id").val()
                     $.ajax({

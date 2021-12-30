@@ -169,7 +169,7 @@ def historyStaffAtt(request):
                         try:
                         
                             attin = staffDo_att_in.objects.get(id_diemdanh_id=att.id,id_nhanvien_id=staff.mssv,id_department=department.id)
-                        
+
                             attout = staffDo_att_out.objects.get(id_diemdanh_id=att.id,id_nhanvien_id=staff.mssv,id_department=department.id)
                             if attin.diemdanh == True and attout.diemdanh == True:
                                 if attout.ngay_cap_nhat - attin.ngay_cap_nhat > timedelta(hours=8):
@@ -178,12 +178,12 @@ def historyStaffAtt(request):
                             
 
                             attdatas  = staffDo_att_in.objects.filter(id_diemdanh_id=att.id,diemdanh=True).count()
-                            data = {"id_diemdanh":att.id,"bophan":department.ten_lop,"id_department":department.id,"soluongnhanvien":countstaff,"ngay_tao":att.ngay_tao.date(),"soluongdiemdanh":count}
 
                         except:
-                            print("khong co du lieu diem danh cua nhan vien nay"+ staff.perm.first_name + staff.perm.last_name)
+                            print("")
+                data = {"id_diemdanh":att.id,"bophan":department.ten_lop,"id_department":department.id,"soluongnhanvien":countstaff,"ngay_tao":att.ngay_tao.date(),"soluongdiemdanh":count}
+
                 list_data.append(data)
-                print(data)
         list_data.reverse()
         return JsonResponse(json.dumps(list_data, cls=DjangoJSONEncoder),content_type= "application/json",safe=False)
     except :

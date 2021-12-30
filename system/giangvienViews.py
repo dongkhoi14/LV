@@ -87,7 +87,11 @@ def onload_thongke(request):
             tong = 0
             vang = 0
             comat = 0
-            slsv = sinhvien.objects.filter(id_lop_id = h.id_lop).count()
+            slsv = 0
+            ss =sinhvien.objects.filter(id_lop_id = h.id_lop)
+            for s in ss:
+                if s.perm.is_active == True:
+                    slsv +=1
             for d in ds:
                 atts = attendance.objects.filter(id_diemdanh_id=d.id)
                 tong += attendance.objects.filter(id_diemdanh_id=d.id).count()
@@ -120,13 +124,14 @@ def details_thongke(request):
         list_data = []
         for s in ss:
             count = 0
-            for d in ds:
-                count += attendance.objects.filter(
+            if s.perm.is_active == True:
+                for d in ds:
+                    count += attendance.objects.filter(
                     id_sinhvien=s.mssv, id_diemdanh=d.id, diemdanh=False).count()
-            data = {"name": s.perm.first_name + " " +
+                data = {"name": s.perm.first_name + " " +
                     s.perm.last_name, "mssv": s.mssv, "solanvang": count}
 
-            list_data.append(data)
+                list_data.append(data)
         return JsonResponse(json.dumps(list_data), content_type="application/json", safe=False)
     except:
         return HttpResponse("Error")
@@ -159,31 +164,27 @@ def historyAtt(request):
     atts = diemdanh.objects.filter(
         id_hocphan_id=id_hocphan)
     list_data = []
-    tong = 0
     for data in atts:
+        tong = 0
 
         att_in = attendance.objects.filter(id_diemdanh_id=data.id)
         count = 0
-        s = attendance_out.objects.filter(id_diemdanh_id=data.id)
 
         for att in att_in:
             
             try:
                 s = sinhvien.objects.get(mssv = att.id_sinhvien_id)
-                print(s)
                 if s.perm.is_active == True:
                     att_out = attendance_out.objects.get(id_diemdanh_id=att.id_diemdanh, id_sinhvien_id=att.id_sinhvien)
-                    tong +=1
+                    tong += 1
                     if att.diemdanh == True and att_out.diemdanh == True:
                         count += 1
             except :
-                s = sinhvien.objects.get(mssv = att.id_sinhvien_id)
-                print(s)
-                if s.perm.is_active == True:
-                    tong+=1
+                a = sinhvien.objects.get(mssv = att.id_sinhvien_id)
+                if a.perm.is_active == True:
+                    tong += 1
                     if att.diemdanh == True :
                         count += 1
-
 
         if data.is_disabled == True:
             trangthai = "disabled"
@@ -263,55 +264,39 @@ def createQR(request):
 @csrf_exempt
 def historyAttData(request):
     id_diemdanh = request.POST.get("id_diemdanh")
-    context = {"id_diemdanh": "",
-                    "mssv": "",
-                    "ho": "",
-                    "ten": "",
-                    "trangthai_in": "",
-                    "trangthai_out": "",
-                    "id_att_in": "",
-                    "id_att_out":"",
-                    "ngay_diem_danh": "",
-                    
-                    }
+    
     try:
         d = diemdanh.objects.get(pk=id_diemdanh)
         att = attendance.objects.filter(id_diemdanh_id=id_diemdanh)
         l = hocphan.objects.get(id = d.id_hocphan_id)
+        
+                    
         list_data = []
         try:
             att_out = attendance.objects.filter(id_diemdanh_id=id_diemdanh)
             
             data = {"cocheckout":True,"is_disabled": d.is_disabled,"ten_hocphan":l.ten_hoc_phan,"ngay_diemdanh":d.ngay_diem_danh,"id":d.id}
             
-            print(att)
             list_data.append(data)
             for a in att:
                 
                 s = sinhvien.objects.get(mssv=a.id_sinhvien_id)
-                print(a.mssv)
+                
                 if s.perm.is_active == True:
                     out =attendance_out.objects.get(id_diemdanh_id = id_diemdanh,id_sinhvien_id = s.mssv)
-                    context['id_diemdanh'] = d.id
-                    context['mssv'] = s.mssv 
-                    context['ho'] = s.perm.first_name
-                    context['ten'] = s.perm.last_name
-                    context['trangthai_in'] = a.diemdanh
-                    context['trangthai_out'] = out.diemdanh
-                    context['id_att_in'] = a.id
-                    context['id_att_out'] = out.id
-                    context['ngay_diem_danh'] = d.ngay_diem_danh
-                        
-                
-                    print(context)
+                    
+                    context = {"id_diemdanh":d.id,'mssv':s.mssv,"ho":s.perm.first_name,"ten":s.perm.last_name, "trangthai_in":a.diemdanh
+                    ,'trangthai_out':out.diemdanh,"id_att_in":a.id,"id_att_out":out.id,"ngay_diem_danh":d.ngay_diem_danh}
+                    print("------------------------------")
                     list_data.append(context)
+                    print(list_data)
         except  : 
+
             list_data[0]["cocheckout"] = False
             list_data[0]['is_disabled'] = d.is_disabled
-            print(list_data)
             for a in att:
                 s = sinhvien.objects.get(mssv=a.id_sinhvien_id)
-                print(a)
+                print(s.perm.first_name)
                 if s.perm.is_active == True:
                     if d.is_disabled == False:
 
@@ -322,7 +307,6 @@ def historyAttData(request):
                                 "trangthai": a.diemdanh, "id_att": a.id, "ngay_diem_danh": d.ngay_diem_danh, "is_disabled": True}
 
                     list_data.append(context)
-        print(list_data)
         return JsonResponse(json.dumps(list_data, cls=DjangoJSONEncoder), content_type="application/json", safe=False)
 
     except:

@@ -179,10 +179,10 @@ def themhocphan(request):
 def onload_thongkeadmin(request):
     try:
         gs = giangvien.objects.filter(owner=request.user.username)
+        list_data= []
         for g in gs:
             hocphans = hocphan.objects.filter(id_giangvien_id=g.mscb)
-            list_data= []
-            print(hocphans)
+            
             for h in hocphans:
                 ds = diemdanh.objects.filter(id_hocphan_id = h.id)
                 tong_diemdanh = diemdanh.objects.filter(id_hocphan_id = h.id).count()
@@ -203,7 +203,7 @@ def onload_thongkeadmin(request):
                 tylecomat = int((comat/tong)*100)
                 data = {"id_hocphan":h.id,"ten_hocphan":h.ten_hoc_phan,"so_buoi_diem_danh":tong_diemdanh,"soluongsinhvien":slsv,"tylecomat":tylecomat}
                 list_data.append(data)
-                print(list_data) 
+        print(list_data) 
         return JsonResponse(json.dumps(list_data), content_type="application/json", safe=False)
     except :
         return HttpResponse("Error")
